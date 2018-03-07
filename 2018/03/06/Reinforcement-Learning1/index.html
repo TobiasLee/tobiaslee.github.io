@@ -20,7 +20,7 @@
 <meta property="og:image" content="http://yoursite.com/img/pg.png">
 <meta property="og:image" content="http://yoursite.com/img/loss.png">
 <meta property="og:image" content="http://yoursite.com/img/game.gif">
-<meta property="og:updated_time" content="2018-03-07T13:17:50.457Z">
+<meta property="og:updated_time" content="2018-03-07T13:59:56.026Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Policy Graident 从数学到实现">
 <meta name="twitter:description" content="Text Generation 是我非常感兴趣的一个问题，传统的 Seq2Seq 能有不错的效果，但如前一篇 Blog 所说，我相信未来的文本生成必然是与 GAN 以及 Reinforcement Learning （RL）相结合的，上交的大佬 Lantao Yu 就有一篇很出色的 SeqGAN 的工作，以及最近的 MaskGAN。接下来的一段时间，尝试实现 SeqGAN 和 MaskGAN，根据">
@@ -189,10 +189,10 @@
 <li>Model - free Approach</li>
 <li>Model- based Approach</li>
 </ol>
-<p>这里的 Model 指的是环境，Model-free 算法不需要对环境进行建模，Policy 通过环境的 reward （奖赏）来指导学习；而 Model-based 类算法则有着对环境的建模，我们可以利用这个 Model 来搜索预判可能发生的情况，并据此为 Policy 选择行动策略。</p>
+<p>这里的 Model 指的是环境，Model-free 算法不需要对环境进行建模，Policy 通过环境的 reward （奖赏）来指导学习；而 Model-based 类算法则有着对环境的建模，我们可以利用这个 Model 来搜索预判可能发生的情况，并据此为 Policy 选择行动策略。<br><a id="more"></a></p>
 <h2 id="Deep-Policy-Gradient"><a href="#Deep-Policy-Gradient" class="headerlink" title="Deep Policy Gradient"></a>Deep Policy Gradient</h2><p>Policy Gradient 是一类很重要的 RL 算法，其核心步骤如下：</p>
 <p><img src="/img/dpg.png" alt="DPG"></p>
-<p>我们用 <strong>u</strong> 来控制 NN 的参数，并且通过 SGD 来更新这个 <strong>u</strong>，使得能够获得更多 reward  的 action 能够更可能被采纳。因为 reward 是随时间步而累积的，我们通过一个 discount factor $\gamma$ ，来控制 reward 的衰减，避免出现无限的情况。如果我们用 $x$ 来表示一次完整的行动（trajectory），$$f(x)$$ 来表示 total reward function， $p(x)$ 表示我们的 Policy ，$\theta$ 表示控制 NN 的参数。那么我们的目标就是让 <strong>reward function 的数学期望最大</strong>，SGD 更新，则使数学期望对求导过程如下：</p>
+<p>我们用 <strong>u</strong> 来控制 NN 的参数，并且通过 SGD 来更新这个 <strong>u</strong>，使得能够获得更多 reward  的 action 能够更可能被采纳。因为 reward 是随时间步而累积的，我们通过一个 discount factor $\gamma$ ，来控制 reward 的衰减，避免出现无限的情况。如果我们用 $x$ 来表示一次完整的行动（trajectory），$f(x)$ 来表示 total reward function， $p(x)$ 表示我们的 Policy ，$\theta$ 表示控制 NN 的参数。那么我们的目标就是让 <strong>reward function 的数学期望最大</strong>，SGD 更新，则使数学期望对求导过程如下：</p>
 <p><img src="/img/pg.png" alt="Policy Gradient"></p>
 <p>注意，<strong>$f(x)$ 和 $\theta$ 是无关的 </strong>，也就是说，我们只要求 $log\ p(x)$ 对 $\theta $ 的导数，再乘上 reward function 就可以了。实际实现中，我们肯定是不求数学期望而是采样 N 个 samples 然后求平均，和最大似然的方法相比，发现只需要在 Objective Function（这里的函数称为 loss 有一些不合适） 上乘上一个由 reward 进行加权的函数即可：</p>
 <p><img src="/img/loss.png" alt="Object Function"></p>
@@ -314,15 +314,6 @@
 
   
 <nav id="article-nav">
-  
-    <a href="/2018/03/07/TestLatex/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          TestLatex
-        
-      </div>
-    </a>
   
   
     <a href="/2018/02/18/Taste-of-Paper/" id="article-nav-older" class="article-nav-link-wrap">
@@ -481,11 +472,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Deep Learning</a>
+                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
+                <a href="javascript:void(0)" class="js-tag color4">Deep Learning</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -497,19 +488,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Machine Learning</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Android</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">自定义View</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Machine Learning</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -521,15 +512,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">栈</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -553,11 +544,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">LaTeX</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Python</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">LaTeX</a>
+                <a href="javascript:void(0)" class="js-tag color4">JVM</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -566,10 +561,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Reinforcement Learning</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">JVM</a>
               </li>
              
               <li class="article-tag-list-item">
