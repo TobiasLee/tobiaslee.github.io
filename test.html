@@ -6,19 +6,18 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Text Classification 代码学习笔记 | Stay Hungry,Stay Foolish.</title>
+  <title>Stay Hungry,Stay Foolish.</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="找到了 TensorFlow 官方的 Text Classification 的代码来学习研究，GitHub地址。官方有给了四个代码，用 CNN 和 RNN 分别对字符和词语做文本分类。这里的数据主要是 dbpedia 的数据，数据的描述是这样的:  The DBpedia ontology classification dataset is constructed by picking 14 n">
-<meta name="keywords" content="Machine Learning,NLP,TensorFlow">
-<meta property="og:type" content="article">
-<meta property="og:title" content="Text Classification 代码学习笔记">
-<meta property="og:url" content="http://yoursite.com/2017/08/07/Text-Classification代码学习笔记/index.html">
+  <meta name="description" content="Hello world">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Stay Hungry,Stay Foolish.">
+<meta property="og:url" content="http://yoursite.com/test.html">
 <meta property="og:site_name" content="Stay Hungry,Stay Foolish.">
-<meta property="og:description" content="找到了 TensorFlow 官方的 Text Classification 的代码来学习研究，GitHub地址。官方有给了四个代码，用 CNN 和 RNN 分别对字符和词语做文本分类。这里的数据主要是 dbpedia 的数据，数据的描述是这样的:  The DBpedia ontology classification dataset is constructed by picking 14 n">
-<meta property="og:updated_time" content="2017-08-15T14:58:52.000Z">
+<meta property="og:description" content="Hello world">
+<meta property="og:updated_time" content="2018-04-01T00:56:41.438Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Text Classification 代码学习笔记">
-<meta name="twitter:description" content="找到了 TensorFlow 官方的 Text Classification 的代码来学习研究，GitHub地址。官方有给了四个代码，用 CNN 和 RNN 分别对字符和词语做文本分类。这里的数据主要是 dbpedia 的数据，数据的描述是这样的:  The DBpedia ontology classification dataset is constructed by picking 14 n">
+<meta name="twitter:title" content="Stay Hungry,Stay Foolish.">
+<meta name="twitter:description" content="Hello world">
   
     <link rel="alternative" href="/atom.xml" title="Stay Hungry,Stay Foolish." type="application/atom+xml">
   
@@ -160,94 +159,12 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-Text-Classification代码学习笔记" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="page-" class="article article-type-page " itemscope itemprop="blogPost">
   <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 class="article-title" itemprop="name">
-      Text Classification 代码学习笔记
-    </h1>
-  
-
-        
-        <a href="/2017/08/07/Text-Classification代码学习笔记/" class="archive-article-date">
-  	<time datetime="2017-08-07T12:12:44.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-08-07</time>
-</a>
-        
-      </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>找到了 TensorFlow 官方的 Text Classification 的代码来学习研究，<a href="https://github.com/tensorflow/tensorflow/blob/master/tensorflow/examples/learn/text_classification.py" target="_blank" rel="noopener">GitHub地址</a>。官方有给了四个代码，用 <strong>CNN</strong> 和 <strong>RNN</strong> 分别对<strong>字符</strong>和<strong>词语</strong>做文本分类。这里的数据主要是 <code>dbpedia</code> 的数据，数据的描述是这样的:</p>
-<blockquote>
-<p>The DBpedia ontology classification dataset is constructed by picking 14 non-overlapping classes from DBpedia 2014. They are listed in classes.txt. From each of thse 14 ontology classes, we randomly choose 40,000 training samples and 5,000 testing samples. Therefore, the total size of the training dataset is 560,000 and testing dataset 70,000.</p>
-</blockquote>
-<p>也就是说我们有 14 个类别的文本数据，然后我们要做的就是给每一段文本进行分类。</p>
-<a id="more"></a>
-<p>马士兵老师教我：看代码从 main 函数看起，于是乎：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">(unused_argv)</span>:</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Prepare training and testing data</span></span><br><span class="line">    <span class="comment"># ...</span></span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Process vocabulary</span></span><br><span class="line">	<span class="comment"># ...</span></span><br><span class="line">    </span><br><span class="line"></span><br><span class="line">    <span class="comment"># Build model</span></span><br><span class="line">    <span class="comment"># ...</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># Train</span></span><br><span class="line">    <span class="comment"># ...</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Predict.</span></span><br><span class="line">    <span class="comment"># ...</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Socre</span></span><br><span class="line">    <span class="comment"># ...</span></span><br></pre></td></tr></table></figure>
-<p>把细节隐去，我们能够看到 main 函数内部的主题框架，就是一个典型的 ML 的流程:</p>
-<ol>
-<li>准备数据</li>
-<li>处理数据</li>
-<li>建模</li>
-<li>训练模型</li>
-<li>预测结果</li>
-<li>评价模型</li>
-</ol>
-<h2 id="1、数据准备"><a href="#1、数据准备" class="headerlink" title="1、数据准备"></a>1、数据准备</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> ... <span class="comment"># 省略导包</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 官方的下载数据，以及通过pandas读取数据的代码</span></span><br><span class="line">dbpedia = tf.contrib.learn.datasets.load_dataset(</span><br><span class="line">    <span class="string">'dbpedia'</span>,</span><br><span class="line">    test_with_fake_data=FLAGS.test_with_fake_data)</span><br><span class="line"></span><br><span class="line">x_train = pd.Series(dbpedia.train.data[:, <span class="number">1</span>])</span><br><span class="line">y_train = pd.Series(dbpedia.train.target)</span><br><span class="line">x_test = pd.Series(dbpedia.test.data[:, <span class="number">1</span>])</span><br><span class="line">y_test = pd.Series(dbpedia.test.target)</span><br></pre></td></tr></table></figure>
-<p>但是可能因为墙的缘故，我实际运行的时候等了两个小时才下好这个数据。不能每次都让他去在下载一遍吧，不然我就疯了。于是掏出《利用 Python 进行数据分析》这本书，学了一下 <code>pandas</code> 的基本用法，改成从本地读取 csv 文件：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">names = [<span class="string">"class"</span>, <span class="string">"title"</span>, <span class="string">"content"</span>] <span class="comment"># 描述中 数据有三项 类别 标题 和内容</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 读取 csv 文件 并且利用我们制定的 names 来分组</span></span><br><span class="line">train_csv = pd.read_csv(<span class="string">"./dbpedia_data/dbpedia_csv/train.csv"</span>, names=names)</span><br><span class="line">test_csv = pd.read_csv(<span class="string">"./dbpedia_data/dbpedia_csv/test.csv"</span>, names=names)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 通过指定的 name 拿到我们要的 x:content 和 y:class </span></span><br><span class="line">x_train = pd.Series(train_csv[<span class="string">"content"</span>])</span><br><span class="line">y_train = pd.Series(train_csv[<span class="string">"class"</span>])</span><br><span class="line">x_test = pd.Series(test_csv[<span class="string">"content"</span>])</span><br><span class="line">y_test = pd.Series(test_csv[<span class="string">"class"</span>])</span><br></pre></td></tr></table></figure>
-<h2 id="2、数据处理"><a href="#2、数据处理" class="headerlink" title="2、数据处理"></a>2、数据处理</h2><p>这一步其实应该是相当繁琐并且麻烦的，因为我们要把文本变成机器能够读懂的东西。</p>
-<p>而官方的代码只有寥寥几行：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">vocab_processor = tf.contrib.learn.preprocessing.VocabularyProcessor(</span><br><span class="line">    MAX_DOCUMENT_LENGTH)</span><br><span class="line"></span><br><span class="line">x_transform_train = vocab_processor.fit_transform(x_train)</span><br><span class="line">x_transform_test = vocab_processor.transform(x_test)</span><br><span class="line"></span><br><span class="line">x_train = np.array(list(x_transform_train))</span><br><span class="line">x_test = np.array(list(x_transform_test))</span><br><span class="line"></span><br><span class="line"><span class="keyword">global</span> n_words</span><br><span class="line">n_words = len(vocab_processor.vocabulary_)</span><br><span class="line">print(<span class="string">'Total words: %d'</span> % n_words)</span><br></pre></td></tr></table></figure>
-<p>代码少是因为调用了已经写好的代码，这里比较麻烦的一点是，有很多代码我不能通过编译器直接看到，还好，Google 把相关的代码都放在 GitHub 上。</p>
-<p>第一行代码中的 <code>VocabularyProcessor</code> 是词汇处理器，详细的<a href="https://github.com/tensorflow/tensorflow/blob/master/tensorflow/contrib/learn/python/learn/preprocessing/text.py" target="_blank" rel="noopener">代码</a>。<code>tf.contrib.learn.preprocessing</code> 这个模块主要包含了一些文本预处理的工具，而词汇处理器的作用呢，就是”Maps documents to sequences of word ids”，翻过来就是“把文档映射成词汇的索引序列”。</p>
-<p>首先，需要理解我们是把文本，一段话，变成一个向量，这样机器处理起来就会比较方便。</p>
-<p>这里我们在构造处理器的时候传入了 <code>MAX_DOCUMENT_LENGTH</code>这个参数，来控制我们的文本向量的最大长度，太长了训练起来比较困难。</p>
-<p>那么文本向量是怎么编码的呢？就可以看到下面两代码：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 注意这两个函数不一样哟 一个是 fit_transform 一个是 transform</span></span><br><span class="line">x_transform_train = vocab_processor.fit_transform(x_train)</span><br><span class="line">x_transform_test = vocab_processor.transform(x_test)</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>fit_transform(): Learn the vocabulary dictionary and return indexies of words，</p>
-<p>transform(): Transform documents to word-id matrix</p>
-</blockquote>
-<p>这两个函数的返回是一个可迭代对象:</p>
-<blockquote>
-<p>x: iterable, [n_samples, max_document_length]. Word-id matrix.</p>
-</blockquote>
-<p>上面这几行代码干的就是<strong>把文本变成向量</strong>这样的工作。</p>
-<p>首先构造词汇处理器，限制文本向量的最大长度，然后通过 <code>fit_transform()</code> 方法，这个函数内部是先 <code>fit</code> ，就是整体扫描一遍数据，给每个不同的单词一个编号，然后再 <code>transform</code>，也就是把每个对应的单词替换成数字。</p>
-<p>看一个小例子：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">x_text = [<span class="string">'This is a cat'</span>,<span class="string">'This must be boy'</span>, <span class="string">'This is a a dog'</span>]</span><br><span class="line">vocab_pro = VocabularyProcessor(<span class="number">6</span>)</span><br><span class="line">x = np.array(list(vocab_pro.fit_transform(x_text)))</span><br><span class="line">print(x)</span><br></pre></td></tr></table></figure>
-<p>输出结果:</p>
-<blockquote>
-<p>[[1 2 3 4 0 0]<br> [1 5 6 7 0 0]<br> [1 2 3 3 8 0]] </p>
-</blockquote>
-<p>不难理解，数字 1 对应 “This”，数字 2 对应 “is”，以此类推，我们就能够得到一个词汇和数字一一对应的字典。需要特别提一下的是，我们可以给不认识的词汇统统做一个类似 <code>&lt;UNK&gt;</code> 的标记，以及没有词的地方就用 0 来表示。</p>
-<p>在代码中有提到我们是对训练集进行 <code>fit</code> 和 <code>transform</code> ，对测试集进行 <code>transform</code>，显然，对测试集转换的时候使用的是从训练集上学得的字典。我觉得这里可能就是要求我们训练集尽可能大的一个地方，这样才能保证测试集中的词汇基本都能够出现，否则就会大大影响我们模型的准确性。</p>
-<p>所以经过这一步，我们就把文本数据变成了机器能够比较容易处理的一组向量。</p>
-<h2 id="建立模型"><a href="#建立模型" class="headerlink" title="建立模型"></a>建立模型</h2><p>代码里给出了两个模型，一个是 <strong>RNN</strong>，另一个是 <strong>bag of words</strong>，词袋模型。我个人理解，模型实质上就是一组<strong>输入到输出的映射</strong>，就相当于是函数<code>y = f(x)</code> 就是一个最简单的模型了。</p>
-<h3 id="RNN-Model"><a href="#RNN-Model" class="headerlink" title="RNN Model"></a>RNN Model</h3><p>RNN，循环神经网络，公式和原理主要是在这篇 <a href="http://colah.github.io/posts/2015-08-Understanding-LSTMs/" target="_blank" rel="noopener">Blog</a> 中，这里就不赘述了。</p>
-<p>我觉得比较重要的一点就是，RNN 能够捕获数据在时间（多表现为序列输入）上的特征，这和我们的文本的特点是非常的符合的。</p>
-<p>和 RNN 经常一起使用的两个技术是 GRU 以及 LSTM，这两个是在 RNN 的单元上进行了一些变化，来避免 RNN 的梯度消失或者是梯度爆炸的缺点。这里代码里使用的是 GRU。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">rnn_model</span><span class="params">(features, labels, mode)</span>:</span></span><br><span class="line">    <span class="string">"""用RNN模型来预测文本的类别"""</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 词语索引 -&gt; 词嵌入 embedding </span></span><br><span class="line">    word_vectors = tf.contrib.layers.embed_sequence(</span><br><span class="line">        features[WORDS_FEATURE], vocab_size=n_words, embed_dim=EMBEDDING_SIZE)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 展平向量  word_list 变成 [batch_size, EMBEDDING_SIZE] 形状的一个 tensor</span></span><br><span class="line">    word_list = tf.unstack(word_vectors, axis=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 用嵌入层数量(也就是对应的GRU单元个数) 创建GRU单元</span></span><br><span class="line">    cell = tf.contrib.rnn.GRUCell(EMBEDDING_SIZE)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 创建一个展平的 RNN 网络(其长度等于我们的MAX_DOCUMENT_LENGTH),并且把 word_list 作为输入</span></span><br><span class="line">    _, encoding = tf.contrib.rnn.static_rnn(cell, word_list, dtype=tf.float32)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 得到通过 RNN 编码之后的一组向量(logits)，然后利用 softmax 来变成一个归一化概率的向量，从而预测对应的类别</span></span><br><span class="line">    logits = tf.layers.dense(encoding, MAX_LABEL, activation=<span class="keyword">None</span>)</span><br><span class="line">    <span class="keyword">return</span> estimator_spec_for_softmax_classification(</span><br><span class="line">        logits=logits, labels=labels, mode=mode)</span><br></pre></td></tr></table></figure>
-<p>这里涉及到一个我也并不是非常清楚的概念，有待日后继续学习：</p>
-<p><code>word embedding</code> 词嵌入，是在已经用数学向量表达的文本上再做一次变换，变换后的词向量会更能够代表词的特征（个人见解，存疑），并且比 <code>one-hot encoding</code> 编码更加节省空间，计算效率也更高。</p>
-<h3 id="Bag-of-Words-词袋模型"><a href="#Bag-of-Words-词袋模型" class="headerlink" title="Bag of Words 词袋模型"></a>Bag of Words 词袋模型</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">bag_of_words_model</span><span class="params">(features, labels, mode)</span>:</span></span><br><span class="line">    <span class="string">"""词袋模型，不考虑文本的顺序"""</span></span><br><span class="line">    bow_column = tf.feature_column.categorical_column_with_identity(</span><br><span class="line">        WORDS_FEATURE, num_buckets=n_words)</span><br><span class="line"></span><br><span class="line">    bow_embedding_column = tf.feature_column.embedding_column(</span><br><span class="line">        bow_column, dimension=EMBEDDING_SIZE)</span><br><span class="line"></span><br><span class="line">    bow = tf.feature_column.input_layer(</span><br><span class="line">        features,</span><br><span class="line">        feature_columns=[bow_embedding_column])</span><br><span class="line">    logits = tf.layers.dense(bow, MAX_LABEL, activation=<span class="keyword">None</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> estimator_spec_for_softmax_classification(</span><br><span class="line">        logits=logits, labels=labels, mode=mode)</span><br></pre></td></tr></table></figure>
-<p><code>bag of words</code> 和 RNN 最大的区别就在于<strong>它不考虑文本的顺序</strong>，只管文本中出现了什么词。这里做的和 RNN 类似，我们再一次把文本向量进行一次转换，只不过这一次不考虑文本的顺序，单纯看这句话里有什么词，然后给它对应的一个整数。（这块也不是很清楚，有待深入理解）</p>
-<h2 id="训练模型、预测、评价"><a href="#训练模型、预测、评价" class="headerlink" title="训练模型、预测、评价"></a>训练模型、预测、评价</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">estimator_spec_for_softmax_classification</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">        logits, labels, mode)</span>:</span></span><br><span class="line">    <span class="string">"""Returns EstimatorSpec instance for softmax classification."""</span></span><br><span class="line">    predicted_classes = tf.argmax(logits, <span class="number">1</span>)</span><br><span class="line">    <span class="keyword">if</span> mode == tf.estimator.ModeKeys.PREDICT <span class="comment"># Predict 时候用  	    </span></span><br><span class="line">        <span class="keyword">return</span> tf.estimator.EstimatorSpec(</span><br><span class="line">            mode=mode,</span><br><span class="line">            predictions=&#123;</span><br><span class="line">                <span class="string">'class'</span>: predicted_classes,</span><br><span class="line">                <span class="string">'prob'</span>: tf.nn.softmax(logits)</span><br><span class="line">            &#125;)</span><br><span class="line">	</span><br><span class="line">   	<span class="comment"># 生成一个 one-hot 编码的 label</span></span><br><span class="line">    onehot_labels = tf.one_hot(labels, MAX_LABEL, <span class="number">1</span>, <span class="number">0</span>)</span><br><span class="line">     <span class="comment"># loss 函数 交叉熵 </span></span><br><span class="line">    loss = tf.losses.softmax_cross_entropy(</span><br><span class="line">        onehot_labels=onehot_labels, logits=logits)</span><br><span class="line">    <span class="comment"># train 模式下使用</span></span><br><span class="line">    <span class="keyword">if</span> mode == tf.estimator.ModeKeys.TRAIN:</span><br><span class="line">        <span class="comment"># 设置 学习率为0.1的 AdamOptimizer</span></span><br><span class="line">        optimizer = tf.train.AdamOptimizer(learning_rate=<span class="number">0.01</span>)</span><br><span class="line">        <span class="comment"># minimize loss function</span></span><br><span class="line">        train_op = optimizer.minimize(loss, global_step=tf.train.get_global_step())</span><br><span class="line">        <span class="keyword">return</span> tf.estimator.EstimatorSpec(mode, loss=loss, train_op=train_op)</span><br><span class="line">	</span><br><span class="line">    <span class="comment"># Score 时候使用</span></span><br><span class="line">    eval_metric_ops = &#123;</span><br><span class="line">        <span class="string">'accuracy'</span>: tf.metrics.accuracy(</span><br><span class="line">            labels=labels, predictions=predicted_classes)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> tf.estimator.EstimatorSpec(</span><br><span class="line">        mode=mode, loss=loss, eval_metric_ops=eval_metric_ops)</span><br></pre></td></tr></table></figure>
-<p>这里 train 的过程和以前写的非常类似。大致就是我们通过文本的类别来 生成对应的 <code>one-hot encoding</code> 的 label，然后通过 <code>cross entropy</code> 交叉熵函数作为我们的 loss function，然后用 <code>AdamOptimizer</code> 来训练这个模型。</p>
-<p>预测的部分就是通过我们的模型生成对应的 logits，然后再通过 softmax 函数变成一个概率向量，其中最大的那一个一般就作为我们预测的类别。</p>
-<p>评估也很简单，就看看我们预测的是否和测试集中的 label 吻合，计算准确率就行。</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>完整的数据集还是挺大的，在我 i7 的 rmbp 上跑了大概一个半小时。</p>
-<p>其实在学习代码的时候遇到了一些有意思的情况：</p>
-<ol>
-<li>把 <code>GRUCell</code> 换成 <code>LSTMCell</code> 报错，不知道为什么（应该是对应参数的问题吧）</li>
-<li>在小数据集上跑的时候，词袋模型比 RNN 的效果好很多。RNN的准确率在 31% ~ 38% 之间浮动，而词袋模型在58%左右；大数据集 RNN 在 87 % 而 词袋模型达到了 97 %！</li>
-</ol>
-<p>这篇文章写的还是比较仓促，很多细节部分都没有深究，也只是这个方向上的第一步探索，接下来会对细节的一些地方进行深入的理解。</p>
+        Hello world
 
       
 
@@ -256,25 +173,6 @@
     <div class="article-info article-info-index">
       
       
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Machine Learning</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">NLP</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">TensorFlow</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
       
 
 
@@ -327,7 +225,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2017/08/07/Text-Classification代码学习笔记/" alt="微信分享二维码">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/test.html" alt="微信分享二维码">
     </div>
 </div>
 
@@ -339,25 +237,6 @@
 </article>
 
   
-<nav id="article-nav">
-  
-    <a href="/2017/08/15/Attention-Mechanism-学习笔记/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          Attention Mechanism 学习笔记1
-        
-      </div>
-    </a>
-  
-  
-    <a href="/2017/08/01/TensorFlow初步/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">TensorFlow初步</div>
-      <i class="icon-circle-right"></i>
-    </a>
-  
-</nav>
-
 
 <aside class="wrap-side-operation">
     <div class="mod-side-operation">
@@ -412,7 +291,7 @@
 	var yiliaConfig = {
 		mathjax: true,
 		isHome: false,
-		isPost: true,
+		isPost: false,
 		isArchive: false,
 		isTag: false,
 		isCategory: false,
