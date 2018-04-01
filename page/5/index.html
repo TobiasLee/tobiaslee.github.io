@@ -51,7 +51,7 @@
 		  <h1 class="header-author"><a href="/">TobiasLee</a></h1>
 		</hgroup>
 		
-		<p class="header-subtitle">TobiasLee&#39;s Blog.</p>
+		<p class="header-subtitle">寻求暑期 NLP 实习机会 欢迎查看简历联系~</p>
 		
 
 		<nav class="header-menu">
@@ -111,7 +111,7 @@
 			  <h1 class="header-author js-header-author">TobiasLee</h1>
 			</hgroup>
 			
-			<p class="header-subtitle"><i class="icon icon-quo-left"></i>TobiasLee&#39;s Blog.<i class="icon icon-quo-right"></i></p>
+			<p class="header-subtitle"><i class="icon icon-quo-left"></i>寻求暑期 NLP 实习机会 欢迎查看简历联系~<i class="icon icon-quo-right"></i></p>
 			
 			
 			
@@ -159,6 +159,86 @@
           </div>
           <div id="js-content" class="content-ll">
             
+  
+    <article id="post-Algorithms-Notebook" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/01/29/Algorithms-Notebook/">Algorithms Notebook</a>
+    </h1>
+  
+
+        
+        <a href="/2017/01/29/Algorithms-Notebook/" class="archive-article-date">
+  	<time datetime="2017-01-29T06:45:11.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-01-29</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>突然萌生了一个想法 就是收集一些经典、优雅的算法<br>没事多翻翻看看 能够沉淀下来一些就好了</p>
+<p>1、最大子序列的和<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">maxSubsequenceSum</span><span class="params">(<span class="keyword">int</span>[] a ,<span class="keyword">int</span> N)</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> thisSum,MaxSum;</span><br><span class="line">    thisSum = MaxSum = <span class="number">0</span> ;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; i++) &#123;</span><br><span class="line">        thisSum += a[i];</span><br><span class="line">        <span class="keyword">if</span>(thisSum &gt; MaxSum)&#123;</span><br><span class="line">            MaxSum = thisSum;</span><br><span class="line">        &#125;<span class="keyword">else</span> <span class="keyword">if</span>(thisSum &lt; <span class="number">0</span>)&#123;</span><br><span class="line">            thisSum = <span class="number">0</span> ;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> MaxSum;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在数列不是全部为负数的前提下<br>算法很巧妙的用两个变量来储存 当前子列和 以及 最大子列和<br>并且及时地交换二者的值或者是 在当前子列和 小于0时 重置为 0<br>实现 <strong>一遍遍历就能得到最大子列和的目的</strong>  即 复杂度为O(n)</p>
+        
+          <a class="article-more-a" href="/2017/01/29/Algorithms-Notebook/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">算法</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+
+      
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/01/29/Algorithms-Notebook/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
   
     <article id="post-WorkLoad" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
@@ -943,11 +1023,11 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
+                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
+                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -959,11 +1039,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">NLP</a>
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
+                <a href="javascript:void(0)" class="js-tag color2">Machine Learning</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -975,7 +1055,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Machine Learning</a>
+                <a href="javascript:void(0)" class="js-tag color4">NLP</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -991,15 +1071,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">C</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">栈</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">C</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1015,19 +1095,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Java</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">LaTeX</a>
+                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Python</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">LaTeX</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1162,7 +1242,7 @@ MathJax.Hub.Queue(function() {
     
     	<section class="tools-section tools-section-me" q-show="aboutme">
   	  	
-  	  		<div class="aboutme-wrap" id="js-aboutme">西安电子科技大学 软件工程 &lt;br&gt; “路漫漫其修远兮，吾将上下而求索”</div>
+  	  		<div class="aboutme-wrap" id="js-aboutme">西安电子科技大学 软件工程 &lt;br&gt; 寻求暑期 NLP 实习生（公司/学校）机会&lt;br&gt; 欢迎查看简历并联系~</div>
   	  	
     	</section>
     

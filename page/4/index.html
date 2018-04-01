@@ -51,7 +51,7 @@
 		  <h1 class="header-author"><a href="/">TobiasLee</a></h1>
 		</hgroup>
 		
-		<p class="header-subtitle">TobiasLee&#39;s Blog.</p>
+		<p class="header-subtitle">寻求暑期 NLP 实习机会 欢迎查看简历联系~</p>
 		
 
 		<nav class="header-menu">
@@ -111,7 +111,7 @@
 			  <h1 class="header-author js-header-author">TobiasLee</h1>
 			</hgroup>
 			
-			<p class="header-subtitle"><i class="icon icon-quo-left"></i>TobiasLee&#39;s Blog.<i class="icon icon-quo-right"></i></p>
+			<p class="header-subtitle"><i class="icon icon-quo-left"></i>寻求暑期 NLP 实习机会 欢迎查看简历联系~<i class="icon icon-quo-right"></i></p>
 			
 			
 			
@@ -159,6 +159,114 @@
           </div>
           <div id="js-content" class="content-ll">
             
+  
+    <article id="post-FilterPlayer" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/04/23/FilterPlayer/">FilterPlayer</a>
+    </h1>
+  
+
+        
+        <a href="/2017/04/23/FilterPlayer/" class="archive-article-date">
+  	<time datetime="2017-04-23T12:24:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-04-23</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>​    上次讲了MediaCodec的用法，其实也是为了后面的视频渲染做准备的。一开始定的学习目标就是：能够导入视频，并且加上滤镜。这篇文章就主要讲一下导入视频之后的滤镜渲染。</p>
+<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>​    其实一开始实现的思路大致是这样:</p>
+<blockquote>
+<p>MediaCodec解码视频流 ——&gt; 输出到GLSurfaceView ——&gt; OpenGL渲染</p>
+</blockquote>
+<p>​    然而因为GLSurfaceView的Surface比较特殊，无法直接作为MediaCodec的Decoder的输出容器，所以失败了。</p>
+<p>​    后来开始研究 <a href="https://github.com/google/grafika" target="_blank" rel="noopener">grafika</a> 里的一个 Show+capture camera 的功能</p>
+<blockquote>
+<p><a href="https://github.com/google/grafika/blob/master/src/com/android/grafika/CameraCaptureActivity.java" target="_blank" rel="noopener">Show + capture camera</a>. Attempts to record at 720p from the front-facing camera, displaying the preview and recording it simultaneously.</p>
+<ul>
+<li>Use the record button to toggle recording on and off.</li>
+<li>Recording continues until stopped. If you back out and return, recording will start again, with a real-time gap. If you try to play the movie while it’s recording, you will see an incomplete file (and probably cause the play movie activity to crash).</li>
+<li>The recorded video is scaled to 640x480, so it will probably look squished. A real app would either set the recording size equal to the camera input size, or correct the aspect ratio by letter- or pillar-boxing the frames as they are rendered to the encoder.</li>
+<li>You can select a filter to apply to the preview. It does not get applied to the recording. The shader used for the filters is not optimized, but seems to perform well on most devices (the original Nexus 7 (2012) being a notable exception). Demo here: <a href="http://www.youtube.com/watch?v=kH9kCP2T5Gg" target="_blank" rel="noopener">http://www.youtube.com/watch?v=kH9kCP2T5Gg</a></li>
+<li>The output is a video-only MP4 file (“camera-test.mp4”).</li>
+</ul>
+</blockquote>
+<p>​    它的Show模块和我想要做滤镜预览的是非常类似的，只是我的输入源是来自于本地文件，只要用MediaCodec来解码成视频流作为输入就可以了。当然，也和它的说明一样，他的录制功能是不带滤镜的，而我要做的进行添加滤镜之后的保存就要另辟蹊径了（还在努力中）。</p>
+<p>​    grafika实现的思路是这样的:</p>
+<blockquote>
+<p>Decoder –&gt; Surface -&gt; SurfaceTexture –&gt; OpenGL Filter –&gt; GLSurfaceView</p>
+</blockquote>
+<p>​    关键在于，它并没有直接把GLSurfaceView的Surface交给Deocder作为输出容器，而是中间通过一个FullFrameRect的类来持有了一个OpenGL的Texture,然后我们可以用这个纹理来创建一个Surface交给Decoder。就避免了直接用GLSurfaceView的Surface作为输出的问题。</p>
+        
+          <a class="article-more-a" href="/2017/04/23/FilterPlayer/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Android</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">MediaCodec</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">OpenGL</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+
+      
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/04/23/FilterPlayer/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
   
     <article id="post-循环右移问题" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
@@ -932,86 +1040,6 @@
 
 
   
-    <article id="post-Algorithms-Notebook" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/01/29/Algorithms-Notebook/">Algorithms Notebook</a>
-    </h1>
-  
-
-        
-        <a href="/2017/01/29/Algorithms-Notebook/" class="archive-article-date">
-  	<time datetime="2017-01-29T06:45:11.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-01-29</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>突然萌生了一个想法 就是收集一些经典、优雅的算法<br>没事多翻翻看看 能够沉淀下来一些就好了</p>
-<p>1、最大子序列的和<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">maxSubsequenceSum</span><span class="params">(<span class="keyword">int</span>[] a ,<span class="keyword">int</span> N)</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> thisSum,MaxSum;</span><br><span class="line">    thisSum = MaxSum = <span class="number">0</span> ;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; i++) &#123;</span><br><span class="line">        thisSum += a[i];</span><br><span class="line">        <span class="keyword">if</span>(thisSum &gt; MaxSum)&#123;</span><br><span class="line">            MaxSum = thisSum;</span><br><span class="line">        &#125;<span class="keyword">else</span> <span class="keyword">if</span>(thisSum &lt; <span class="number">0</span>)&#123;</span><br><span class="line">            thisSum = <span class="number">0</span> ;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> MaxSum;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>在数列不是全部为负数的前提下<br>算法很巧妙的用两个变量来储存 当前子列和 以及 最大子列和<br>并且及时地交换二者的值或者是 在当前子列和 小于0时 重置为 0<br>实现 <strong>一遍遍历就能得到最大子列和的目的</strong>  即 复杂度为O(n)</p>
-        
-          <a class="article-more-a" href="/2017/01/29/Algorithms-Notebook/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">算法</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-
-      
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/01/29/Algorithms-Notebook/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/3/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/5/">Next &raquo;</a>
@@ -1136,11 +1164,11 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
+                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
+                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1152,11 +1180,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">NLP</a>
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
+                <a href="javascript:void(0)" class="js-tag color2">Machine Learning</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1168,7 +1196,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Machine Learning</a>
+                <a href="javascript:void(0)" class="js-tag color4">NLP</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1184,15 +1212,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">C</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">栈</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">C</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1208,19 +1236,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Java</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">LaTeX</a>
+                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Python</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">LaTeX</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1355,7 +1383,7 @@ MathJax.Hub.Queue(function() {
     
     	<section class="tools-section tools-section-me" q-show="aboutme">
   	  	
-  	  		<div class="aboutme-wrap" id="js-aboutme">西安电子科技大学 软件工程 &lt;br&gt; “路漫漫其修远兮，吾将上下而求索”</div>
+  	  		<div class="aboutme-wrap" id="js-aboutme">西安电子科技大学 软件工程 &lt;br&gt; 寻求暑期 NLP 实习生（公司/学校）机会&lt;br&gt; 欢迎查看简历并联系~</div>
   	  	
     	</section>
     
