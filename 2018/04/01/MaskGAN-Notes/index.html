@@ -6,12 +6,12 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Stay Hungry,Stay Foolish.</title>
+  <title>MaskGAN 学习笔记 | Stay Hungry,Stay Foolish.</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="MaskGAN 是 Goodfellow 组的新作，已经被 ICLP 2018 接收，标题很是风骚，MaskGAN: Better Text Generation via Filling in the  ____，这个下划线的操作真是… astounding。代码也已开源。这篇文章依旧是熟悉的套路，从模型 + 代码来解读论文，走起！ SeqGAN To MaskGANSeqGAN 的缺点上一篇讲">
 <meta name="keywords" content="Deep Learning,NLP,GAN">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Stay Hungry,Stay Foolish.">
+<meta property="og:title" content="MaskGAN 学习笔记">
 <meta property="og:url" content="http://yoursite.com/2018/04/01/MaskGAN-Notes/index.html">
 <meta property="og:site_name" content="Stay Hungry,Stay Foolish.">
 <meta property="og:description" content="MaskGAN 是 Goodfellow 组的新作，已经被 ICLP 2018 接收，标题很是风骚，MaskGAN: Better Text Generation via Filling in the  ____，这个下划线的操作真是… astounding。代码也已开源。这篇文章依旧是熟悉的套路，从模型 + 代码来解读论文，走起！ SeqGAN To MaskGANSeqGAN 的缺点上一篇讲">
@@ -19,9 +19,9 @@
 <meta property="og:image" content="http://yoursite.com/img/mask_gen.png">
 <meta property="og:image" content="http://yoursite.com/img/mask_dis.png">
 <meta property="og:image" content="http://yoursite.com/img/ac_gradient.png">
-<meta property="og:updated_time" content="2018-04-01T13:27:05.360Z">
+<meta property="og:updated_time" content="2018-04-01T13:31:22.360Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Stay Hungry,Stay Foolish.">
+<meta name="twitter:title" content="MaskGAN 学习笔记">
 <meta name="twitter:description" content="MaskGAN 是 Goodfellow 组的新作，已经被 ICLP 2018 接收，标题很是风骚，MaskGAN: Better Text Generation via Filling in the  ____，这个下划线的操作真是… astounding。代码也已开源。这篇文章依旧是熟悉的套路，从模型 + 代码来解读论文，走起！ SeqGAN To MaskGANSeqGAN 的缺点上一篇讲">
 <meta name="twitter:image" content="http://yoursite.com/img/maskgan_model.png">
   
@@ -168,6 +168,21 @@
             <article id="post-MaskGAN-Notes" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      MaskGAN 学习笔记
+    </h1>
+  
+
+        
+        <a href="/2018/04/01/MaskGAN-Notes/" class="archive-article-date">
+  	<time datetime="2018-04-01T08:02:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-01</time>
+</a>
+        
+      </header>
+    
     <div class="article-entry" itemprop="articleBody">
       
         <p>MaskGAN 是 Goodfellow 组的新作，已经被 ICLP 2018 接收，标题很是风骚，<a href="https://openreview.net/pdf?id=ByOExmWAb" target="_blank" rel="noopener">MaskGAN: Better Text Generation via Filling in the  <strong><strong>____</strong></strong></a>，这个下划线的操作真是… astounding。代码也已<a href="https://github.com/tensorflow/models/tree/master/research/maskgan" target="_blank" rel="noopener">开源</a>。这篇文章依旧是熟悉的套路，从模型 + 代码来解读论文，走起！</p>
@@ -193,13 +208,14 @@
 <p>“完形填空”相信大家高中都做过，就是把文章挖空然后让你选一个正确的单词填进去，MaskGAN 就是这么干的，对于一个输入序列 $x = （x_1,…, x_T)$，经过一个 mask： $m=(m_1,…m_T)$，其中 $m_i$ 的取值为 0 或者 1，0 就代表挖掉，1 就意味着保留。经过挖空的操作之后呢，我们就得到了 Masked Token $m(x)$，并将它交给我们以 Seq2Seq 为架构的 Generator 来进行生成，模型见下： </p>
 <p><img src="/img/maskgan_model.png" alt="MaskGAN"></p>
 <p>需要注意一点就是：生成的 token 不一定会作为下一个生成的 pre-token，而是取决于是否被挖空，如有原；这也是一个重要的细节，因为一个错误的答案可能会导致一整篇文章都是错误的，所以，如果有参考答案还是用参考答案。</p>
+<a id="more"></a>
 <p>Discriminator 的架构也是采用的 Seq2Seq，只不过是 many2one，即最后生成的每个 token 为真的概率。除了有填好的句子做为输入以外，$m(x)$ 也作为 Discriminator 的输入，文章是这么解释这么做的原因的：对于一个生成的句子 <code>the director director guided the series</code> ，如果没有 $m(x)$ 的话，那么判别器无法分别到底前一个 <code>director</code> 是原文呢还是后一个是，因为句子有可能是 <code>the *associate* director guided the series</code> 或者是 <code>the director *expertly* guided the series</code>，因此是有必要给判别器关于原文的信息，从而做出更好的判断。生成器和判别器的公式如下：</p>
 <p><img src="/img/mask_gen.png" alt="MaskGAN Generator"></p>
 <p><img src="/img/mask_dis.png" alt="MaskGAN Discriminator"></p>
 <h3 id="Actor-Critic"><a href="#Actor-Critic" class="headerlink" title="Actor-Critic"></a>Actor-Critic</h3><p>前面的文章谈到了，AC 的做法相比 Policy Gradient，很大的区别就在是<strong>单步更新</strong>，以及用一个 NN 来拟合 Advantage Function 来指导生成器生成更加逼真的文本。MaskGAN 的单步reward $r_t$ 设置为了 log probablity，也就是：</p>
 <p>$$ r_t = log D_\phi(\hat{x_t}|\hat{x}_{0:T}, \ \textbf{m(x)})$$</p>
-<p>总的 reward $R_t$ 则为这一时刻到句子结束 T 时之和：</p>
-<p>$R_t = \sum_{s=t}^T \gamma ^s r_s$</p>
+<p>总的 reward $R_t​$ 则为这一时刻到句子结束 T 时之和：</p>
+<p>$$R_t = \sum_{s=t}^T \gamma ^s r_s$$</p>
 <p>我们通过减去一个 critic 产生的 baseline $b_t$ 来降低 variance，更新梯度的计算就变成：</p>
 <p><img src="/img/ac_gradient.png" alt="Gradient"></p>
 <p>其中 $b_t$ 由一个 NN 来拟合，MaskGAN 选择使用  Discriminator 的前半部分来估计 $b_t$，详细说明需要结合代码来进行。</p>
@@ -451,10 +467,6 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">随笔</a>
               </li>
              
@@ -467,11 +479,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
+                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Machine Learning</a>
+                <a href="javascript:void(0)" class="js-tag color4">NLP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -483,7 +499,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">NLP</a>
+                <a href="javascript:void(0)" class="js-tag color2">Machine Learning</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -492,6 +508,10 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">C</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -507,10 +527,6 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">C</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">ACM</a>
               </li>
              
@@ -523,19 +539,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Java</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">GAN</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Python</a>
+                <a href="javascript:void(0)" class="js-tag color5">Java</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">LaTeX</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Python</a>
               </li>
              
               <li class="article-tag-list-item">
