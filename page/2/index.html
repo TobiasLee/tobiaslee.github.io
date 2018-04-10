@@ -160,6 +160,90 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-Thoughts-about-adversarial-training-methods-in-NLP" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/12/10/Thoughts-about-adversarial-training-methods-in-NLP/">关于 Adversarial Training 在 NLP 的一些思考</a>
+    </h1>
+  
+
+        
+        <a href="/2017/12/10/Thoughts-about-adversarial-training-methods-in-NLP/" class="archive-article-date">
+  	<time datetime="2017-12-10T07:40:48.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-12-10</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>围绕 ICLR 2017 的这篇 Adversarial Training Methods for Semi-Supervised Text Classification，谈谈关于对抗训练在自然语言处理领域应用的一些想法。</p>
+<hr>
+<p>这篇文章的核心思想：通过 Goodfellow 提出的 Fast Gradient Sign Method (FGSM) 来计算出扰动，添加到到连续的 Word Embedding 上产生 X_adv, 再一次喂给 model，得到 Adverarial Loss，通过和原来的 Classification Loss（Cross-Entropy）做一个相加得到新的 Loss。通过优化这个 Loss，能够在文本分类任务上取得超过目前 State-of-art 的表现。<br>
+        
+          <a class="article-more-a" href="/2017/12/10/Thoughts-about-adversarial-training-methods-in-NLP/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Deep Learning</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">NLP</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+
+      
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/12/10/Thoughts-about-adversarial-training-methods-in-NLP/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Batch-Normalization-Learning-Notes" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -283,11 +367,11 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">NLP</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">TensorFlow</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">TensorFlow</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">NLP</a>
         		</li>
       		
 		</ul>
@@ -793,15 +877,15 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">NLP</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Machine Learning</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">TensorFlow</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">NLP</a>
         		</li>
       		
 		</ul>
@@ -900,96 +984,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2017/08/15/Attention-Mechanism-学习笔记/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Text-Classification代码学习笔记" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/08/07/Text-Classification代码学习笔记/">Text Classification 代码学习笔记</a>
-    </h1>
-  
-
-        
-        <a href="/2017/08/07/Text-Classification代码学习笔记/" class="archive-article-date">
-  	<time datetime="2017-08-07T12:12:44.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-08-07</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>找到了 TensorFlow 官方的 Text Classification 的代码来学习研究，<a href="https://github.com/tensorflow/tensorflow/blob/master/tensorflow/examples/learn/text_classification.py" target="_blank" rel="noopener">GitHub地址</a>。官方有给了四个代码，用 <strong>CNN</strong> 和 <strong>RNN</strong> 分别对<strong>字符</strong>和<strong>词语</strong>做文本分类。这里的数据主要是 <code>dbpedia</code> 的数据，数据的描述是这样的:</p>
-<blockquote>
-<p>The DBpedia ontology classification dataset is constructed by picking 14 non-overlapping classes from DBpedia 2014. They are listed in classes.txt. From each of thse 14 ontology classes, we randomly choose 40,000 training samples and 5,000 testing samples. Therefore, the total size of the training dataset is 560,000 and testing dataset 70,000.</p>
-</blockquote>
-<p>也就是说我们有 14 个类别的文本数据，然后我们要做的就是给每一段文本进行分类。</p>
-        
-          <a class="article-more-a" href="/2017/08/07/Text-Classification代码学习笔记/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">NLP</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Machine Learning</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">TensorFlow</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-
-      
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/08/07/Text-Classification代码学习笔记/">展开全文 >></a>
         </p>
       
 
@@ -1143,10 +1137,6 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Deep Learning</a>
               </li>
              
@@ -1159,7 +1149,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">NLP</a>
+                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1167,31 +1157,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Android</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">自定义View</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Machine Learning</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">C</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1203,7 +1173,35 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">NLP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">ACM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Android</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">自定义View</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1212,10 +1210,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">OpenGL</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1235,11 +1229,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">爬虫</a>
+                <a href="javascript:void(0)" class="js-tag color4">Retrofit</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Retrofit</a>
+                <a href="javascript:void(0)" class="js-tag color3">爬虫</a>
               </li>
              
               <li class="article-tag-list-item">
