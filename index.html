@@ -176,16 +176,16 @@
       
         <p><a href="(https://link.zhihu.com/?target=https%3A//arxiv.org/abs/1803.04831">IndRNN</a> 是最近新提出的一种 RNN 架构，作者认为其能够更好地解决 gradient vanishing / exploding 以及具有更好的解释性。</p>
 <h2 id="从-RNN-到-IndRNN"><a href="#从-RNN-到-IndRNN" class="headerlink" title="从 RNN 到 IndRNN"></a>从 RNN 到 IndRNN</h2><p>首先来复习一下 RNN t 时刻的 hidden state 的计算公式：</p>
-<p><img src="../img/vanilla_rnn_formula.png" alt="Vanilla RNN Formula"></p>
+<p><img src="/img/vanilla_rnn_formula.png" alt="Vanilla RNN Formula"></p>
 <p>这个公式相信都是了然于心，如果画成图的话，就是下面这个样子：</p>
-<p><img src="../img/RNN-rolled.png" alt="RNN rolled"></p>
+<p><img src="/img/RNN-rolled.png" alt="RNN rolled"></p>
 <p><em>图片引用自 <a href="http://colah.github.io/posts/2015-08-Understanding-LSTMs/" target="_blank" rel="noopener">colah’blog</a></em></p>
 <p>但是，请问一下自己，这个 A 里面是怎么样的一个结构？如果不能一下子回答出来，那么你可能和我一样，从来都不曾真正的理解 RNN。</p>
 <p>在这个 RNN cell 的内部单元，其连接的状态是这样的：</p>
-<p><img src="../img/vanilla_rnn.png" alt="Vanilla RNN"></p>
+<p><img src="/img/vanilla_rnn.png" alt="Vanilla RNN"></p>
 <p>注意：<strong>$h_{t-1}$ 和 $h_t$ 之间是一个全连接的关系</strong>。 </p>
 <p>而 IndRNN 的计算公式呢，做了一个小小的修改：</p>
-<p><img src="../img/ind_rnn_formula.png" alt="IndRNN Formula"></p>
+<p><img src="/img/ind_rnn_formula.png" alt="IndRNN Formula"></p>
 <p>从矩阵乘变成了 haramard dot，也就是 element wise 的乘法，能给 RNN 带来什么样的变化呢？</p>
 <p><img src="../img/ind_rnn.jpg" alt="IndRNN"></p>
 <p>全连接变成了单个神经元自身之间的传递，这带来两个变化：</p>
@@ -1339,6 +1339,10 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Deep Learning</a>
               </li>
              
@@ -1347,15 +1351,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1363,11 +1359,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Machine Learning</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1379,11 +1371,23 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
+                <a href="javascript:void(0)" class="js-tag color2">Machine Learning</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">C</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1392,10 +1396,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">栈</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">C</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1411,11 +1411,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Java</a>
+                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
+                <a href="javascript:void(0)" class="js-tag color5">Java</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1435,11 +1435,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">爬虫</a>
+                <a href="javascript:void(0)" class="js-tag color4">JVM</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">JVM</a>
+                <a href="javascript:void(0)" class="js-tag color3">爬虫</a>
               </li>
              
               <li class="article-tag-list-item">
