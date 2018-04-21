@@ -187,7 +187,7 @@
 <p>而 IndRNN 的计算公式呢，做了一个小小的修改：</p>
 <p><img src="/img/ind_rnn_formula.png" alt="IndRNN Formula"></p>
 <p>从矩阵乘变成了 haramard dot，也就是 element wise 的乘法，能给 RNN 带来什么样的变化呢？</p>
-<p><img src="../img/ind_rnn.jpg" alt="IndRNN"></p>
+<p><img src="/img/ind_rnn.jpg" alt="IndRNN"></p>
 <p>全连接变成了单个神经元自身之间的传递，这带来两个变化：</p>
 <ol>
 <li>更好地解决梯度爆炸 / 消失</li>
@@ -438,6 +438,10 @@
         		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">GAN</a>
         		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">论文笔记</a>
+        		</li>
       		
 		</ul>
 	</div>
@@ -506,13 +510,13 @@
 </blockquote>
 <p>参数的微小改变不能对结果产生影响，或者说影响的方向也不对，这就导致 Discriminator 的梯度回传变得没有意义。再进一步的关于 GAN for NLP 的讨论，建议可以阅读胡杨的<a href="https://zhuanlan.zhihu.com/p/29168803" target="_blank" rel="noopener">文章</a>。前面说的这些都是为了凸显 SeqGAN 这一工作的重要性，毕竟，GAN 在 NLP 上这么难搞，还能搞出来，肯定了不得。确实，<strong>SeqGAN 是了 RL + GAN 用于文本生成的一大创举</strong>，接下来，一睹风采。</p>
 <h2 id="Seq-GAN"><a href="#Seq-GAN" class="headerlink" title="Seq GAN"></a>Seq GAN</h2><p>Seq GAN 的模型很简洁：</p>
-<p><img src="./img/seqgan.png" alt="SeqGAN model"></p>
+<p><img src="/img/seqgan.png" alt="SeqGAN model"></p>
 <p>沿用 GAN 的架构， Generator 来生成文本和 Discriminator 来判别文本是真实的还是生成的，那么是怎么解决更新 Generator 参数的这个问题的呢？用 Policy Gradient！如果我们把 <strong>Generator 看成是一个 Agent，他在每一 time step 上生成的 word token 作为 action，此前生成的所有 tokens 作为 state</strong>，我们就可以设计一个 reward function 来指导 Generator 生成更真实的句子。因为 Discriminator 输出是真实句子的概率 0-1，直接拿来作为 reward，于是就有了下面的式子:</p>
 <p>$$ Q_{D_\phi}^{G_\theta}=(a = y_{T}, s= Y_{1:T-1} = D_{\phi}(Y_{1:T}))$$</p>
 <p>但是对于生成了一半的句子怎么评估其真实性呢？用蒙特卡洛（蒙特卡洛就是随机采样）搜索在一个 Generator 的拷贝上（为了避免搜索过程引入对梯度的影响）补全句子，然后再交给 Discriminator 评估。于是，完成的 Q function 如下：</p>
-<p><img src="./img/seqreward.png" alt="Q function"></p>
+<p><img src="/img/seqreward.png" alt="Q function"></p>
 <p>讲到这里，整个模型的架构已经讲完了，是不是很简单粗暴明了。接下来实作上还有一些小 tricks，文章的算法摘录如下：</p>
-<p><img src="./img/seq_algorithm.png" alt="SeqGAN Algorithm"></p>
+<p><img src="/img/seq_algorithm.png" alt="SeqGAN Algorithm"></p>
         
           <a class="article-more-a" href="/2018/03/11/SeqGAN/#more">more >></a>
         
@@ -541,6 +545,10 @@
       		 
         		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">GAN</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">论文笔记</a>
         		</li>
       		
 		</ul>
@@ -609,11 +617,11 @@
 </ol>
 <p>对于第一个问题，我们的解决方法是，根据每个 Agent 的每次 Action 进行参数的更新，也就是我们接下来要说的 Actor-Critic；第二个问题，也就是我们最好能够对所有的样本进行估计来计算我们的 reward（也就是 reward 的数学期望），以此来降低方差。</p>
 <p>具体地，我们可以采取以下几种 reward function:</p>
-<p><img src="./img/pg2.png" alt="Different Reward Function"></p>
+<p><img src="/img/pg2.png" alt="Different Reward Function"></p>
 <p><em>图源自知乎，详见 Reference</em></p>
 <p>第一种也就是最为普通的 reward function，各步的累加；第二种则是不考虑先前步的 reward，这里有一个 casualty 的性质，即今天的参数更新是无法影响昨天以及之前获得的 reward的，因而可以只考虑今天之后的 reward；第三种则是加入了 baseline，在基准之上衡量 reward，能够更好地指示动作的好坏，基准一般会采取所有回合的 reward 均值。值得强调的是，这三种方式都是<strong>对 reward 的无偏估计 (unbiased)</strong>，但天上不会掉馅饼，尽管第二种第三种方式对第一种方式修改后 variance 有所降低，但整体的方差还是比较大的。</p>
 <p>而后面三种，则是希望通过<strong>再用一个 NN，来评估当前的状态能够获得 reward</strong>。这样的估计，必然是 biased 的，因为这个 NN 基本不可能是 Perfect 的；当然，这样做的好处就能够降低 variance，所以这是一个 trade off 的问题，后面三种的详细式子如下：</p>
-<p><img src="./img/value_fit.png" alt="Value Functions"></p>
+<p><img src="/img/value_fit.png" alt="Value Functions"></p>
 <p>Q 是对当前状态 $s_t$和采取的动作$a_t$能够获得的 reward 进行估计；而 V 仅仅考虑对状态 $s_t$ 能获得的 reward，也就是对于所有 $a_t$ 的 Q 的数学期望；A 又称 Advantage Function，是衡量 $a_t$ 好坏的一个指标，从 $ A= Q-V$ 就能看出来。那么问题来了，这三个函数彼此相互关联，我们用 Neural Network(NN) 来拟合哪一个呢？</p>
 <p>答案其实也已经在上面的那种图里了，通过一些约等式，我们能够通过拟合 $V^{\pi}(s)$ 来得到 Advantage Function，实际应用中主要就是采取 Advantage Function 作为对当前所采取动作的评估函数。</p>
 <h2 id="Actor-Critic-Network"><a href="#Actor-Critic-Network" class="headerlink" title="Actor Critic Network"></a>Actor Critic Network</h2><p>上面的 Advantage Function 起到的作用类似一个教练（或者说是批评家），对于我们的 Actor 当前的状态和采取的动作做出指示，帮助他更好的达到目标，这也就是 Actor-Critic 算法的名字由来。我个人对 AC 算法的认识就是基于对 Policy Gradient 的优化而得到的，Actor 就是我们之前谈到的 Policy，其核心就在于<strong>用 NN 来扮演这个 Critic 的角色</strong>。</p>
@@ -622,15 +630,15 @@
 <li>Monte Carlo evaluation：蒙特卡洛搜索，就是对未来可能采取的动作进行搜索，计算获得的 reward</li>
 <li>通过 V 本身来计算，获得的 reward 等于当前这一动作能获得的 r 和下一状态用 V 估计值之和，即 $ reward = r(s_t, a_t) + V (s_{t+1})$ </li>
 </ol>
-<p><img src="./img/target.png" alt="Two methods of evaluation of V"></p>
+<p><img src="/img/target.png" alt="Two methods of evaluation of V"></p>
 <p>一般我们都会采用第二种方法，也称为 <code>bootstrapped estimate</code>，由此，我们就可以构造出相应的 training data，用 NN 解决一个 regression 问题：</p>
-<p><img src="./img/critic.png" alt="Regression Problem">   </p>
+<p><img src="/img/critic.png" alt="Regression Problem">   </p>
 <h2 id="Program"><a href="#Program" class="headerlink" title="Program"></a>Program</h2><p>又到了喜闻乐见的代码实现部分，其实也简单，两个 NN 嘛，有点 GAN 的感觉。实际上，有论文将 Actor 和 Critic 两个 NN 整合成一个 NN，并且做出了不错的效果，好处就是能够共享特征(shared features)，不好的地方就是，训练可能不是很稳定。这次就不贴完整代码，上一篇 Blog 和这篇以及后续 RL 相关的代码都会上传到 <a href="https://github.com/TobiasLee/ReinforcementLearningPractice" target="_blank" rel="noopener">GitHub</a> 上，这里只讲解部分核心的函数。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Actor 类</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Actor</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, sess, n_features, n_actions, lr=<span class="number">1e-3</span>)</span>:</span> </span><br><span class="line">	<span class="comment"># 相应的初始化，创建 placeholder</span></span><br><span class="line">	<span class="comment"># 构建全连接层</span></span><br><span class="line">	<span class="comment"># 设置 Optimizer 等</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">learn</span><span class="params">(self, s, a, td)</span>:</span></span><br><span class="line">     <span class="comment"># 根据 state, action, td error(即 Advantage) 更新参数</span></span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">choose_action</span><span class="params">(self, s)</span>:</span> <span class="comment"># choose action based on the state</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Critic 类</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Critic</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, sess, n_features, lr=<span class="number">1e-2</span>, gamma=<span class="number">0.99</span>)</span>:</span></span><br><span class="line">        <span class="comment"># 初始化 </span></span><br><span class="line">	    <span class="comment"># 构建 NN，</span></span><br><span class="line">       </span><br><span class="line">        <span class="keyword">with</span> tf.variable_scope(<span class="string">"td_square_error"</span>): <span class="comment"># Regression problem </span></span><br><span class="line">            <span class="comment"># 这里我们同样加入了 discount factor</span></span><br><span class="line">            self.td_error = self.r + gamma * self.v_ - self.v</span><br><span class="line">            <span class="comment"># 用 square 作为 loss function</span></span><br><span class="line">            self.loss = tf.square(self.td_error)</span><br><span class="line">        <span class="comment"># 设置 Optimizer </span></span><br><span class="line">        <span class="keyword">with</span> tf.variable_scope(<span class="string">"train"</span>):</span><br><span class="line">            self.train_op = tf.train.AdamOptimizer(lr).minimize(self.loss)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">learn_state</span><span class="params">(self, s, r, s_)</span>:</span></span><br><span class="line">        <span class="comment"># advantage function A = r + V_t+1 - V_t</span></span><br><span class="line">        s, s_ = s[np.newaxis, :], s_[np.newaxis, :]</span><br><span class="line">        v_ = self.sess.run(self.v, &#123;self.s: s_&#125;) <span class="comment"># v_ : V_t+1</span></span><br><span class="line">        <span class="comment"># 根据 training data 更新 Critic</span></span><br><span class="line">        td_error, _ = self.sess.run(</span><br><span class="line">            [self.td_error, self.train_op],</span><br><span class="line">            &#123;self.s: s,self.r: r,self.v_: v_&#125;)</span><br><span class="line">        <span class="keyword">return</span> td_error</span><br></pre></td></tr></table></figure>
 <p>训练部分，和 Policy Gradient 大同小异：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">sess = tf.Session()</span><br><span class="line"><span class="comment"># 创建 Actor Critic 实例</span></span><br><span class="line">actor = Actor(sess, n_features=N_F, n_actions=N_A, lr=LR_A)</span><br><span class="line">critic = Critic(sess, n_features=N_F, gamma=GAMMA)</span><br><span class="line"></span><br><span class="line">sess.run(tf.global_variables_initializer())</span><br><span class="line"><span class="comment"># 训练 MAX_EPISODE </span></span><br><span class="line"><span class="keyword">for</span> i_episode <span class="keyword">in</span> range(MAX_EPISODE):</span><br><span class="line">    s = env.reset()</span><br><span class="line">    t = <span class="number">0</span></span><br><span class="line">    track_r = list()</span><br><span class="line">    <span class="keyword">while</span> <span class="keyword">True</span>:</span><br><span class="line">        <span class="keyword">if</span> RENDER: env.render()</span><br><span class="line">        a = actor.choose_action(s)</span><br><span class="line">        s_, r, done, info = env.step(a)</span><br><span class="line">        <span class="keyword">if</span> done:</span><br><span class="line">            r = <span class="number">-20</span></span><br><span class="line">        track_r.append(r)</span><br><span class="line">        <span class="comment"># critic learn td_error</span></span><br><span class="line">        td_error = critic.learn_state(s, r, s_)</span><br><span class="line">        <span class="comment"># actor update behave based on the td_error</span></span><br><span class="line">        actor.learn(s, a, td_error)</span><br><span class="line"></span><br><span class="line">        s = s_ <span class="comment"># update state</span></span><br><span class="line">        t += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> done:</span><br><span class="line">            <span class="comment"># if done or t &gt;= MAX_EP_STEPS:</span></span><br><span class="line">            ep_rs_sum = sum(track_r)</span><br><span class="line">            <span class="keyword">if</span> <span class="string">"running_reward"</span> <span class="keyword">not</span> <span class="keyword">in</span> globals():</span><br><span class="line">                running_reward = ep_rs_sum</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                running_reward = running_reward * <span class="number">0.95</span> + ep_rs_sum*<span class="number">0.05</span></span><br><span class="line">            <span class="keyword">if</span> running_reward &gt; DISPLAY_REWARD_THRESHOLD: <span class="comment"># render the game</span></span><br><span class="line">                RENDER = <span class="keyword">True</span></span><br><span class="line">            print(<span class="string">"episode :"</span>, i_episode, <span class="string">" reward: "</span>, int(running_reward))</span><br><span class="line">            <span class="keyword">break</span></span><br></pre></td></tr></table></figure>
 <p>最后，我们来看一下结果：</p>
-<p><img src="./img/ret.gif" alt="Result"></p>
+<p><img src="/img/ret.gif" alt="Result"></p>
 <p>一个很有趣的现象就是，第一次玩出界了，第二次能够在快出界的时候纠偏回来，性能确实比简单的 Policy Gradient 好很多。不过，这个训练似乎并不收敛，跑了 200 epoch 之后又会因为一次错误的尝试而导致后面一系列的错误… 果不其然是玄学啊。</p>
 <h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><p><a href="https://zhuanlan.zhihu.com/p/29486661" target="_blank" rel="noopener">知乎- Actor-Critic 算法小结</a></p>
 <p><a href="https://www.youtube.com/watch?v=tWNpiNzWuO8&amp;index=4&amp;list=PLkFD6_40KJIznC9CDbVTjAF2oyt8_VAe3" target="_blank" rel="noopener">CS294-112 9/6/17</a></p>
@@ -1359,15 +1367,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Android</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">自定义View</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">

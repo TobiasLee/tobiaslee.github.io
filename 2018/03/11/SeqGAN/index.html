@@ -9,20 +9,20 @@
   <title>SeqGAN —— GAN + RL +NLP | Stay Hungry,Stay Foolish.</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="SeqGAN 是第一篇用 GAN 在 NLP 上做出一些成果的 model，Lantao Yu 的 CV 看的我也是羡慕不已，想着同龄人已经有如此出色的成绩，不由得感觉自己还是太菜了。 GAN for NLP先前写过一篇文章，关于 Adversarial Training 在 NLP 的一些思考，Adversarial Training 算是 GAN 的源头，而 GAN 算是其在生成器领域的一大成">
-<meta name="keywords" content="Deep Learning,Reinforcement Learning,NLP,GAN">
+<meta name="keywords" content="Deep Learning,Reinforcement Learning,NLP,GAN,论文笔记">
 <meta property="og:type" content="article">
 <meta property="og:title" content="SeqGAN —— GAN + RL +NLP">
 <meta property="og:url" content="http://yoursite.com/2018/03/11/SeqGAN/index.html">
 <meta property="og:site_name" content="Stay Hungry,Stay Foolish.">
 <meta property="og:description" content="SeqGAN 是第一篇用 GAN 在 NLP 上做出一些成果的 model，Lantao Yu 的 CV 看的我也是羡慕不已，想着同龄人已经有如此出色的成绩，不由得感觉自己还是太菜了。 GAN for NLP先前写过一篇文章，关于 Adversarial Training 在 NLP 的一些思考，Adversarial Training 算是 GAN 的源头，而 GAN 算是其在生成器领域的一大成">
-<meta property="og:image" content="http://yoursite.com/2018/03/11/SeqGAN/img/seqgan.png">
-<meta property="og:image" content="http://yoursite.com/2018/03/11/SeqGAN/img/seqreward.png">
-<meta property="og:image" content="http://yoursite.com/2018/03/11/SeqGAN/img/seq_algorithm.png">
-<meta property="og:updated_time" content="2018-03-13T09:27:11.792Z">
+<meta property="og:image" content="http://yoursite.com/img/seqgan.png">
+<meta property="og:image" content="http://yoursite.com/img/seqreward.png">
+<meta property="og:image" content="http://yoursite.com/img/seq_algorithm.png">
+<meta property="og:updated_time" content="2018-04-19T15:25:05.842Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="SeqGAN —— GAN + RL +NLP">
 <meta name="twitter:description" content="SeqGAN 是第一篇用 GAN 在 NLP 上做出一些成果的 model，Lantao Yu 的 CV 看的我也是羡慕不已，想着同龄人已经有如此出色的成绩，不由得感觉自己还是太菜了。 GAN for NLP先前写过一篇文章，关于 Adversarial Training 在 NLP 的一些思考，Adversarial Training 算是 GAN 的源头，而 GAN 算是其在生成器领域的一大成">
-<meta name="twitter:image" content="http://yoursite.com/2018/03/11/SeqGAN/img/seqgan.png">
+<meta name="twitter:image" content="http://yoursite.com/img/seqgan.png">
   
     <link rel="alternative" href="/atom.xml" title="Stay Hungry,Stay Foolish." type="application/atom+xml">
   
@@ -186,13 +186,13 @@
 </blockquote>
 <p>参数的微小改变不能对结果产生影响，或者说影响的方向也不对，这就导致 Discriminator 的梯度回传变得没有意义。再进一步的关于 GAN for NLP 的讨论，建议可以阅读胡杨的<a href="https://zhuanlan.zhihu.com/p/29168803" target="_blank" rel="noopener">文章</a>。前面说的这些都是为了凸显 SeqGAN 这一工作的重要性，毕竟，GAN 在 NLP 上这么难搞，还能搞出来，肯定了不得。确实，<strong>SeqGAN 是了 RL + GAN 用于文本生成的一大创举</strong>，接下来，一睹风采。</p>
 <h2 id="Seq-GAN"><a href="#Seq-GAN" class="headerlink" title="Seq GAN"></a>Seq GAN</h2><p>Seq GAN 的模型很简洁：</p>
-<p><img src="./img/seqgan.png" alt="SeqGAN model"></p>
+<p><img src="/img/seqgan.png" alt="SeqGAN model"></p>
 <p>沿用 GAN 的架构， Generator 来生成文本和 Discriminator 来判别文本是真实的还是生成的，那么是怎么解决更新 Generator 参数的这个问题的呢？用 Policy Gradient！如果我们把 <strong>Generator 看成是一个 Agent，他在每一 time step 上生成的 word token 作为 action，此前生成的所有 tokens 作为 state</strong>，我们就可以设计一个 reward function 来指导 Generator 生成更真实的句子。因为 Discriminator 输出是真实句子的概率 0-1，直接拿来作为 reward，于是就有了下面的式子:</p>
 <p>$$ Q_{D_\phi}^{G_\theta}=(a = y_{T}, s= Y_{1:T-1} = D_{\phi}(Y_{1:T}))$$</p>
 <p>但是对于生成了一半的句子怎么评估其真实性呢？用蒙特卡洛（蒙特卡洛就是随机采样）搜索在一个 Generator 的拷贝上（为了避免搜索过程引入对梯度的影响）补全句子，然后再交给 Discriminator 评估。于是，完成的 Q function 如下：</p>
-<p><img src="./img/seqreward.png" alt="Q function"></p>
+<p><img src="/img/seqreward.png" alt="Q function"></p>
 <p>讲到这里，整个模型的架构已经讲完了，是不是很简单粗暴明了。接下来实作上还有一些小 tricks，文章的算法摘录如下：</p>
-<p><img src="./img/seq_algorithm.png" alt="SeqGAN Algorithm"></p>
+<p><img src="/img/seq_algorithm.png" alt="SeqGAN Algorithm"></p>
 <a id="more"></a>
 <h3 id="Tricks"><a href="#Tricks" class="headerlink" title="Tricks"></a>Tricks</h3><p>有些经验性的东西能 work 但是说不出个由头，也就成了所谓的玄学，文章用到的一些 tricks 如下：</p>
 <ol>
@@ -267,6 +267,10 @@
       		 
         		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">GAN</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">论文笔记</a>
         		</li>
       		
 		</ul>
@@ -520,15 +524,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Android</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">自定义View</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">

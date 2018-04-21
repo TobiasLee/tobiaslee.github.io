@@ -19,12 +19,12 @@
 <meta property="og:image" content="http://yoursite.com/img/RNN-rolled.png">
 <meta property="og:image" content="http://yoursite.com/img/vanilla_rnn.png">
 <meta property="og:image" content="http://yoursite.com/img/ind_rnn_formula.png">
-<meta property="og:image" content="http://yoursite.com/2018/04/19/img/ind_rnn.jpg">
+<meta property="og:image" content="http://yoursite.com/img/ind_rnn.jpg">
 <meta property="og:image" content="http://yoursite.com/img/compare.png">
 <meta property="og:image" content="http://yoursite.com/img/gru.png">
 <meta property="og:image" content="http://yoursite.com/img/grad_ind.png">
 <meta property="og:image" content="http://yoursite.com/img/deep_rnn.png">
-<meta property="og:updated_time" content="2018-04-19T15:23:33.698Z">
+<meta property="og:updated_time" content="2018-04-21T01:57:05.681Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="从 IndRNN 来回顾 RNN 模型">
 <meta name="twitter:description" content="IndRNN 是最近新提出的一种 RNN 架构，作者认为其能够更好地解决 gradient vanishing / exploding 以及具有更好的解释性。 从 RNN 到 IndRNN首先来复习一下 RNN t 时刻的 hidden state 的计算公式：  这个公式相信都是了然于心，如果画成图的话，就是下面这个样子：  图片引用自 colah’blog 但是，请问一下自己，这个 A 里面是">
@@ -197,7 +197,7 @@
 <p>而 IndRNN 的计算公式呢，做了一个小小的修改：</p>
 <p><img src="/img/ind_rnn_formula.png" alt="IndRNN Formula"></p>
 <p>从矩阵乘变成了 haramard dot，也就是 element wise 的乘法，能给 RNN 带来什么样的变化呢？</p>
-<p><img src="../img/ind_rnn.jpg" alt="IndRNN"></p>
+<p><img src="/img/ind_rnn.jpg" alt="IndRNN"></p>
 <p>全连接变成了单个神经元自身之间的传递，这带来两个变化：</p>
 <ol>
 <li>更好地解决梯度爆炸 / 消失</li>
@@ -514,15 +514,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Android</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">自定义View</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">
