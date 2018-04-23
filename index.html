@@ -190,7 +190,7 @@
 <h2 id="MaskGAN"><a href="#MaskGAN" class="headerlink" title="MaskGAN"></a>MaskGAN</h2><p>MaskGAN 的思路则是从<strong>生成器端</strong>来为生成提供更多的信息，具体的内容也可以参考我的这篇 <a href="http://tobiaslee.top/2018/04/01/MaskGAN-Notes/" target="_blank" rel="noopener">MaskGAN 学习笔记</a>。Masked Token 给 GAN 提供了额外的信息窗口，通过使用 Seq2Seq 架构来将进行生成，将提供的信息整合进生成过程之中，获取更好的结果。另外一点，Mask GAN 采用了 Actor-Critic 来替换 Policy Gradient，相比 Monte Carlo，能够较好地对 reward function 做一个拟合。</p>
 <h2 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h2><p>这四篇文章看下来，可以发现，SeqGAN 提出了这样一个框架之后，主要工作的方向有两个：</p>
 <ol>
-<li>提高生成文本的质量：我任何，将人类的语言学知识合理地整合进生成的过程，是提高文本生成质量的核心。现有的工作大致是从两个端入手，生成器端通过 Masked Token，比较粗暴地灌进 Generator，Discriminator 端利用句子地相似性，隐式地给判别器端输入语言的知识。<strong>二者如果能够做一个结合，可能是一个很有力的架构</strong>。</li>
+<li>提高生成文本的质量：我认为，将人类的语言学知识合理地整合进生成的过程，是提高文本生成质量的核心。现有的工作大致是从两个端入手，生成器端通过 Masked Token，比较粗暴地灌进 Generator，Discriminator 端利用句子地相似性，隐式地给判别器端输入语言的知识。<strong>二者如果能够做一个结合，可能是一个很有力的架构</strong>。</li>
 <li>短文本 -&gt; 长文本：想要生成长文本，一点是 LeakGAN 中提到的，Discriminator 的指导需要更加 informative；另外一点我觉得和 RNN 的 Long-dependency 的能力也息息相关，LSTM 虽然说能够解决长程依赖的一部分问题，但想要让机器写小说，那就不是 LSTM 能够 handle 的了。LeakGAN 能够把 SeqGAN 的长度由 20 提升到 40左右，但真的到作曲、写小说这种长度，可能需要一个新的框架。</li>
 <li>解决 Mode Collapse 问题：这个问题可能是前两个问题解决之后，才需要着手考虑的一个问题，即使是我们人类本身，也有着这方面的局限性。比如你的文风事实上就是被你所读过的文章所决定地，虽然说会有一些神来之笔，但我认为那也是早就植根于我们大脑深处的记忆。想要做到真正地创作而不是简单地重复，任重而道远。</li>
 </ol>
@@ -1353,15 +1353,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">NLP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Machine Learning</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1373,23 +1373,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Machine Learning</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">NLP</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">C</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1401,11 +1393,23 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">C</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">GAN</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
+                <a href="javascript:void(0)" class="js-tag color5">Java</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1417,14 +1421,6 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Java</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">LaTeX</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">RNN</a>
               </li>
              
@@ -1433,11 +1429,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Python</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">JVM</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Python</a>
+                <a href="javascript:void(0)" class="js-tag color1">LaTeX</a>
               </li>
              
               <li class="article-tag-list-item">
