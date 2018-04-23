@@ -6,19 +6,24 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>TensorFlow初步 | Stay Hungry,Stay Foolish.</title>
+  <title>GAN in NLP Notes | Stay Hungry,Stay Foolish.</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="其实这是一篇 Google 官网 TensorFlow Tutorial 的学习笔记，主要侧重记录使用 TensorFlow 框架的一个流程，细节暂且按下不表。 首先是导入 TensorFlow 以及准备数据 12345import tensorflow as tf # 约定的简写from tensorflow.examples.tutorials.mnist import input_data#">
-<meta name="keywords" content="Machine Learning,TensorFlow">
+  <meta name="description" content="最近在感兴趣的一个方向是文本生成，读了以 SeqGAN 为代表的一系列通过 RL 手段来做生成的文章，做一下简单的梳理。 SeqGAN算的上是开山之作，具体的解读可以看我之前的一篇文章 SeqGAN – GAN + RL + NLP，其通过引入强化学习中的 Policy Gradient 来解决因为离散 token 生成前采样动作造成的不可微。后面的文章也都是基于这个框架来进行深一步地探索。Seq">
+<meta name="keywords" content="Deep Learning,NLP,GAN">
 <meta property="og:type" content="article">
-<meta property="og:title" content="TensorFlow初步">
-<meta property="og:url" content="http://yoursite.com/2017/08/01/TensorFlow初步/index.html">
+<meta property="og:title" content="GAN in NLP Notes">
+<meta property="og:url" content="http://yoursite.com/2018/04/22/GAN-in-NLP-Notes/index.html">
 <meta property="og:site_name" content="Stay Hungry,Stay Foolish.">
-<meta property="og:description" content="其实这是一篇 Google 官网 TensorFlow Tutorial 的学习笔记，主要侧重记录使用 TensorFlow 框架的一个流程，细节暂且按下不表。 首先是导入 TensorFlow 以及准备数据 12345import tensorflow as tf # 约定的简写from tensorflow.examples.tutorials.mnist import input_data#">
-<meta property="og:updated_time" content="2017-08-15T14:58:45.000Z">
+<meta property="og:description" content="最近在感兴趣的一个方向是文本生成，读了以 SeqGAN 为代表的一系列通过 RL 手段来做生成的文章，做一下简单的梳理。 SeqGAN算的上是开山之作，具体的解读可以看我之前的一篇文章 SeqGAN – GAN + RL + NLP，其通过引入强化学习中的 Policy Gradient 来解决因为离散 token 生成前采样动作造成的不可微。后面的文章也都是基于这个框架来进行深一步地探索。Seq">
+<meta property="og:image" content="http://yoursite.com/img/leakgan.png">
+<meta property="og:image" content="http://yoursite.com/img/cosine.png">
+<meta property="og:image" content="http://yoursite.com/img/rank_score.png">
+<meta property="og:image" content="http://yoursite.com/img/rank_gan.png">
+<meta property="og:updated_time" content="2018-04-23T12:38:51.120Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="TensorFlow初步">
-<meta name="twitter:description" content="其实这是一篇 Google 官网 TensorFlow Tutorial 的学习笔记，主要侧重记录使用 TensorFlow 框架的一个流程，细节暂且按下不表。 首先是导入 TensorFlow 以及准备数据 12345import tensorflow as tf # 约定的简写from tensorflow.examples.tutorials.mnist import input_data#">
+<meta name="twitter:title" content="GAN in NLP Notes">
+<meta name="twitter:description" content="最近在感兴趣的一个方向是文本生成，读了以 SeqGAN 为代表的一系列通过 RL 手段来做生成的文章，做一下简单的梳理。 SeqGAN算的上是开山之作，具体的解读可以看我之前的一篇文章 SeqGAN – GAN + RL + NLP，其通过引入强化学习中的 Policy Gradient 来解决因为离散 token 生成前采样动作造成的不可微。后面的文章也都是基于这个框架来进行深一步地探索。Seq">
+<meta name="twitter:image" content="http://yoursite.com/img/leakgan.png">
   
     <link rel="alternative" href="/atom.xml" title="Stay Hungry,Stay Foolish." type="application/atom+xml">
   
@@ -154,66 +159,46 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-TensorFlow初步" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-GAN-in-NLP-Notes" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      TensorFlow初步
+      GAN in NLP Notes
     </h1>
   
 
         
-        <a href="/2017/08/01/TensorFlow初步/" class="archive-article-date">
-  	<time datetime="2017-08-01T11:13:04.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-08-01</time>
+        <a href="/2018/04/22/GAN-in-NLP-Notes/" class="archive-article-date">
+  	<time datetime="2018-04-22T14:16:25.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-22</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>其实这是一篇 Google 官网 TensorFlow Tutorial 的学习笔记，主要侧重记录使用 TensorFlow 框架的一个流程，细节暂且按下不表。</p>
-<p>首先是导入 TensorFlow 以及准备数据</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf <span class="comment"># 约定的简写</span></span><br><span class="line"><span class="keyword">from</span> tensorflow.examples.tutorials.mnist <span class="keyword">import</span> input_data</span><br><span class="line"></span><br><span class="line"><span class="comment"># 准备mnist数据集</span></span><br><span class="line">mnist = input_data.read_data_sets(<span class="string">'MNIST_data'</span>, one_hot=<span class="keyword">True</span>)</span><br></pre></td></tr></table></figure>
-<p>提一下 <code>one hot encoding</code>，就是一个由 0/1 组成的向量来表示的 label，如果说数字是“0”，那么对应的 label 就是[1,0,0,…,0]，如果是“1”，那么就是[0,1,0,…,0]</p>
-<p>这篇教程里使用了两个模型，一个是线性的“Wx+b”，还有一个则是CNN，因为主要侧重使用的结构以及我对CNN不是很熟悉（后者才是主要原因），所以这篇就只介绍第一种模型。<br><a id="more"></a></p>
-<p>然后就是使用 TensorFlow 的主体框架了。</p>
-<p>首先是规定我们的输入<code>X，</code>以及对应的 label <code>y</code></p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># placeholder 占位符 等待外部传进来的变量</span></span><br><span class="line">x = tf.placeholder(tf.float32, [<span class="keyword">None</span>, <span class="number">784</span>])</span><br><span class="line">y_ = tf.placeholder(tf.float32, [<span class="keyword">None</span>, <span class="number">10</span>])</span><br></pre></td></tr></table></figure>
-<p>传入的两个参数分别是</p>
-<p><code>dtype</code>：数据的类型，多是<code>tf.float32</code></p>
-<p><code>shape</code>：数据的形状，因为输入是一张 <code>28*28</code>的图片，我们将它展开成一个<code>1*784</code>的向量，输出则是经过 <code>one-hot encoding</code> 的十维的向量。前面的一个参数 <code>None</code>代表可以是任何值，一般这里我们会填入数据集的大小<code>dataset_size</code>。因为这里我们并没有预先知道数据集的大小，所以就用了<code>None</code>。</p>
-<p>那么接下来就是要引入我们的需要学习的两个变量，<code>Weight</code> 和 <code>bias</code>，这里的大写的</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 设置变量 tf.Variable</span></span><br><span class="line"><span class="comment"># 权重 这里是一个784*10的矩阵 这样就可以在 W*x之后变成一个1*10的向量</span></span><br><span class="line">W = tf.Variable(tf.zeros([<span class="number">784</span>, <span class="number">10</span>]))</span><br><span class="line"><span class="comment"># 偏置 相当一个常数项</span></span><br><span class="line">b = tf.Variable(tf.zeros([<span class="number">10</span>]))</span><br></pre></td></tr></table></figure>
-<p><strong>注意</strong>：所有 TensorFlow 的变量在使用之前都需要<strong>初始化</strong></p>
-<p>初始化的过程是这样的：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sess = tf.Session()</span><br><span class="line">init = tf.global_variables_initializer()</span><br><span class="line">sess.run(init)</span><br><span class="line"><span class="comment"># 或者是 sess.run(tf.global_variables_initializer())</span></span><br></pre></td></tr></table></figure>
-<p>这里又出现了一个新的东西：<code>Session</code>。TensorFlow 后台的计算是交给C++去实现的（不然难道用Python？），Session就是 TensorFlow 与后台计算的连接。简单来说，我们只要把计算丢到Session里去，让它run就行。</p>
-<p>接下来，我们定义一下我们的输出</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 我们的模型输出 y = Wx + b</span></span><br><span class="line">y = tf.matmul(x, W) + b</span><br></pre></td></tr></table></figure>
-<p>然后是重要的<strong>loss function</strong>，这里我们用 cross_entropy （交叉熵）作为误差函数。这里就不赘述原理了，大致就是通过<code>softmax</code>函数将我们的输出变成一个概率，再选取0概最大的一项作为输出向量中的“1”，其他为“0”，然后我们再通过一个函数来衡量与标签的误差，最后求和取平均。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># cross_entropy</span></span><br><span class="line">cross_entropy = tf.reduce_mean(</span><br><span class="line">    tf.nn.softmax_cross_entropy_with_logits(labels=y_, logits=y))</span><br></pre></td></tr></table></figure>
-<p>这里我们使用 GradientDescent（梯度下降）算法来使我们的loss function最小，并且设置<code>0.05</code>的学习率。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 训练方法</span></span><br><span class="line">train_step = tf.train.GradientDescentOptimizer(<span class="number">0.05</span>).minimize(cross_entropy)</span><br></pre></td></tr></table></figure>
-<p>终于到了训练模型的时候了：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> _ <span class="keyword">in</span> range(<span class="number">1000</span>):</span><br><span class="line">    <span class="comment"># 我们每次训练100个数据 训练1000次</span></span><br><span class="line">    batch = mnist.train.next_batch(<span class="number">100</span>)</span><br><span class="line">    <span class="comment"># 注意后面的 feed_dict 我们传入我们的训练集数据 </span></span><br><span class="line">    sess.run(train_step, feed_dict=&#123;x: batch[<span class="number">0</span>], y_: batch[<span class="number">1</span>]&#125;)</span><br></pre></td></tr></table></figure>
-<p>然后就是评估模型准确度的时候了，比较输出的向量和测试集中的label。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">correct_prediction = tf.equal(tf.argmax(y, <span class="number">1</span>), tf.arg_max(y_, <span class="number">1</span>))</span><br><span class="line">accuracy = tf.reduce_mean(tf.cast(correct_prediction, dtype=tf.float32))</span><br><span class="line"><span class="comment"># 注意喂给它的数据是mnist中的测试集</span></span><br><span class="line">print(sess.run(accuracy, feed_dict=&#123;x: mnist.test.images, y_: mnist.test.labels&#125;))</span><br></pre></td></tr></table></figure>
-<p>然后看看我们的输出</p>
-<blockquote>
-<p>0.9214</p>
-</blockquote>
-<p>其实这个accuracy是很低的，在MNIST上，没到99%都是很差的，当然这也可以理解，因为我们用的是一个最简单Softmax Regression的模型，隔壁CNN一下子就能到达99.2%。</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>在TF上用最简单的Model实现MNIST的识别，主要流程（其实貌似也是整个ML的流程）如下：</p>
-<ul>
-<li>准备工作：导包，导数据，数据处理，模型的选择</li>
-<li>定义：变量、数据等等（<strong>初始化很重要</strong>）</li>
-<li>训练：丢进<code>session</code>去跑，必要时还要利用可视化工具检查训练的情况</li>
-<li>评估：模型是否 overfitting / underfitting 等等</li>
-</ul>
-<p>接下来就得迅速进入 RNN 以及 LSTM 去做 Text Classification了，加油了！</p>
+        <p>最近在感兴趣的一个方向是文本生成，读了以 SeqGAN 为代表的一系列通过 RL 手段来做生成的文章，做一下简单的梳理。</p>
+<h2 id="SeqGAN"><a href="#SeqGAN" class="headerlink" title="SeqGAN"></a>SeqGAN</h2><p>算的上是开山之作，具体的解读可以看我之前的一篇文章 <a href="http://tobiaslee.top/2018/03/11/SeqGAN/" target="_blank" rel="noopener">SeqGAN – GAN + RL + NLP</a>，其通过引入强化学习中的 Policy Gradient 来解决因为离散 token 生成前采样动作造成的不可微。后面的文章也都是基于这个框架来进行深一步地探索。SeqGAN 在 Oracle 和古诗生成任务上做了测试，回过头来看，效果只能说一般。但其开创性的将文本生成看做序列决策问题， 并且将 RL 和 GAN 进行了有机的结合，令人佩服。</p>
+<h2 id="LeakGAN"><a href="#LeakGAN" class="headerlink" title="LeakGAN"></a>LeakGAN</h2><p>LeakGAN 是交大继 SeqGAN 之后的又一作品，其旨在解决 SeqGAN 中出现的一个问题：一方面，是 Discriminator 提供给 Generator 的 reward 需要等句子完成之后才能被计算（即使用 Monte Carlo 来计算，也只是一种近似的模拟），对于每一步的 token 生成不能得到及时的反馈；另一方面，是 Reward  本身只是一个 Scalar，并不能携带太多的信息。何况对于文本这种结构复杂，同样的意思不同的说法都是可以的，那么数值所包含的指导信号比较弱。这一点我在和学长的交流之中以及自身实验体会也有所感受，GAN 的训练很多时候 Discriminator 的作用不大， Generator 生成文本质量的提高更多是靠 Generator 自学。</p>
+<p>对于信息不足，就让 Discriminator 向 Generator “泄露”一些消息，也就是把作为 Discriminator 的 CNN 最后一层的 Feature Vector 交给 Generator，让这个 Feature Vector 携带大量的信息来指导 Generator 更好的生成。</p>
+<p>同时，语义结构的复杂也促使作者使用一个具有层次的生成器，因此在生成器端使用了 Manager 和 Worker 两个模块，分别用于解析 CNN 提供的 Feature Vector 和具体的 token 生成。</p>
+<p>整个模型的架构如下：</p>
+<p><img src="/img/leakgan.png" alt="Leak GAN"></p>
+<h2 id="RankGAN"><a href="#RankGAN" class="headerlink" title="RankGAN"></a>RankGAN</h2><p>RankGAN 认为 Discriminator 的 Binary Classification 对于生成多样、符合现实逻辑的文本是不够的。其通过让 Discriminator 对于一个由 human-written 和 machine-generated 构成 Reference 集中的句子进行排序，来指导 Generator 的生成。借鉴 IR 中的相似度的思想，其首先计算两个句子的 cosine，然后据此给出一个语料集上的排序分：</p>
+<p><img src="/img/cosine.png" alt="Cosine Similarity of Sentence"></p>
+<p><img src="/img/rank_score.png" alt="Rank Score"></p>
+<p>Softmax 之后得到的依旧是一个类似概率的结果，但这一次不再是真/假的概率，而是衡量句子之间相似程度的概率。最终，和 Reference 中的每个句子的相似概率的数学期望则作为一个 Rank Score 得出，显然，Discriminator 希望真实的句子 Rank Score 越高越好，同时机器生成的 Rank Score 越低越好，因此我们将这个想法套进 GAN 的公式：</p>
+<p><img src="/img/rank_gan.png" alt="Formula"></p>
+<p>所以，RankGAN 的核心就是<strong>用一个 Ranker 来替代 Discriminator，以提供更好地生成句子的评估，进而生帮助 Generator 生成更为真实的句子</strong>。</p>
+<h2 id="MaskGAN"><a href="#MaskGAN" class="headerlink" title="MaskGAN"></a>MaskGAN</h2><p>MaskGAN 的思路则是从<strong>生成器端</strong>来为生成提供更多的信息，具体的内容也可以参考我的这篇 <a href="http://tobiaslee.top/2018/04/01/MaskGAN-Notes/" target="_blank" rel="noopener">MaskGAN 学习笔记</a>。Masked Token 给 GAN 提供了额外的信息窗口，通过使用 Seq2Seq 架构来将进行生成，将提供的信息整合进生成过程之中，获取更好的结果。另外一点，Mask GAN 采用了 Actor-Critic 来替换 Policy Gradient，相比 Monte Carlo，能够较好地对 reward function 做一个拟合。</p>
+<h2 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h2><p>这四篇文章看下来，可以发现，SeqGAN 提出了这样一个框架之后，主要工作的方向有两个：</p>
+<ol>
+<li>提高生成文本的质量：我任何，将人类的语言学知识合理地整合进生成的过程，是提高文本生成质量的核心。现有的工作大致是从两个端入手，生成器端通过 Masked Token，比较粗暴地灌进 Generator，Discriminator 端利用句子地相似性，隐式地给判别器端输入语言的知识。<strong>二者如果能够做一个结合，可能是一个很有力的架构</strong>。</li>
+<li>短文本 -&gt; 长文本：想要生成长文本，一点是 LeakGAN 中提到的，Discriminator 的指导需要更加 informative；另外一点我觉得和 RNN 的 Long-dependency 的能力也息息相关，LSTM 虽然说能够解决长程依赖的一部分问题，但想要让机器写小说，那就不是 LSTM 能够 handle 的了。LeakGAN 能够把 SeqGAN 的长度由 20 提升到 40左右，但真的到作曲、写小说这种长度，可能需要一个新的框架。</li>
+<li>解决 Mode Collapse 问题：这个问题可能是前两个问题解决之后，才需要着手考虑的一个问题，即使是我们人类本身，也有着这方面的局限性。比如你的文风事实上就是被你所读过的文章所决定地，虽然说会有一些神来之笔，但我认为那也是早就植根于我们大脑深处的记忆。想要做到真正地创作而不是简单地重复，任重而道远。</li>
+</ol>
 
       
 
@@ -227,11 +212,15 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Machine Learning</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Deep Learning</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">TensorFlow</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">NLP</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">GAN</a>
         		</li>
       		
 		</ul>
@@ -289,7 +278,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2017/08/01/TensorFlow初步/" alt="微信分享二维码">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2018/04/22/GAN-in-NLP-Notes/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -303,18 +292,9 @@
   
 <nav id="article-nav">
   
-    <a href="/2017/08/07/Text-Classification代码学习笔记/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          Text Classification 代码学习笔记
-        
-      </div>
-    </a>
   
-  
-    <a href="/2017/07/23/深圳·大一·未来/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">深圳·大一·未来</div>
+    <a href="/2018/04/19/IndRNN-Notes/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">从 IndRNN 来回顾 RNN 模型</div>
       <i class="icon-circle-right"></i>
     </a>
   

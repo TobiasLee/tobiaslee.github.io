@@ -8,21 +8,21 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>MaskGAN 学习笔记 | Stay Hungry,Stay Foolish.</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="MaskGAN 是 Goodfellow 组的新作，已经被 ICLP 2018 接收，标题很是风骚，MaskGAN: Better Text Generation via Filling in the  ____，这个下划线的操作真是… astounding。代码也已开源。这篇文章依旧是熟悉的套路，从模型 + 代码来解读论文，走起！ SeqGAN To MaskGANSeqGAN 的缺点上一篇讲">
+  <meta name="description" content="MaskGAN 是 Goodfellow 组的新作，已经被 ICLR 2018 接收，标题很是风骚，MaskGAN: Better Text Generation via Filling in the  ____，这个下划线的操作真是… astounding。代码也已开源。这篇文章依旧是熟悉的套路，从模型 + 代码来解读论文，走起！ SeqGAN To MaskGANSeqGAN 的缺点上一篇讲">
 <meta name="keywords" content="Deep Learning,NLP,GAN,论文笔记">
 <meta property="og:type" content="article">
 <meta property="og:title" content="MaskGAN 学习笔记">
 <meta property="og:url" content="http://yoursite.com/2018/04/01/MaskGAN-Notes/index.html">
 <meta property="og:site_name" content="Stay Hungry,Stay Foolish.">
-<meta property="og:description" content="MaskGAN 是 Goodfellow 组的新作，已经被 ICLP 2018 接收，标题很是风骚，MaskGAN: Better Text Generation via Filling in the  ____，这个下划线的操作真是… astounding。代码也已开源。这篇文章依旧是熟悉的套路，从模型 + 代码来解读论文，走起！ SeqGAN To MaskGANSeqGAN 的缺点上一篇讲">
+<meta property="og:description" content="MaskGAN 是 Goodfellow 组的新作，已经被 ICLR 2018 接收，标题很是风骚，MaskGAN: Better Text Generation via Filling in the  ____，这个下划线的操作真是… astounding。代码也已开源。这篇文章依旧是熟悉的套路，从模型 + 代码来解读论文，走起！ SeqGAN To MaskGANSeqGAN 的缺点上一篇讲">
 <meta property="og:image" content="http://yoursite.com/img/maskgan_model.png">
 <meta property="og:image" content="http://yoursite.com/img/mask_gen.png">
 <meta property="og:image" content="http://yoursite.com/img/mask_dis.png">
 <meta property="og:image" content="http://yoursite.com/img/ac_gradient.png">
-<meta property="og:updated_time" content="2018-04-19T15:25:17.274Z">
+<meta property="og:updated_time" content="2018-04-23T12:40:07.584Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="MaskGAN 学习笔记">
-<meta name="twitter:description" content="MaskGAN 是 Goodfellow 组的新作，已经被 ICLP 2018 接收，标题很是风骚，MaskGAN: Better Text Generation via Filling in the  ____，这个下划线的操作真是… astounding。代码也已开源。这篇文章依旧是熟悉的套路，从模型 + 代码来解读论文，走起！ SeqGAN To MaskGANSeqGAN 的缺点上一篇讲">
+<meta name="twitter:description" content="MaskGAN 是 Goodfellow 组的新作，已经被 ICLR 2018 接收，标题很是风骚，MaskGAN: Better Text Generation via Filling in the  ____，这个下划线的操作真是… astounding。代码也已开源。这篇文章依旧是熟悉的套路，从模型 + 代码来解读论文，走起！ SeqGAN To MaskGANSeqGAN 的缺点上一篇讲">
 <meta name="twitter:image" content="http://yoursite.com/img/maskgan_model.png">
   
     <link rel="alternative" href="/atom.xml" title="Stay Hungry,Stay Foolish." type="application/atom+xml">
@@ -179,7 +179,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>MaskGAN 是 Goodfellow 组的新作，已经被 ICLP 2018 接收，标题很是风骚，<a href="https://openreview.net/pdf?id=ByOExmWAb" target="_blank" rel="noopener">MaskGAN: Better Text Generation via Filling in the  <strong><strong>____</strong></strong></a>，这个下划线的操作真是… astounding。代码也已<a href="https://github.com/tensorflow/models/tree/master/research/maskgan" target="_blank" rel="noopener">开源</a>。这篇文章依旧是熟悉的套路，从模型 + 代码来解读论文，走起！</p>
+        <p>MaskGAN 是 Goodfellow 组的新作，已经被 ICLR 2018 接收，标题很是风骚，<a href="https://openreview.net/pdf?id=ByOExmWAb" target="_blank" rel="noopener">MaskGAN: Better Text Generation via Filling in the  <strong><strong>____</strong></strong></a>，这个下划线的操作真是… astounding。代码也已<a href="https://github.com/tensorflow/models/tree/master/research/maskgan" target="_blank" rel="noopener">开源</a>。这篇文章依旧是熟悉的套路，从模型 + 代码来解读论文，走起！</p>
 <h2 id="SeqGAN-To-MaskGAN"><a href="#SeqGAN-To-MaskGAN" class="headerlink" title="SeqGAN To MaskGAN"></a>SeqGAN To MaskGAN</h2><h3 id="SeqGAN-的缺点"><a href="#SeqGAN-的缺点" class="headerlink" title="SeqGAN 的缺点"></a>SeqGAN 的缺点</h3><p>上一篇讲 SeqGAN 的时候我们提到，SeqGAN 开创了 GAN 在 Text Generation 的先河，但是，实验结果证明，其 Idea 是能 Work（通过强化学习解决 GAN 无法在离散文本上梯度回传），合成数据中的 loss 确实有下降，但是在真实的古诗数据集上，其<strong>生成的文本质量不如人意</strong>。我利用全唐诗做了实验，不过囿于设备和时间原因，并没有充分的训练和调优，摘录部分生成结果如下：</p>
 <blockquote>
 <p>霞畅拍起妇 已煦肃兢恼 鶋仝棚愕迷 啼肃次念云 </p>
@@ -511,10 +511,6 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Deep Learning</a>
               </li>
              
@@ -523,19 +519,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">NLP</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Android</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">自定义View</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -547,15 +535,27 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Android</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">自定义View</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
+                <a href="javascript:void(0)" class="js-tag color4">NLP</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -571,6 +571,10 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">ACM</a>
               </li>
              
@@ -583,11 +587,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
+                <a href="javascript:void(0)" class="js-tag color5">Java</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Java</a>
+                <a href="javascript:void(0)" class="js-tag color1">LaTeX</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -599,15 +603,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">LaTeX</a>
+                <a href="javascript:void(0)" class="js-tag color4">JVM</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Python</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">JVM</a>
               </li>
              
               <li class="article-tag-list-item">
