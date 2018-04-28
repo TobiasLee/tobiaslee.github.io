@@ -24,7 +24,7 @@
 <meta property="og:image" content="http://yoursite.com/img/gru.png">
 <meta property="og:image" content="http://yoursite.com/img/grad_ind.png">
 <meta property="og:image" content="http://yoursite.com/img/deep_rnn.png">
-<meta property="og:updated_time" content="2018-04-21T01:57:05.681Z">
+<meta property="og:updated_time" content="2018-04-28T08:25:02.369Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="从 IndRNN 来回顾 RNN 模型">
 <meta name="twitter:description" content="IndRNN 是最近新提出的一种 RNN 架构，作者认为其能够更好地解决 gradient vanishing / exploding 以及具有更好的解释性。 从 RNN 到 IndRNN首先来复习一下 RNN t 时刻的 hidden state 的计算公式：  这个公式相信都是了然于心，如果画成图的话，就是下面这个样子：  图片引用自 colah’blog 但是，请问一下自己，这个 A 里面是">
@@ -184,7 +184,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><a href="(https://link.zhihu.com/?target=https%3A//arxiv.org/abs/1803.04831">IndRNN</a> 是最近新提出的一种 RNN 架构，作者认为其能够更好地解决 gradient vanishing / exploding 以及具有更好的解释性。</p>
+        <p><a href="https://link.zhihu.com/?target=https%3A//arxiv.org/abs/1803.04831" target="_blank" rel="noopener">IndRNN</a> 是最近新提出的一种 RNN 架构，作者认为其能够更好地解决 gradient vanishing / exploding 以及具有更好的解释性。</p>
 <h2 id="从-RNN-到-IndRNN"><a href="#从-RNN-到-IndRNN" class="headerlink" title="从 RNN 到 IndRNN"></a>从 RNN 到 IndRNN</h2><p>首先来复习一下 RNN t 时刻的 hidden state 的计算公式：</p>
 <p><img src="/img/vanilla_rnn_formula.png" alt="Vanilla RNN Formula"></p>
 <p>这个公式相信都是了然于心，如果画成图的话，就是下面这个样子：</p>
@@ -208,8 +208,8 @@
 <h2 id="梯度爆炸-消失"><a href="#梯度爆炸-消失" class="headerlink" title="梯度爆炸/消失"></a>梯度爆炸/消失</h2><p>首先来复习一下 RNN 的梯度怎么计算：</p>
 <p>假设目标函数为 $J$，我们对第 $T$ 个 hidden state $h_T$求导，结果为：</p>
 <p>$$\frac{\partial{J}}{\partial{h_T}} \Pi_{k=t}^{T-1}diag(\sigma’(h_{k+1}))\mathbf{U^T}$$</p>
-<p>其中 <code>diag</code> 是指雅各比矩阵（<a href="https://en.wikipedia.org/wiki/Jacobian_matrix_and_determinant" target="_blank" rel="noopener">Jacobian Matrix</a>，矩阵求导的结果），其实就是后一 hidden state 通过连式发展展开到最前的一个 hiddent state，求导的结果连乘。</p>
-<p>矩阵的连乘可以通过对角化来简便计算，即化为 $PAP^{-1}$，$A$ 是一个对角阵，主对角线上的元素就是其特征值。而如果其特征值小于 1，那么在连续的乘积之后其值就会接近 0，梯度消失；如果大于 1，那么就会接近变成 NaN，梯度爆炸。解决的手段分别就是梯度裁剪（gradient clipping）和 合适的初始化 + 更换为 ReLU acitivation（目的是为了选择合适的特征值？）</p>
+<p>其中 <code>diag</code> 是指对角矩阵（其中对角的元素是激活函数对 $h_{k+1}$ 的导数），其实就是后一 hidden state 通过链式法则展开到最前的一个 hiddent state，求导的结果连乘。</p>
+<p>矩阵的连乘可以通过对角化来简便计算，即化为 $PAP^{-1}​$，$A​$ 是一个对角阵，主对角线上的元素就是其特征值。而如果其特征值小于 1，那么在连续的乘积之后其值就会接近 0，梯度消失；如果大于 1，那么就会接近变成 NaN，梯度爆炸。解决的手段分别就是梯度裁剪（gradient clipping）和 合适的初始化 + 更换为 ReLU acitivation（目的是为了选择合适的特征值？）</p>
 <p>LSTM 解决这一问题的思路是增加 gates，来控制信息的流动，从而较好的解决梯度消失问题（因为梯度爆炸用 clipping 能够比较粗暴地解决，而 vanishing 并不行）。LSTM 的求导比较繁琐，可以参考一下 <a href="http://arunmallya.github.io/writeups/nn/lstm/#/" target="_blank" rel="noopener">LSTM Forward and Backward </a> 。从繁琐的公式中比较难看出 LSTM 解决梯度消失和爆炸，我们可以通过下面这张图来直观的感受一下 LSTM 的作用：</p>
 <p><img src="/img/compare.png" alt="Comparision Between RNN and LSTM"></p>
 <p>左边是 RNN，右边是 LSTM；颜色的深浅表示了梯度影响的程度。可以看到，RNN 第一个时刻的受最后一个时刻的影响微乎其微，这种情况下就可以认为是出现了梯度消失，无法较好地更新我们的参数；右边的 LSTM，为了简化起见，我们将将 input gate 设为 0（图中的 <code>-</code> 符号），forget gate 始终记忆前一状态的信息（图中的 <code>o</code> 符号），我们可以将第一个时刻的信息一直传递至我们想要的 4, 6，并且其梯度的也能够通过这一条路径成功的回传。所以，通过<strong>控制输入以及先前状态的流动方式</strong>，LSTM 能够较好地解决梯度消失的问题。</p>
@@ -503,11 +503,11 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Deep Learning</a>
+                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Reinforcement Learning</a>
+                <a href="javascript:void(0)" class="js-tag color4">Deep Learning</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -515,15 +515,27 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">NLP</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
+                <a href="javascript:void(0)" class="js-tag color3">Reinforcement Learning</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Machine Learning</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">NLP</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -535,15 +547,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Machine Learning</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">C</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -559,19 +567,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">C</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">GAN</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Java</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -580,6 +576,10 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">OpenGL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Java</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -595,11 +595,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">JVM</a>
+                <a href="javascript:void(0)" class="js-tag color1">LaTeX</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">LaTeX</a>
+                <a href="javascript:void(0)" class="js-tag color4">JVM</a>
               </li>
              
               <li class="article-tag-list-item">
