@@ -154,6 +154,101 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-BPTT-notes" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/04/28/BPTT-notes/">BPTT 推导</a>
+    </h1>
+  
+
+        
+        <a href="/2018/04/28/BPTT-notes/" class="archive-article-date">
+  	<time datetime="2018-04-28T08:27:12.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-28</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>写 IndRNN 解读的时候，对于 RNN 求导那一块其实没什么底气，因为框架都帮你实现了，所以学的时候也都避重就轻地略过去了。但 Back Propagation Through Time (BPTT) 是绕不过去的，这就是地基，不把基础打扎实了，就会发生“眼看他起高楼，眼看他楼塌了”这样的悲剧。</p>
+<h2 id="矩阵求导"><a href="#矩阵求导" class="headerlink" title="矩阵求导"></a>矩阵求导</h2><p>首先是矩阵求导，可以参考一下<a href="https://zhuanlan.zhihu.com/p/24709748" target="_blank" rel="noopener">矩阵求导术</a>，这里就给出两个最用的公式：</p>
+<ol>
+<li>$ \mathbf{J}_{i,j} = \frac{\partial f_i}{\partial x_j\ }$，其中： $ \mathbf{f} : \mathbb{R}^n - &gt;  \mathbb{R}^m$ 是一个 n 维到 m 维的映射，其求导的结果是一个雅各比矩阵，其中元素为 $f_i$ 对 $x_j$ 的导数</li>
+<li>$ \mathbf{f} = A\mathbf{x}$, $ \frac{\partial f}{\partial x} = A^T$</li>
+</ol>
+<p>在这两个式子的基础之上，就可以开始我们的求导啦~</p>
+<h2 id="BPTT"><a href="#BPTT" class="headerlink" title="BPTT"></a>BPTT</h2><p>来一起默写一下 RNN 的公式，其中 $\sigma$ 代表激活函数；：</p>
+<p>$$ \mathbf{a}^{(t)} = \mathbf{b} + \mathbf{W} \mathbf{h}^{(t-1)} + \mathbf{U} \mathbf{x}^{(t)}$$</p>
+<p>$$ \mathbf{h}^{t} = \sigma (\mathbf{a}^{(t)})$$</p>
+<p>$$ \mathbf{o}^{(t)} = \mathbf{c} + \mathbf{V} \mathbf{h}^{(t)}$$</p>
+<p>$$ \hat{y}^{(t)} = softmax(\mathbf{o}^{(t)}) $$ </p>
+<p>这里我们用双曲正切 $tanh(x)$ 作为激活函数，其导数为 $ 1 - tanh^2(x)$ ，并且假设最后输出层使用 softmax 函数来得到一个概率向量。</p>
+<p>来进行愉快地求导吧，记住一点原则，<strong>由外向内一层层求导</strong>。</p>
+        
+          <a class="article-more-a" href="/2018/04/28/BPTT-notes/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Deep Learning</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">BPTT</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+
+      
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/04/28/BPTT-notes/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-GAN-in-NLP-Notes" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1119,104 +1214,6 @@
 
 
   
-    <article id="post-Latex-Learning" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/01/22/Latex-Learning/">LaTeX Learning Notes</a>
-    </h1>
-  
-
-        
-        <a href="/2018/01/22/Latex-Learning/" class="archive-article-date">
-  	<time datetime="2018-01-22T07:24:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-22</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>LaTeX 是论文写作中非常重要的一个排版工具，用这篇文章记录下学习过程中的一些语法、注意事项，以便日后查阅。</p>
-<h2 id="Installation"><a href="#Installation" class="headerlink" title="Installation"></a>Installation</h2><p>配置 MacOS 上的 LaTeX 环境还是比较轻松愉快的</p>
-<ol>
-<li><p>安装 <a href="https://www.sublimetext.com/" target="_blank" rel="noopener">Sublime Text</a></p>
-</li>
-<li><p>下载 <a href="http://www.tug.org/mactex/" target="_blank" rel="noopener">MacTeX</a>，选择最全的版本 3.1 G</p>
-</li>
-<li><p>安装 <a href="https://skim-app.sourceforge.io/" target="_blank" rel="noopener">Skim</a>，用来预览，并且在<code>选项-同步</code>中选择  <code>Sublime Text</code> ，如下所示：</p>
-<p><img src="/img/skim.png" alt="Skim Setting"></p>
-</li>
-<li><p>在 Sublime Text 中安装 LaTexTools 和配置编译路径，首先安装 Sublime Text 的包管理器，点击 <code>View&gt;Show Console</code> ，在控制台中输入下列 Python 代码安装：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> urllib.request,os,hashlib; h = <span class="string">'6f4c264a24d933ce70df5dedcf1dcaee'</span> + <span class="string">'ebe013ee18cced0ef93d5f746d80ef60'</span>; pf = <span class="string">'Package Control.sublime-package'</span>; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( <span class="string">'http://packagecontrol.io/'</span> + pf.replace(<span class="string">' '</span>, <span class="string">'%20'</span>)).read(); dh = hashlib.sha256(by).hexdigest(); print(<span class="string">'Error validating download (got %s instead of %s), please try manual install'</span> % (dh, h)) <span class="keyword">if</span> dh != h <span class="keyword">else</span> open(os.path.join( ipp, pf), <span class="string">'wb'</span> ).write(by)</span><br></pre></td></tr></table></figure>
-<p>安装成功之后，在 Sublime 中使用<code>Command+Shift+P</code>，输入 <code>install</code> ，按下<code>enter</code>，加载仓库后，再输入LatexTools，回车确认后等待安装完成。</p>
-</li>
-<li><p>但因为路径的锅，如果我们现在打开 Sublime Text 复制进去一段 LaTeX 代码：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">%!TEX program = xelatex</span><br><span class="line">\documentclass&#123;article&#125;</span><br><span class="line">\usepackage&#123;fontspec, xunicode, xltxtra&#125;</span><br><span class="line">\setmainfont&#123;Hiragino Sans GB&#125;</span><br><span class="line">\title&#123;Test&#125;</span><br><span class="line">\begin&#123;document&#125;</span><br><span class="line">Hello world!</span><br><span class="line">\end&#123;document&#125;</span><br></pre></td></tr></table></figure>
-<p>会发现报错：<code>CANNOT COMPILE</code></p>
-<p><strong>解决方案</strong>：通过 Package Control 安装一下 <code>Fix Mac Path</code> 这个包就能解决，安装步骤同 LaTex Tools。</p>
-</li>
-</ol>
-<p>安装完毕之后，我们就可以使用 <code>Command + B</code> 来对写好的 LaTeX 进行渲染，Skim 会弹出渲染后的窗口，并且在 Skim 窗口按住 <code>Command + Shift</code> 再点击，会自动跳转到 Sublime 中相应的部分。<br>
-        
-          <a class="article-more-a" href="/2018/01/22/Latex-Learning/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">LaTeX</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-
-      
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/01/22/Latex-Learning/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
@@ -1341,7 +1338,7 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
+                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1349,11 +1346,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
+                <a href="javascript:void(0)" class="js-tag color3">Reinforcement Learning</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Reinforcement Learning</a>
+                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1365,11 +1362,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
+                <a href="javascript:void(0)" class="js-tag color3">Android</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
+                <a href="javascript:void(0)" class="js-tag color3">自定义View</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1377,11 +1374,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Android</a>
+                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">自定义View</a>
+                <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1401,11 +1398,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
+                <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">GAN</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1429,11 +1430,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Python</a>
+                <a href="javascript:void(0)" class="js-tag color1">LaTeX</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">LaTeX</a>
+                <a href="javascript:void(0)" class="js-tag color4">Retrofit</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Python</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1445,15 +1450,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Retrofit</a>
+                <a href="javascript:void(0)" class="js-tag color5">View</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">C++</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">View</a>
               </li>
             
             <div class="clearfix"></div>

@@ -154,6 +154,94 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-Android-Scroll学习笔记" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/06/05/Android-Scroll学习笔记/">Android Scroll学习笔记</a>
+    </h1>
+  
+
+        
+        <a href="/2017/06/05/Android-Scroll学习笔记/" class="archive-article-date">
+  	<time datetime="2017-06-05T15:10:58.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-05</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>​    友球要写一个跟纸片一样的能够翻转过来跟纸片一样的自定义View，所以我就去研究了一下View的Animation和滑动、拖拽。这篇就记录一下学习《Android群英传》里的滑动部分。</p>
+<h2 id="Key-Points"><a href="#Key-Points" class="headerlink" title="Key Points"></a>Key Points</h2><p>滑动的实现：<strong>不断地改变View的坐标</strong></p>
+<p>Android坐标系: <strong>左上角为原点，水平向右为X轴正方向，垂直向下为Y轴正方向</strong></p>
+<p>视图坐标系: 描述子视图在父视图中的位置关系，子视图的坐标以<strong>父视图左上角为原点</strong></p>
+<h3 id="触控事件—MotionEvent"><a href="#触控事件—MotionEvent" class="headerlink" title="触控事件—MotionEvent"></a>触控事件—MotionEvent</h3><p>MotionEvent中封装的常用事件常量:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> fianl <span class="keyword">int</span> ACTION_DOWN = <span class="number">0</span>; <span class="comment">// 单点触摸 按下</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> fianl <span class="keyword">int</span> ACTION_UP = <span class="number">1</span>; <span class="comment">// 单点触摸 离开</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> fianl <span class="keyword">int</span> ACTION_MOVE = <span class="number">2</span>; <span class="comment">// 触摸点 移动</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> fianl <span class="keyword">int</span> ACTION_CANCEL = <span class="number">3</span>; <span class="comment">// 触摸动作 取消</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> fianl <span class="keyword">int</span> ACTION_OUTSIDE = <span class="number">4</span>; <span class="comment">// 触摸动作 超出边界</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> fianl <span class="keyword">int</span> ACTION_POINTER_DOWN = <span class="number">5</span>; <span class="comment">// 多点触摸 按下</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> fianl <span class="keyword">int</span> ACTION_POINTER_UP = <span class="number">6</span>; <span class="comment">// 多点触摸 离开</span></span><br></pre></td></tr></table></figure>
+<p>实现触摸实现的代码套路:在<code>onTouchEvent(MotionEvent event)</code>中通过<code>event.getAction()</code>获取触控事件类型，并且用switch-case语句来筛选我们所需要的动作。</p>
+        
+          <a class="article-more-a" href="/2017/06/05/Android-Scroll学习笔记/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Android</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">自定义View</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+
+      
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/06/05/Android-Scroll学习笔记/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-PythonLearning-Iterator" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -957,91 +1045,6 @@
 
 
   
-    <article id="post-DataStructureLearning-Stack2" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/02/13/DataStructureLearning-Stack2/">数据结构学习笔记-栈的应用</a>
-    </h1>
-  
-
-        
-        <a href="/2017/02/13/DataStructureLearning-Stack2/" class="archive-article-date">
-  	<time datetime="2017-02-13T07:43:42.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-02-13</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>栈的特点 LIFO 后进先出 使得它在处理一些相关问题的时候非常强大</p>
-<blockquote>
-<p>1、逆序输出(conversion)<br>    特点：1.输出与处理过程相反 2.递归深度、输出长度不易预知<br>    典型问题: 进制转换<br>2、递归嵌套<br>    特点:1.具有自相似的问题可递归描述 2.分支和位置不确定<br>    典型问题: 括号匹配<br>3、延迟缓冲<br>    特点:线性扫描算法中要预读足够长才能够处理前缀<br>    典型问题: 中缀表达式<br>4、RPN (逆波兰表达式) 基于栈结构的特定计算模式<br>—— 清华大学 邓俊辉《数据结构》 </p>
-</blockquote>
-        
-          <a class="article-more-a" href="/2017/02/13/DataStructureLearning-Stack2/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">数据结构</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">栈</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-
-      
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/02/13/DataStructureLearning-Stack2/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/3/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/5/">Next &raquo;</a>
@@ -1166,7 +1169,7 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
+                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1174,11 +1177,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
+                <a href="javascript:void(0)" class="js-tag color3">Reinforcement Learning</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Reinforcement Learning</a>
+                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1190,11 +1193,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
+                <a href="javascript:void(0)" class="js-tag color3">Android</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
+                <a href="javascript:void(0)" class="js-tag color3">自定义View</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1202,11 +1205,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Android</a>
+                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">自定义View</a>
+                <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1226,11 +1229,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
+                <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">GAN</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1254,11 +1261,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Python</a>
+                <a href="javascript:void(0)" class="js-tag color1">LaTeX</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">LaTeX</a>
+                <a href="javascript:void(0)" class="js-tag color4">Retrofit</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Python</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1270,15 +1281,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Retrofit</a>
+                <a href="javascript:void(0)" class="js-tag color5">View</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">C++</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">View</a>
               </li>
             
             <div class="clearfix"></div>
