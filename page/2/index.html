@@ -154,6 +154,128 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-Dynamic-Programming-Learning" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/02/02/Dynamic-Programming-Learning/">动态规划学习笔记1</a>
+    </h1>
+  
+
+        
+        <a href="/2018/02/02/Dynamic-Programming-Learning/" class="archive-article-date">
+  	<time datetime="2018-02-02T10:46:04.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-02-02</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>菜鸡还是直面自己的弱点才能成长啊，算法还是一块巨大的短板，需要好好补一补。从自己觉得很玄的动态规划（Dynamic Programming，DP） 开始，从几个经典的题型入手，主要参考刘汝佳的《算法竞赛入门经典》。</p>
+<h2 id="Longest-Increasing-Subsequence"><a href="#Longest-Increasing-Subsequence" class="headerlink" title="Longest Increasing Subsequence"></a>Longest Increasing Subsequence</h2><p>POJ 2533 这道最长上升子序列问题是非常经典的 DP 问题，问题描述摘录如下:</p>
+<blockquote>
+<p>A numeric sequence of <em>ai</em> is ordered if <em>a<sub>1</sub></em> &lt; <em>a<sub>2</sub></em> &lt; … &lt; <em>a<sub>N</sub></em>. Let the subsequence of the given numeric sequence (<em>a1<sub>1</sub>, </em>a<sub>2</sub>, …, <em>a<sub>N</sub></em>) be any sequence (<em>a<sub>i1</sub></em>, <em>a<sub>i2</sub></em>, …, <em>a<sub>iK</sub></em>), where 1 &lt;= <em>i1</em> &lt; <em>i2</em> &lt; … &lt; <em>iK</em> &lt;= <em>N</em>. For example, sequence (1, 7, 3, 5, 9, 4, 8) has ordered subsequences, e. g., (1, 7), (3, 4, 8) and many others. All longest ordered subsequences are of length 4, e. g., (1, 3, 5, 8).</p>
+<p>Your program, when given the numeric sequence, must find the length of its longest ordered subsequence.</p>
+</blockquote>
+<p>题意很简单，怎么做呢？简单粗暴的穷举必然是一种方法，找出所有的子串，验证其单调性，复杂度为O(2^n)。</p>
+<p>另外一种普遍的解法就是动态规划了，设 <code>d[i]</code> 是 <code>以 i 位置结尾的数能够成的上升子序列的长度最大值</code> ，那么必然有：</p>
+<p><strong>$d[i] = max(d[i],  d[j]+1) \ if \ a[j] &lt; a[i] \ and \ i &lt; j$</strong></p>
+<p>（PS：刘汝佳的书上的公式给的是 <code>d[i] = max(0, d[j]) + 1</code>，有问题。</p>
+<p>有了这个式子，我们就不难写出下面这段核心代码：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span> ; i &lt; n ; i++) d[i] = <span class="number">1</span>; <span class="comment">// 初始化</span></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; ++i)</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>;  j &lt; i; ++j) </span><br><span class="line">		<span class="keyword">if</span>(arr[j] &lt; arr[i]) </span><br><span class="line">			d[i] = max(d[j] + <span class="number">1</span>, d[i]); <span class="comment">// 状态转移方程</span></span><br></pre></td></tr></table></figure>
+<p>上面的那个式子叫做状态转移方程，而 <code>d[i]</code> 叫做位置 <code>i</code> 的状态。很显然，因为<strong>自身构成一个 LIS，长度为 1</strong>，所以我们需要把所有状态都初始化为 1。最后的解雇就是 <code>max(d[i])</code>。复杂度是O(n^2)，还存在着 O(nlogn) 的优化方法，就不展开了。</p>
+<p>从这个例子我们能够发现，动态规划最重要的就是<strong>设计合适的状态和状态转移方程</strong>，从而把问题变小，也是一种分而治之的思想。</p>
+<h2 id="0-1-背包问题"><a href="#0-1-背包问题" class="headerlink" title="0-1 背包问题"></a>0-1 背包问题</h2><p>我一开始听到 0-1 背包就觉得是个厉害的不行的东西肯定很难，其实也还是一个动态规划问题，问题描述如下：</p>
+<blockquote>
+<p>0-1 背包</p>
+<p>有一个窃贼在偷窃一家商店时发现有n件物品，第i件物品价值为vi元，重量为wi，假设vi和wi都为整数。他希望带走的东西越值钱越好，但他的背包中之多只能装下C磅的东西，W为一整数。他应该带走哪几样东西？</p>
+</blockquote>
+<p>这里的核心就是设计状态转移方程，因为每一件物品只有两种状态，取或者不取，所以利用这一点，对于第 i 件物品，考虑当前剩余容量 j，那么用 <strong>d(i, j) 表示取第 i 个，i+1，…，n 件物品能取得的最大价值</strong>，则有</p>
+<blockquote>
+<p> d(i, j) = max( d(i+1, j), d(i+1, j-W<sub>i</sub>) + V<sub>i</sub>)</p>
+</blockquote>
+<p>d(i+1, j) 的含义即为不取第 i 个物品，考虑下一个；d(i+1, j-W<sub>i</sub>) + V<sub>i</sub> 则是取了第 i 个，相应的重量减少为 <code>j - W&lt;sub&gt;i&lt;/sub&gt;</code>继续考虑第 i+1 个，因此我们可以写出下面的这段核心代码</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i = n ; i &gt;= <span class="number">1</span>; i-- )  <span class="comment">// 从后向前考虑</span></span><br><span class="line">	<span class="keyword">for</span>(j = C ; j &gt;= <span class="number">0</span> ; j --)&#123;</span><br><span class="line">		d[i][j] = (i == n ? <span class="number">0</span> : d[i+<span class="number">1</span>][j]);<span class="comment">// 边界情况 </span></span><br><span class="line">			<span class="keyword">if</span>( j &gt;= W[i]) <span class="comment">// 容量允许</span></span><br><span class="line">				d[i][j] = max(d[i][j], d[i+<span class="number">1</span>][j-W[i]] + V[i]);</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+<p>其中有一点需要注意：N 从后向前考虑，也就是最简单的情况，保证 i+1 能够继续递推，最终的答案即为 d(1, C) ；如果要从前向后的话，即定义 <strong>f(i, j) 为把前 i 个物品装入容量为 j 的最大价值</strong>，类似我们可以得到 </p>
+<blockquote>
+<p>f(i, j) = max( f(i-1, j), f(i-1, j - W<sub>i</sub>) + V<sub>i</sub>)</p>
+</blockquote>
+<p>这里的边界情况也对应的修改为 <code>i=0</code> 时，价值为 0。这种从前向后的的代码如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; i ++)</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span> ; j &lt;= W; j++) &#123;</span><br><span class="line">        <span class="built_in">cin</span> &gt;&gt; W &gt;&gt; V; <span class="comment">// 直接计算 不用保存</span></span><br><span class="line">        f[i][j] = (i == <span class="number">0</span> ? <span class="number">0</span> : f[i<span class="number">-1</span>][j]);</span><br><span class="line">        <span class="keyword">if</span>(j &gt;= V)</span><br><span class="line">            f[i][j] = max(f[i][j], f[i<span class="number">-1</span>][j-W]+V);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>其带来的一个显著的好处就是不用对数据进行保存。</p>
+<p>然而使用二维数组，其大小 N*M 是一种巨大的浪费，甚至会超出一些题目的限制，因此我们可以使用滚动数组来节约空间的开销，即吧 f 数组变成一维的</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">memset</span>(f, <span class="number">0</span>, <span class="keyword">sizeof</span>(f)); <span class="comment">// tips: memset 对int数组只设置为 0/-1 </span></span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>; i&lt;= n ; i ++) &#123;</span><br><span class="line">    <span class="built_in">cin</span> &gt;&gt; W &gt;&gt; V;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> j = C; j&gt;= <span class="number">0</span>; j --) </span><br><span class="line">        <span class="keyword">if</span>(j &gt;= V)</span><br><span class="line">            f[j] = max(f[j], f[j-W] + V);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这边我们先把 j 的顺序改成了逆序，在前面两种方法中，j 枚举的顺序是没关系的。这样，f 数组的计算顺序就是从上到下，从右往左。在计算 <code>f(i, j)</code> 之前，<code>f[j]</code> 里保存着<code>f(i-1, j)</code> ，而 <code>f[j- W]</code> 里保存着的是 <code>f(i-1, j - W)</code>，因为 <code>f(i, j)</code> 的计算所依赖的 <code>f(i-1, j)</code> 和 <code>f(i-1, j - W)</code> 都已经在之前计算出来，所以我们可以利用先前的值更新并且覆盖，达到节约空间的效果。</p>
+<p>所以，可以得出一个经验，<strong>使用滚动数组在一些旧值使用不多的情况下，可以大幅减少内存</strong>。当然，滚动数组也会带来打印结果不便的困难，再一次证明了“天下没有免费的午餐”这一定律。</p>
+<h2 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h2><p>DP 的学习才刚刚开始，但这篇文章已经拖了很久，所以决定在年三十先告一段落吧。再小小的总结一下：</p>
+<ol>
+<li>DP 思想，是分治的一种，核心是设计好的状态转移方程</li>
+<li>何时用滚动数组，优点缺点</li>
+<li>memset 的使用注意点，对 int 数组只能设置为 0 或 -1（保证高字节和低字节相同）</li>
+<li>边界情况的考虑</li>
+</ol>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">算法</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">ACM</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+
+      
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/02/02/Dynamic-Programming-Learning/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Latex-Learning" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -952,89 +1074,6 @@
 
 
   
-    <article id="post-GAN-Notes" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/10/03/GAN-Notes/">GAN 学习笔记</a>
-    </h1>
-  
-
-        
-        <a href="/2017/10/03/GAN-Notes/" class="archive-article-date">
-  	<time datetime="2017-10-03T06:41:07.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-10-03</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Generative Adversarial Networks，简称 GAN，中文叫做生成式对抗网络，是现在非常火热的神经网络模型。网上关于 GAN 的 Demo 很多，讲解也很多，但都只是在 Intuition 层面的理解，很少涉及其中的数学细节，而我在阅读 Goodfellow 的论文时对其中的公式感到一头雾水，好在最终找到了国立台湾大学的李宏毅老师的公开课视频，这篇文章就是他深度学习课程 GAN 部分的学习笔记。</p>
-<h2 id="Intuition"><a href="#Intuition" class="headerlink" title="Intuition"></a>Intuition</h2><p>GAN 主要由两个模块组成，Generator（G） 和 Discriminator（D）。有个很形象的比喻就是，G 是一个造假币的，D 是一个验钞机。G 的目的就是要让 D 无法辨别自己的造出的假币，因此 G 就要不断提升自己造假币的技术，尽可能地以假乱真；而 D 自然不能轻易地让 G 得逞，于是也要不断地提升自己鉴别假钞的能力。两方这样对抗式地提升着自己，最终我们就能够得到一个造假币技术很强的 G，这就能可以应用在很多领域之中，比如图像生成，我们就能够生成逼真到足以欺骗人眼的图片，这么好的效果也难怪 GAN 如此火热了。实现的方式也很简单，我们用 NN 来做我们的 Generator 和 Discriminator（Discriminator 其实是一个 Binary Classifier），然后把他们接起来（即把 Generator 产生的 data 作为 input 交给 Discriminator），再利用 Gradient Descent 的方法来训练，就可以达到我们想要的结果了。关于 Intuition 的部分就写这么多，接下来就带着这种理解进入到数学的部分啦。<br>
-        
-          <a class="article-more-a" href="/2017/10/03/GAN-Notes/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Deep Learning</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">GAN</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-
-      
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/10/03/GAN-Notes/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
@@ -1175,11 +1214,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
+                <a href="javascript:void(0)" class="js-tag color2">Machine Learning</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Machine Learning</a>
+                <a href="javascript:void(0)" class="js-tag color4">NLP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1191,10 +1234,6 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">NLP</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
               </li>
              
@@ -1203,11 +1242,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">C</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">C</a>
+                <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1216,14 +1259,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">栈</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1239,6 +1274,10 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Java</a>
               </li>
              
@@ -1251,15 +1290,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">LaTeX</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Retrofit</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Python</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">LaTeX</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1271,11 +1306,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">View</a>
+                <a href="javascript:void(0)" class="js-tag color4">Retrofit</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">C++</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">View</a>
               </li>
             
             <div class="clearfix"></div>

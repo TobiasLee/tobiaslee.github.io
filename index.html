@@ -154,6 +154,131 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-Attention-Notes" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/05/13/Attention-Notes/">别人家的 Attention</a>
+    </h1>
+  
+
+        
+        <a href="/2018/05/13/Attention-Notes/" class="archive-article-date">
+  	<time datetime="2018-05-13T05:48:19.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-05-13</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><a href="https://arxiv.org/abs/1706.03762" target="_blank" rel="noopener">Attention Is All You Need</a> 前段时间火了一把，其提出完全用 Attention 替代传统的 CNN 和 RNN 架构来做特征的提取，也在 NMT 上也取得了 state-of-the-art。这两天读了一下这篇 Paper，并且在熟悉的 Text Classification 问题上用其模型做了一下尝试，这篇 Blog 就用来记录过程中的一些想法和感受。</p>
+<h2 id="What-is-Attention"><a href="#What-is-Attention" class="headerlink" title="What is Attention"></a>What is Attention</h2><p>注意力机制之前在学的时候就有过一次<a href="http://tobiaslee.top/2017/08/15/Attention-Mechanism-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" target="_blank" rel="noopener">梳理</a>，上一次对于什么是注意力机制，我的回答是：</p>
+<blockquote>
+<p>聚焦在某个局部的 focus</p>
+</blockquote>
+<p>现在我的回答是：Attention（一般指的是 Self-Attention），是特征提取过程中，信息融合的手段。其目的是能够让模型的信息视野有的放矢，其数学上的表现就是加权和。</p>
+<p>NLP community 曾经有过这么一种说法：</p>
+<blockquote>
+<p>an LSTM with attention will yield state-of-the-art performance on any task</p>
+</blockquote>
+<p>以及这样一张图：</p>
+<p><img src="/img/joke.jpg" alt="Joke"></p>
+<p>中心思想就是：Attention + LSTM 是一个非常 Powerful 的 model，基本能在所有的 NLP 任务上 work。就我有限的经验来说，大抵如此了。特别是 Attention，简直是即插即用效果还特别好的万金油。</p>
+<p>而论文中对 Attention 的定义是这样的：</p>
+<blockquote>
+<p>An attention function can be described as mapping a query and a set of key-value pairs to an output, where the query, keys, values, and output are all vectors. </p>
+</blockquote>
+<p>这里的 query、key、value 是理解的重点：</p>
+<p>对于机器翻译任务来说，在传统的 Seq2Seq 架构中，假设我们将要输出第 k 个词，那么这个 query 就代表这<strong>第 k 个词</strong>对应的 hidden state，key 和 value 一般是相等的（作者也提出了一种不相等的方式，详见下图），即之前 encode 的所有 hidden state：</p>
+<p><img src="/img/qkv.jpg" alt="Query、Key and Values"></p>
+<p>一开始提出 Attention 的使用一个 Alignment Function 来描述，并且提出了几种 score 的计算方式。这里的计算公式就是用最普通的矩阵乘法：</p>
+<p>$Attention(Q, K, V) = softmax( \frac{QK^T}{\sqrt{d_k}})V$</p>
+<p>Softmax 项就是权重项，$V$ 是一系列 hidden states，也就是说，attention 最终的表现形式依旧是<strong>加权和</strong>。</p>
+<h2 id="Multihead-Attention"><a href="#Multihead-Attention" class="headerlink" title="Multihead Attention"></a>Multihead Attention</h2><p>到了本文最重要的部分， Multi-head Attention。作者的 Motivation 认为是原有的 RNN 和 CNN 并行化不够，太慢了；同时觉得原先的复杂度太高，像 RNN，从头滚到尾关于序列长度是一个 $O(n)$ 的复杂度。所以期望单用一个 Attention 来做特征的提取，因而提出了 Multi-head Attention。</p>
+<p><img src="/img/multi-head.png" alt="Multi-head Attention"></p>
+<p>$MultiHead(Q, K, V) = Concat( head_1, … , head_h) W^O$</p>
+<p>$head_i = Attention(QW_i^Q, KW_i^L, VW_i^V)$</p>
+<p>就是先让 Q，K，V 做一个线性的投影（分别乘上个矩阵），再做 Attention，这样重复多次，将结果拼接起来，得到一个“多头” Attention。</p>
+<p>背后的动机是什么呢？文章中这样说：</p>
+<blockquote>
+<p>Multi-head attention allows the model to jointly attend to information from different representation subspaces at different positions. </p>
+</blockquote>
+<p>一方面，从直觉上多次 Attention 操作就能够捕获更多的信息；另一方面，先进行的投影操作能够把 Q、K、V 映射到不同空间，也许能够发现更多的特征。</p>
+<p>然后再给他套上一层全连接：</p>
+<p>$FFN(x) = ReLU(xW_1 + b_1) W_2 + b_2$</p>
+<p>这样的 Attention 操作没有考虑到时序信息，但序列位置的信息还是很重要的，因此，作者对位置信息进行了 Encoding:</p>
+<p><img src="/img/pe.png" alt="Position Encoding"></p>
+<p>同时文章还仿照 CNN，增加了常用的 Residual Connection 以及 Layer Normalization 操作，这里就不再展开。</p>
+<h2 id="Implementation"><a href="#Implementation" class="headerlink" title="Implementation"></a>Implementation</h2><p>该 Paper 有 TensorFlow 的开源<a href="https://github.com/Kyubyong/transformer" target="_blank" rel="noopener">实现</a>，侧重看一下 Multi-head Attention 以及 FFN 的实现：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">multihead_attention</span><span class="params">(queries,</span></span></span><br><span class="line"><span class="function"><span class="params">                        keys,</span></span></span><br><span class="line"><span class="function"><span class="params">                        num_units=None,</span></span></span><br><span class="line"><span class="function"><span class="params">                        num_heads=<span class="number">8</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">                        dropout_rate=<span class="number">0</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">                        is_training=True,</span></span></span><br><span class="line"><span class="function"><span class="params">                        causality=False,</span></span></span><br><span class="line"><span class="function"><span class="params">                        scope=<span class="string">"multihead_attention"</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">                        reuse=None)</span>:</span></span><br><span class="line">    <span class="keyword">with</span> tf.variable_scope(scope, reuse=reuse):</span><br><span class="line">        <span class="keyword">if</span> num_units <span class="keyword">is</span> <span class="keyword">None</span>:  <span class="comment"># set default size for attention size C</span></span><br><span class="line">            num_units = queries.get_shape().as_list()[<span class="number">-1</span>]</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Linear Projections 线性投影</span></span><br><span class="line">        Q = tf.layers.dense(queries, num_units, activation=tf.nn.relu)  <span class="comment"># [N, T_q, C]</span></span><br><span class="line">        K = tf.layers.dense(keys, num_units, activation=tf.nn.relu)  <span class="comment"># [N, T_k, C]</span></span><br><span class="line">        V = tf.layers.dense(keys, num_units, activation=tf.nn.relu)  <span class="comment"># [N, T_k, C]</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># Split and concat 分割成 head = 8 块，再拼起来</span></span><br><span class="line">        Q_ = tf.concat(tf.split(Q, num_heads, axis=<span class="number">-1</span>), axis=<span class="number">0</span>)  <span class="comment"># [num_heads * N, T_q, C/num_heads]</span></span><br><span class="line">        K_ = tf.concat(tf.split(K, num_heads, axis=<span class="number">-1</span>), axis=<span class="number">0</span>)  <span class="comment"># [num_heads * N, T_k, C/num_heads]</span></span><br><span class="line">        V_ = tf.concat(tf.split(V, num_heads, axis=<span class="number">-1</span>), axis=<span class="number">0</span>)  <span class="comment"># [num_heads * N, T_k, C/num_heads]</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># Attention  根据公式，做 Attention 计算 weight matrix</span></span><br><span class="line">        outputs = tf.matmul(Q_, tf.transpose(K_, [<span class="number">0</span>, <span class="number">2</span>, <span class="number">1</span>])) <span class="comment"># (num_heads * N, T_q, T_k)</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># Scale 缩放操作 outputs = outputs / sqrt( d_k)</span></span><br><span class="line">        outputs = outputs / (K_.get_shape().as_list()[<span class="number">-1</span>] ** <span class="number">0.5</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Key Masking</span></span><br><span class="line">        key_masks = tf.sign(tf.abs(tf.reduce_sum(keys, axis=<span class="number">-1</span>)))  <span class="comment"># (N, T_k)</span></span><br><span class="line">        key_masks = tf.tile(key_masks, [num_heads, <span class="number">1</span>])  <span class="comment"># (h*N, T_k)</span></span><br><span class="line">        key_masks = tf.tile(tf.expand_dims(key_masks, <span class="number">1</span>), [<span class="number">1</span>, tf.shape(queries)[<span class="number">1</span>], <span class="number">1</span>])  <span class="comment"># (h*N, T_q, T_k)</span></span><br><span class="line"></span><br><span class="line">        paddings = tf.ones_like(outputs) * (<span class="number">-2</span> ** <span class="number">32</span> + <span class="number">1</span>)  <span class="comment"># -infinity</span></span><br><span class="line">        outputs = tf.where(tf.equal(key_masks, <span class="number">0</span>), paddings, outputs)  <span class="comment"># (h*N, T_q, T_k)</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># Causality = Future blinding</span></span><br><span class="line">        <span class="keyword">if</span> causality:</span><br><span class="line">            diag_vals = tf.ones_like(outputs[<span class="number">0</span>, :, :])  <span class="comment"># (T_q, T_k)</span></span><br><span class="line">            tril = tf.contrib.linalg.LinearOperatorTriL(diag_vals).to_dense()  <span class="comment"># (T_q, T_k)</span></span><br><span class="line">            masks = tf.tile(tf.expand_dims(tril, <span class="number">0</span>), [tf.shape(outputs)[<span class="number">0</span>], <span class="number">1</span>, <span class="number">1</span>])  <span class="comment"># (h*N, T_q, T_k)</span></span><br><span class="line"></span><br><span class="line">            paddings = tf.ones_like(masks) * (<span class="number">-2</span> ** <span class="number">32</span> + <span class="number">1</span>)</span><br><span class="line">            outputs = tf.where(tf.equal(masks, <span class="number">0</span>), paddings, outputs)  <span class="comment"># (h*N, T_q, T_k)</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># Activation: outputs is a weight matrix</span></span><br><span class="line">        outputs = tf.nn.softmax(outputs)  <span class="comment"># (h*N, T_q, T_k)</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># Query Masking</span></span><br><span class="line">        query_masks = tf.sign(tf.abs(tf.reduce_sum(queries, axis=<span class="number">-1</span>)))  <span class="comment"># (N, T_q)</span></span><br><span class="line">        query_masks = tf.tile(query_masks, [num_heads, <span class="number">1</span>])  <span class="comment"># (h*N, T_q)</span></span><br><span class="line">        query_masks = tf.tile(tf.expand_dims(query_masks, <span class="number">-1</span>), [<span class="number">1</span>, <span class="number">1</span>, tf.shape(keys)[<span class="number">1</span>]])  <span class="comment"># (h*N, T_q, T_k)</span></span><br><span class="line">        outputs *= query_masks  <span class="comment"># broadcasting. (N, T_q, C)</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># dropouts</span></span><br><span class="line">        outputs = tf.layers.dropout(outputs, rate=dropout_rate, training=tf.convert_to_tensor(is_training))</span><br><span class="line"></span><br><span class="line">        <span class="comment"># weighted sum</span></span><br><span class="line">        outputs = tf.matmul(outputs, V_) <span class="comment"># ( h*N, T_q, C/h)</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># reshape</span></span><br><span class="line">        outputs = tf.concat(tf.split(outputs, num_heads, axis=<span class="number">0</span>), axis=<span class="number">2</span>)  <span class="comment"># (N, T_q, C)</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># residual connection</span></span><br><span class="line">        outputs += queries</span><br><span class="line"></span><br><span class="line">        <span class="comment"># layer normaliztion</span></span><br><span class="line">        outputs = layer_normalization(outputs)</span><br><span class="line">        <span class="keyword">return</span> outputs</span><br></pre></td></tr></table></figure>
+<p>基本就是按着 Paper 来的，不过一个很让人费解的地方就是其中的 Key Masking 和 Query Masking，Paper 中写是 Optional 的，代码的作者非常细致的实现了这一部分。其目的是考虑到<strong>变长的序列</strong>，比如第一句的长度为 128 而第二句只有 64，对于第二句，其 Encoding 的结果或者说是 Hidden State 的后面 64 个单元是没有意义的，因此将其设置为一个非常小的数，从而对应的权重接近 0；Query 类似。具体内容可以参考这个<a href="https://github.com/Kyubyong/transformer/issues/3" target="_blank" rel="noopener">Issue</a>。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Feed Forward Network</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">feedforward</span><span class="params">(inputs,</span></span></span><br><span class="line"><span class="function"><span class="params">                num_units=[<span class="number">2048</span>, <span class="number">512</span>],</span></span></span><br><span class="line"><span class="function"><span class="params">                scope=<span class="string">"multihead_attention"</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">                reuse=None)</span>:</span></span><br><span class="line">    <span class="keyword">with</span> tf.variable_scope(scope, reuse=reuse):</span><br><span class="line">        <span class="comment"># Inner layer</span></span><br><span class="line">        params = &#123;<span class="string">"inputs"</span>: inputs, <span class="string">"filters"</span>: num_units[<span class="number">0</span>], <span class="string">"kernel_size"</span>: <span class="number">1</span>,</span><br><span class="line">                  <span class="string">"activation"</span>: tf.nn.relu, <span class="string">"use_bias"</span>: <span class="keyword">True</span>&#125;</span><br><span class="line">        outputs = tf.layers.conv1d(**params)</span><br><span class="line">        <span class="comment"># Readout layer</span></span><br><span class="line">        params = &#123;<span class="string">"inputs"</span>: outputs, <span class="string">"filters"</span>: num_units[<span class="number">1</span>], <span class="string">"kernel_size"</span>: <span class="number">1</span>,</span><br><span class="line">                  <span class="string">"activation"</span>: <span class="keyword">None</span>, <span class="string">"use_bias"</span>: <span class="keyword">True</span>&#125;</span><br><span class="line">        outputs = tf.layers.conv1d(**params)</span><br><span class="line">        <span class="comment"># Residual connection</span></span><br><span class="line">        outputs += inputs</span><br><span class="line">        <span class="comment"># Normalize</span></span><br><span class="line">        outputs = layer_normalization(outputs)</span><br><span class="line">    <span class="keyword">return</span> outputs</span><br></pre></td></tr></table></figure>
+<p>FFN 的实现就很简单，用两个 conv1d 的卷积，手动写矩阵乘法也可以；另外就是最后两步的 Residual Connection 直接加上输入以及 Layer Normalization。</p>
+<p>PS：我拿着这个代码跑了一下 IMDB 的文本分类，只用了 Multi-head 和 FFN，Query 是一个随机初始化的向量，Key 和 Value就是经过 embedding 后的句子。 和 LSTM 对比下来，时间是 LSTM 的 6 倍，效果比 LSTM 还差… 为什么呢？因为没有<strong>并行化</strong>，事实上那些矩阵乘法都是可以用多块 GPU 来并行进行的，论文就说他们用了 <strong>8 块 P100</strong>。流下了没有钱的泪水。</p>
+<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><p><a href="https://zhuanlan.zhihu.com/p/34781297" target="_blank" rel="noopener">《attention is all you need》解读</a></p>
+<p><a href="https://github.com/Kyubyong/transformer" target="_blank" rel="noopener">Github-Kyubyong/transformer</a></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Deep Learning</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">NLP</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+
+      
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/05/13/Attention-Notes/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-BPTT-notes" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1092,128 +1217,6 @@
 
 
   
-    <article id="post-Dynamic-Programming-Learning" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/02/02/Dynamic-Programming-Learning/">动态规划学习笔记1</a>
-    </h1>
-  
-
-        
-        <a href="/2018/02/02/Dynamic-Programming-Learning/" class="archive-article-date">
-  	<time datetime="2018-02-02T10:46:04.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-02-02</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>菜鸡还是直面自己的弱点才能成长啊，算法还是一块巨大的短板，需要好好补一补。从自己觉得很玄的动态规划（Dynamic Programming，DP） 开始，从几个经典的题型入手，主要参考刘汝佳的《算法竞赛入门经典》。</p>
-<h2 id="Longest-Increasing-Subsequence"><a href="#Longest-Increasing-Subsequence" class="headerlink" title="Longest Increasing Subsequence"></a>Longest Increasing Subsequence</h2><p>POJ 2533 这道最长上升子序列问题是非常经典的 DP 问题，问题描述摘录如下:</p>
-<blockquote>
-<p>A numeric sequence of <em>ai</em> is ordered if <em>a<sub>1</sub></em> &lt; <em>a<sub>2</sub></em> &lt; … &lt; <em>a<sub>N</sub></em>. Let the subsequence of the given numeric sequence (<em>a1<sub>1</sub>, </em>a<sub>2</sub>, …, <em>a<sub>N</sub></em>) be any sequence (<em>a<sub>i1</sub></em>, <em>a<sub>i2</sub></em>, …, <em>a<sub>iK</sub></em>), where 1 &lt;= <em>i1</em> &lt; <em>i2</em> &lt; … &lt; <em>iK</em> &lt;= <em>N</em>. For example, sequence (1, 7, 3, 5, 9, 4, 8) has ordered subsequences, e. g., (1, 7), (3, 4, 8) and many others. All longest ordered subsequences are of length 4, e. g., (1, 3, 5, 8).</p>
-<p>Your program, when given the numeric sequence, must find the length of its longest ordered subsequence.</p>
-</blockquote>
-<p>题意很简单，怎么做呢？简单粗暴的穷举必然是一种方法，找出所有的子串，验证其单调性，复杂度为O(2^n)。</p>
-<p>另外一种普遍的解法就是动态规划了，设 <code>d[i]</code> 是 <code>以 i 位置结尾的数能够成的上升子序列的长度最大值</code> ，那么必然有：</p>
-<p><strong>$d[i] = max(d[i],  d[j]+1) \ if \ a[j] &lt; a[i] \ and \ i &lt; j$</strong></p>
-<p>（PS：刘汝佳的书上的公式给的是 <code>d[i] = max(0, d[j]) + 1</code>，有问题。</p>
-<p>有了这个式子，我们就不难写出下面这段核心代码：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span> ; i &lt; n ; i++) d[i] = <span class="number">1</span>; <span class="comment">// 初始化</span></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; ++i)</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>;  j &lt; i; ++j) </span><br><span class="line">		<span class="keyword">if</span>(arr[j] &lt; arr[i]) </span><br><span class="line">			d[i] = max(d[j] + <span class="number">1</span>, d[i]); <span class="comment">// 状态转移方程</span></span><br></pre></td></tr></table></figure>
-<p>上面的那个式子叫做状态转移方程，而 <code>d[i]</code> 叫做位置 <code>i</code> 的状态。很显然，因为<strong>自身构成一个 LIS，长度为 1</strong>，所以我们需要把所有状态都初始化为 1。最后的解雇就是 <code>max(d[i])</code>。复杂度是O(n^2)，还存在着 O(nlogn) 的优化方法，就不展开了。</p>
-<p>从这个例子我们能够发现，动态规划最重要的就是<strong>设计合适的状态和状态转移方程</strong>，从而把问题变小，也是一种分而治之的思想。</p>
-<h2 id="0-1-背包问题"><a href="#0-1-背包问题" class="headerlink" title="0-1 背包问题"></a>0-1 背包问题</h2><p>我一开始听到 0-1 背包就觉得是个厉害的不行的东西肯定很难，其实也还是一个动态规划问题，问题描述如下：</p>
-<blockquote>
-<p>0-1 背包</p>
-<p>有一个窃贼在偷窃一家商店时发现有n件物品，第i件物品价值为vi元，重量为wi，假设vi和wi都为整数。他希望带走的东西越值钱越好，但他的背包中之多只能装下C磅的东西，W为一整数。他应该带走哪几样东西？</p>
-</blockquote>
-<p>这里的核心就是设计状态转移方程，因为每一件物品只有两种状态，取或者不取，所以利用这一点，对于第 i 件物品，考虑当前剩余容量 j，那么用 <strong>d(i, j) 表示取第 i 个，i+1，…，n 件物品能取得的最大价值</strong>，则有</p>
-<blockquote>
-<p> d(i, j) = max( d(i+1, j), d(i+1, j-W<sub>i</sub>) + V<sub>i</sub>)</p>
-</blockquote>
-<p>d(i+1, j) 的含义即为不取第 i 个物品，考虑下一个；d(i+1, j-W<sub>i</sub>) + V<sub>i</sub> 则是取了第 i 个，相应的重量减少为 <code>j - W&lt;sub&gt;i&lt;/sub&gt;</code>继续考虑第 i+1 个，因此我们可以写出下面的这段核心代码</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i = n ; i &gt;= <span class="number">1</span>; i-- )  <span class="comment">// 从后向前考虑</span></span><br><span class="line">	<span class="keyword">for</span>(j = C ; j &gt;= <span class="number">0</span> ; j --)&#123;</span><br><span class="line">		d[i][j] = (i == n ? <span class="number">0</span> : d[i+<span class="number">1</span>][j]);<span class="comment">// 边界情况 </span></span><br><span class="line">			<span class="keyword">if</span>( j &gt;= W[i]) <span class="comment">// 容量允许</span></span><br><span class="line">				d[i][j] = max(d[i][j], d[i+<span class="number">1</span>][j-W[i]] + V[i]);</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
-<p>其中有一点需要注意：N 从后向前考虑，也就是最简单的情况，保证 i+1 能够继续递推，最终的答案即为 d(1, C) ；如果要从前向后的话，即定义 <strong>f(i, j) 为把前 i 个物品装入容量为 j 的最大价值</strong>，类似我们可以得到 </p>
-<blockquote>
-<p>f(i, j) = max( f(i-1, j), f(i-1, j - W<sub>i</sub>) + V<sub>i</sub>)</p>
-</blockquote>
-<p>这里的边界情况也对应的修改为 <code>i=0</code> 时，价值为 0。这种从前向后的的代码如下：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n; i ++)</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span> ; j &lt;= W; j++) &#123;</span><br><span class="line">        <span class="built_in">cin</span> &gt;&gt; W &gt;&gt; V; <span class="comment">// 直接计算 不用保存</span></span><br><span class="line">        f[i][j] = (i == <span class="number">0</span> ? <span class="number">0</span> : f[i<span class="number">-1</span>][j]);</span><br><span class="line">        <span class="keyword">if</span>(j &gt;= V)</span><br><span class="line">            f[i][j] = max(f[i][j], f[i<span class="number">-1</span>][j-W]+V);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-<p>其带来的一个显著的好处就是不用对数据进行保存。</p>
-<p>然而使用二维数组，其大小 N*M 是一种巨大的浪费，甚至会超出一些题目的限制，因此我们可以使用滚动数组来节约空间的开销，即吧 f 数组变成一维的</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">memset</span>(f, <span class="number">0</span>, <span class="keyword">sizeof</span>(f)); <span class="comment">// tips: memset 对int数组只设置为 0/-1 </span></span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>; i&lt;= n ; i ++) &#123;</span><br><span class="line">    <span class="built_in">cin</span> &gt;&gt; W &gt;&gt; V;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> j = C; j&gt;= <span class="number">0</span>; j --) </span><br><span class="line">        <span class="keyword">if</span>(j &gt;= V)</span><br><span class="line">            f[j] = max(f[j], f[j-W] + V);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这边我们先把 j 的顺序改成了逆序，在前面两种方法中，j 枚举的顺序是没关系的。这样，f 数组的计算顺序就是从上到下，从右往左。在计算 <code>f(i, j)</code> 之前，<code>f[j]</code> 里保存着<code>f(i-1, j)</code> ，而 <code>f[j- W]</code> 里保存着的是 <code>f(i-1, j - W)</code>，因为 <code>f(i, j)</code> 的计算所依赖的 <code>f(i-1, j)</code> 和 <code>f(i-1, j - W)</code> 都已经在之前计算出来，所以我们可以利用先前的值更新并且覆盖，达到节约空间的效果。</p>
-<p>所以，可以得出一个经验，<strong>使用滚动数组在一些旧值使用不多的情况下，可以大幅减少内存</strong>。当然，滚动数组也会带来打印结果不便的困难，再一次证明了“天下没有免费的午餐”这一定律。</p>
-<h2 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h2><p>DP 的学习才刚刚开始，但这篇文章已经拖了很久，所以决定在年三十先告一段落吧。再小小的总结一下：</p>
-<ol>
-<li>DP 思想，是分治的一种，核心是设计好的状态转移方程</li>
-<li>何时用滚动数组，优点缺点</li>
-<li>memset 的使用注意点，对 int 数组只能设置为 0 或 -1（保证高字节和低字节相同）</li>
-<li>边界情况的考虑</li>
-</ol>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">算法</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">ACM</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-
-      
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/02/02/Dynamic-Programming-Learning/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
@@ -1354,11 +1357,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
+                <a href="javascript:void(0)" class="js-tag color2">Machine Learning</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Machine Learning</a>
+                <a href="javascript:void(0)" class="js-tag color4">NLP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1370,10 +1377,6 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">NLP</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
               </li>
              
@@ -1382,11 +1385,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">C</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">C</a>
+                <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1395,14 +1402,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">栈</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1418,6 +1417,10 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Java</a>
               </li>
              
@@ -1430,15 +1433,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">LaTeX</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Retrofit</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Python</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">LaTeX</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1450,11 +1449,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">View</a>
+                <a href="javascript:void(0)" class="js-tag color4">Retrofit</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">C++</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">View</a>
               </li>
             
             <div class="clearfix"></div>
