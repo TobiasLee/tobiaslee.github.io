@@ -19,7 +19,7 @@
 <meta property="og:image" content="http://yoursite.com/img/qkv.jpg">
 <meta property="og:image" content="http://yoursite.com/img/multi-head.png">
 <meta property="og:image" content="http://yoursite.com/img/pe.png">
-<meta property="og:updated_time" content="2018-05-13T08:33:18.495Z">
+<meta property="og:updated_time" content="2018-05-13T08:34:28.575Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="别人家的 Attention">
 <meta name="twitter:description" content="Attention Is All You Need 前段时间火了一把，其提出完全用 Attention 替代传统的 CNN 和 RNN 架构来做特征的提取，也在 NMT 上也取得了 state-of-the-art。这两天读了一下这篇 Paper，并且在熟悉的 Text Classification 问题上用其模型做了一下尝试，这篇 Blog 就用来记录过程中的一些想法和感受。 What is A">
@@ -202,6 +202,7 @@
 <p>一开始提出 Attention 的使用一个 Alignment Function 来描述，并且提出了几种 score 的计算方式。这里的计算公式就是用最普通的矩阵乘法：</p>
 <p>$Attention(Q, K, V) = softmax( \frac{QK^T}{\sqrt{d_k}})V$</p>
 <p>Softmax 项就是权重项，$V$ 是一系列 hidden states，也就是说，attention 最终的表现形式依旧是<strong>加权和</strong>。</p>
+<a id="more"></a>
 <h2 id="Multihead-Attention"><a href="#Multihead-Attention" class="headerlink" title="Multihead Attention"></a>Multihead Attention</h2><p>到了本文最重要的部分， Multi-head Attention。作者的 Motivation 认为是原有的 RNN 和 CNN 并行化不够，太慢了；同时觉得原先的复杂度太高，像 RNN，从头滚到尾关于序列长度是一个 $O(n)$ 的复杂度。所以期望单用一个 Attention 来做特征的提取，因而提出了 Multi-head Attention。</p>
 <p><img src="/img/multi-head.png" alt="Multi-head Attention"></p>
 <p>$MultiHead(Q, K, V) = Concat( head_1, … , head_h) W^O$</p>
@@ -313,6 +314,15 @@
 
   
 <nav id="article-nav">
+  
+    <a href="/2018/06/09/New-Stage/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          又一年
+        
+      </div>
+    </a>
   
   
     <a href="/2018/04/28/BPTT-notes/" id="article-nav-older" class="article-nav-link-wrap">
@@ -471,23 +481,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Deep Learning</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Reinforcement Learning</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Machine Learning</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">NLP</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -503,7 +505,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
+                <a href="javascript:void(0)" class="js-tag color2">Machine Learning</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">NLP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -511,7 +521,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">C</a>
+                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -519,7 +529,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
+                <a href="javascript:void(0)" class="js-tag color2">C</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -531,10 +541,6 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">MediaCodec</a>
               </li>
              
@@ -543,11 +549,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
+                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Java</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -559,19 +569,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Python</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">LaTeX</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">JVM</a>
+                <a href="javascript:void(0)" class="js-tag color2">Python</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">爬虫</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">JVM</a>
               </li>
              
               <li class="article-tag-list-item">
