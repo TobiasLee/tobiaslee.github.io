@@ -6,19 +6,19 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>2016 GoodBye , Hello 2017 | Stay Hungry,Stay Foolish.</title>
+  <title>Pytorch 初体验 | Stay Hungry,Stay Foolish.</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="2016年，过去啦。刚看完《血战钢锯岭》回来，心情其实蛮沉重的。但也想着在这个最后一天，写点什么吧。人这个东西很奇怪，总是有一些奇怪的仪式感的东西，比如年度总结。想到哪写到哪吧那就。 印象最深的自然是高考啦，六月以前，一直都是在为高考而奋斗，而努力。结果出来的时候，怎么说呢，波澜不惊。没有实现自己的目标，也辜负了一些人的期望。不过 一切都已经尘埃落定 能做的 也只有 往前看 然后就到了西电，学校一">
-<meta name="keywords" content="随笔">
+  <meta name="description" content="深度学习框架很多，TensorFlow 算是比较流行的了，但静态图有时候确实写的很难受，以及一些比较复杂的 model 实现起来比较蛋疼；最近在看的文章的实现没有 TensorFlow 版本，起初我想改写一个 TensorFlow 版本出来，结果实现不了，一方面可能我确实比较菜，另一方面，也只能说 TensorFlow 有些东西在设计上让人为难。所以，那就试试 PyTorch 咯。这篇文章主要是记">
+<meta name="keywords" content="Deep Learning">
 <meta property="og:type" content="article">
-<meta property="og:title" content="2016 GoodBye , Hello 2017">
-<meta property="og:url" content="http://yoursite.com/2016/12/31/2016-GoodBye-Hello-2017/index.html">
+<meta property="og:title" content="Pytorch 初体验">
+<meta property="og:url" content="http://yoursite.com/2018/06/30/Pytorch-Tutorial-Walkthrough/index.html">
 <meta property="og:site_name" content="Stay Hungry,Stay Foolish.">
-<meta property="og:description" content="2016年，过去啦。刚看完《血战钢锯岭》回来，心情其实蛮沉重的。但也想着在这个最后一天，写点什么吧。人这个东西很奇怪，总是有一些奇怪的仪式感的东西，比如年度总结。想到哪写到哪吧那就。 印象最深的自然是高考啦，六月以前，一直都是在为高考而奋斗，而努力。结果出来的时候，怎么说呢，波澜不惊。没有实现自己的目标，也辜负了一些人的期望。不过 一切都已经尘埃落定 能做的 也只有 往前看 然后就到了西电，学校一">
-<meta property="og:updated_time" content="2016-12-31T15:13:32.000Z">
+<meta property="og:description" content="深度学习框架很多，TensorFlow 算是比较流行的了，但静态图有时候确实写的很难受，以及一些比较复杂的 model 实现起来比较蛋疼；最近在看的文章的实现没有 TensorFlow 版本，起初我想改写一个 TensorFlow 版本出来，结果实现不了，一方面可能我确实比较菜，另一方面，也只能说 TensorFlow 有些东西在设计上让人为难。所以，那就试试 PyTorch 咯。这篇文章主要是记">
+<meta property="og:updated_time" content="2018-06-30T17:30:56.365Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="2016 GoodBye , Hello 2017">
-<meta name="twitter:description" content="2016年，过去啦。刚看完《血战钢锯岭》回来，心情其实蛮沉重的。但也想着在这个最后一天，写点什么吧。人这个东西很奇怪，总是有一些奇怪的仪式感的东西，比如年度总结。想到哪写到哪吧那就。 印象最深的自然是高考啦，六月以前，一直都是在为高考而奋斗，而努力。结果出来的时候，怎么说呢，波澜不惊。没有实现自己的目标，也辜负了一些人的期望。不过 一切都已经尘埃落定 能做的 也只有 往前看 然后就到了西电，学校一">
+<meta name="twitter:title" content="Pytorch 初体验">
+<meta name="twitter:description" content="深度学习框架很多，TensorFlow 算是比较流行的了，但静态图有时候确实写的很难受，以及一些比较复杂的 model 实现起来比较蛋疼；最近在看的文章的实现没有 TensorFlow 版本，起初我想改写一个 TensorFlow 版本出来，结果实现不了，一方面可能我确实比较菜，另一方面，也只能说 TensorFlow 有些东西在设计上让人为难。所以，那就试试 PyTorch 咯。这篇文章主要是记">
   
     <link rel="alternative" href="/atom.xml" title="Stay Hungry,Stay Foolish." type="application/atom+xml">
   
@@ -154,42 +154,77 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-2016-GoodBye-Hello-2017" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-Pytorch-Tutorial-Walkthrough" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      2016 GoodBye , Hello 2017
+      Pytorch 初体验
     </h1>
   
 
         
-        <a href="/2016/12/31/2016-GoodBye-Hello-2017/" class="archive-article-date">
-  	<time datetime="2016-12-31T14:38:44.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-12-31</time>
+        <a href="/2018/06/30/Pytorch-Tutorial-Walkthrough/" class="archive-article-date">
+  	<time datetime="2018-06-30T13:48:55.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-06-30</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>2016年，过去啦。<br>刚看完《血战钢锯岭》回来，心情其实蛮沉重的。<br>但也想着在这个最后一天，写点什么吧。<br>人这个东西很奇怪，总是有一些奇怪的仪式感的东西，比如年度总结。<br>想到哪写到哪吧那就。</p>
-<p>印象最深的自然是高考啦，<br>六月以前，一直都是在为高考而奋斗，而努力。<br>结果出来的时候，怎么说呢，波澜不惊。<br>没有实现自己的目标，也辜负了一些人的期望。<br>不过 <strong>一切都已经尘埃落定</strong> 能做的 也只有 <strong>往前看</strong></p>
-<p>然后就到了西电，学校一般吧，<br>哪都有NB的人，也少不了一群庸人。<br>我要做的，就是努力成为 被人仰望的那一小撮人吧 。<br><a id="more"></a><br>16年的下半年算是真正开始了大学生活，<br>主要干了几件事情<br>1.学习Java 只能说堪堪入门<br>2.开始接触 Android 也只是皮毛<br>3.完成了若干本书的阅读<br>也确实没做出什么事情来，不过我觉得17年，是真正需要开始发力的时候了。</p>
-<p>大学四年的规划其实大致有数了。<br>毕业之后就业 如果薪资待遇不能满足我的意愿 就保研<br>所以把GPA保持在前列是很重要的，目前看来也并不是很难做到。<br>就业，不出意外的话会是移动端也就是Android开发，再远一点的技术转型也暂时遇见不到了。<br>大三想去腾讯实习 0.0 毕业了也是 T &gt; A &gt; H<br>不想去帝都…感觉西安的霾已经快杀死我了 所以深圳 &gt; 杭州 </p>
-<p>貌似T算是西电天花板?所以如果故步自封肯定会死的很惨。<br>17 年的规划 暂时如下， 明年年底来检查自己完成了几项。</p>
+        <p>深度学习框架很多，TensorFlow 算是比较流行的了，但静态图有时候确实写的很难受，以及一些比较复杂的 model 实现起来比较蛋疼；最近在看的文章的实现没有 TensorFlow 版本，起初我想改写一个 TensorFlow 版本出来，结果实现不了，一方面可能我确实比较菜，另一方面，也只能说 TensorFlow 有些东西在设计上让人为难。所以，那就试试 PyTorch 咯。这篇文章主要是记录我学习 PyTorch 官方 60 分钟<a href="https://pytorch.org/tutorials/beginner/deep_learning_60min_blitz.html" target="_blank" rel="noopener">教程</a>的过程。</p>
+<h2 id="Tensor"><a href="#Tensor" class="headerlink" title="Tensor"></a>Tensor</h2><p>逃不开的还是 Tensor 这个对象，PyTorch 创建、操作 Tensor 的方法和 numpy 很类似，据说 Torch 一开始就是 Numpy 的 GPU 加速版，简单列些一些 API：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">x = torch.empty(<span class="number">5</span>, <span class="number">3</span>) <span class="comment"># 创建一个未初始化的 5x3 tensor</span></span><br><span class="line">x = torch.rand(<span class="number">5</span>, <span class="number">3</span>) <span class="comment"># 随机生成 5x3 </span></span><br><span class="line">x = torch.zeros(<span class="number">5</span>, <span class="number">3</span>, dtype=torch.long)</span><br></pre></td></tr></table></figure>
+<p>比较有意思的是，创建 Tensor 的时候 size 参数不是一个 <code>tuple</code> e.g. <code>(5, 3)</code> ，而是用 <code>*args</code> 的方式传入。</p>
+<p>常用的算术操作可以通过 <code>x+y</code> 或者是 <code>torch.add(x, y)</code> 来实现，同时 PyTorch 也提供了<strong>就地 </strong>(in place) 的操作：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">y.add_(x) <span class="comment"># equals y = y + x</span></span><br></pre></td></tr></table></figure>
+<p>所有的操作名 + 下划线都是一个就地操作，<code>x.copy_(y)</code> 会用 <code>y</code> 的值<strong>替代</strong><code>x</code>。</p>
+<p>另外，对于单元素的 Tensor，可以通过使用 <code>.item()</code> 来获取它；TensorFlow 中的 <code>reshape()</code> 对应的是 <code>view()</code>，并且，和 numpy 一样，<strong>Tensor</strong> 支持切片操作：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">x = torch.randn(<span class="number">4</span>, <span class="number">4</span>) <span class="comment"># x -&gt; 4x4</span></span><br><span class="line">x.view(<span class="number">-1</span> , <span class="number">8</span>) <span class="comment"># x -&gt; 2 x 8</span></span><br><span class="line">x[:, <span class="number">1</span>] <span class="comment"># 取第二列的所有元素</span></span><br></pre></td></tr></table></figure>
+<p>既然之前说 Torch 是 Numpy 的一个 GPU 版本，也就支持 ndarray 和 Tensor 的相互转化（这就比 TensorFlow 用起来舒服很多），可以用 <code>Tensor.numpy()</code> 获取到对应的 ndarray，逆操作则是 <code>torch.from_numpy()</code>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># example 1 tensor -&gt; numpy</span></span><br><span class="line">a = torch.ones(<span class="number">3</span>) <span class="comment"># tensor([1., 1. , 1.])</span></span><br><span class="line">b = a.numpy() <span class="comment"># 通过 tensor.numpy() 获取对应的 ndarray 对象</span></span><br><span class="line">a.add_(<span class="number">1</span>)  <span class="comment"># 就地 + 1 , a= a+1</span></span><br><span class="line">print(a)<span class="comment"># tensor([2., 2., 2.])</span></span><br><span class="line">print(b) <span class="comment"># [2., 2., 2.]</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># example 2   numpy -&gt; tensor</span></span><br><span class="line">a = np.ones(<span class="number">3</span>)</span><br><span class="line">b = torch.from_numpy(a)</span><br><span class="line">np.add(a, <span class="number">1</span>, out=a)</span><br><span class="line">print(a)  <span class="comment"># [2., 2., 2.]</span></span><br><span class="line">print(b) <span class="comment"># tensor([2., 2., 2.])</span></span><br></pre></td></tr></table></figure>
+<p>上面这个例子很重要，说明了<strong>ndarray 和 Tensor 对象之间的转换是一种引用关系，而非创建新的对象</strong>。也就是说，<strong>任何一个相关对象的变化都会影响到另一方</strong>，就像例子 1 中，我们对原始的 <code>a</code> 进行 <code>add_(1)</code>，在此之前得到的 <code>b</code> 对象的值也改变了，例子二中同样出现了这样的情况，这一点需要特别注意。</p>
+<h3 id="CUDA-Tensors"><a href="#CUDA-Tensors" class="headerlink" title="CUDA Tensors"></a>CUDA Tensors</h3><p>我们可以把 Tensor 放到 GPU 上来加速计算，而 PyTorch 为此提供了很方便的方式：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> torch.cuda.is_available(): <span class="comment"># 如果 CUDA 可用</span></span><br><span class="line">    device = torch.device(<span class="string">"cuda"</span>)          <span class="comment"># CUDA 设备对象</span></span><br><span class="line">    y = torch.ones_like(x, device=device)  <span class="comment"># 直接在 GPU 上创建 Tensor 对象</span></span><br><span class="line">    x = x.to(device)                       <span class="comment"># 也可以用``.to("cuda")`` 代替</span></span><br><span class="line">    z = x + y</span><br><span class="line">    print(z)</span><br><span class="line">    print(z.to(<span class="string">"cpu"</span>, torch.double))       <span class="comment"># ``.to`` 同时可以改变数据类型</span></span><br></pre></td></tr></table></figure>
+<p>如上面的例子所示，我们可以在创建 Tensor 对象时指定 <code>device</code> 参数来指明 Tensor 创建的位置，也可以再创建了之后使用 <code>.to()</code> 方法来进行双向的迁移：既可以从 CPU 到 GPU（例子中的 <code>x.to(device)</code>，也可以从 GPU 到 CPU（<code>z.to(&quot;cpu&quot;, torch.double)</code>）。对比 TensorFlow ：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> tf.device(<span class="string">'/cpu:0'</span>):</span><br><span class="line">    <span class="comment"># something you want to do on CPU</span></span><br><span class="line"><span class="keyword">with</span> tf.device(<span class="string">'/gpu:0'</span>):</span><br><span class="line">    <span class="comment"># somethin you want to do on GPU</span></span><br></pre></td></tr></table></figure>
+<p>就我所知，TensorFlow 只能在创建的时候指明位置，而无法像 PyTorch 这般灵活的迁移。</p>
+<h2 id="Autograd"><a href="#Autograd" class="headerlink" title="Autograd"></a>Autograd</h2><p>自动求导已经是深度学习框架的必备了，首先，我们可以通过设置 Tensor 的 <code>.requires_grad</code> 参数来指明 Tensor 是否参与梯度运算，这和 TensorFlow 中的 <code>trainable</code> 是类似的；接着我们通过对某个对象（比如 loss ）函数进行 <code>.backward()</code> 操作，来进行反向梯度的计算，并且能够通过计算链上对象的 <code>.grad</code> 属性来获取到对应的梯度。拿官方的例子做一个简单的说明：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">x = torch.ones(<span class="number">2</span>, <span class="number">2</span>, requires_grad=<span class="keyword">True</span>) <span class="comment"># 声明 x，指明需要参加梯度的计算 x: 2x2 全 1</span></span><br><span class="line">y = x + <span class="number">2</span></span><br><span class="line">z = y * y * <span class="number">3</span> <span class="comment"># z = 3 * (x+2)^2</span></span><br><span class="line">out = z.mean()</span><br></pre></td></tr></table></figure>
+<p>梯度计算的过程如下：</p>
+<p>$ o =\frac{1}{4}\sum_i z_i$</p>
+<p>$ z_i = 3(x_i+2)^2 $</p>
+<p>$ z_i\bigr\rvert_{x_i=1} = 27 $</p>
+<p>$ \frac{\partial o}{\partial x_i} = \frac{3}{2}(x_i+2) $</p>
+<p>$  \frac{\partial o}{\partial x_i}\bigr\rvert_{x_i=1} = \frac{9}{2} = 4.5 $</p>
+<p>因此，<code>x.grad</code> 的值在我们对 <code>out</code> 进行 <code>out.backward()</code> 操作之后，结果为：</p>
+<blockquote>
+<p>tensor([[ 4.5000,  4.5000],</p>
+<p>​             [ 4.5000,  4.5000]])</p>
+</blockquote>
+<p><code>backward()</code> 函数的原型如下：</p>
+<blockquote>
+<p> torch.autograd.backward(<em>tensors</em>, <em>grad_tensors=None</em>, <em>retain_graph=None</em>, <em>create_graph=False</em>, <em>grad_variables=None</em>)</p>
+</blockquote>
+<p>其中第一个参数用来声明<strong>梯度的权重</strong>。如果目标函数是一个标量，则可以不传这个参数，比如上面的 <code>out.backward()</code> ，则默认权重为 <code>1</code> ，如果我们改成 <code>out.backward(torch.tensor(2,dtype=torch.float))</code> 则各个 $$x_i$$ 梯度就会变成原来的 2 倍，利用权重我们就可以来控制各个参数的更新速度。</p>
+<h2 id="Build-A-Neural-Network"><a href="#Build-A-Neural-Network" class="headerlink" title="Build  A Neural Network"></a>Build  A Neural Network</h2><p>学框架不搭一个 NN 来玩 MNIST 或者 CIFAR 怎么能叫入门呢？来来来，走一波~</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Net</span><span class="params">(nn.Module)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        super(Net, self).__init__()</span><br><span class="line">        self.conv1 = nn.Conv2d(<span class="number">3</span>, <span class="number">6</span>, <span class="number">5</span>) <span class="comment"># input 3 channels, output 6 channels , filter size = 5</span></span><br><span class="line">        self.conv2 = nn.Conv2d(<span class="number">6</span>, <span class="number">16</span>, <span class="number">5</span>) <span class="comment"># input 3 channels, output 16 channels, filter size = 5</span></span><br><span class="line">        <span class="comment"># Wx + b</span></span><br><span class="line">        self.fc1 = nn.Linear(<span class="number">16</span> * <span class="number">5</span> * <span class="number">5</span>, <span class="number">120</span>)</span><br><span class="line">        self.fc2 = nn.Linear(<span class="number">120</span>, <span class="number">84</span>)</span><br><span class="line">        self.fc3 = nn.Linear(<span class="number">84</span>, <span class="number">10</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span><span class="params">(self, x)</span>:</span></span><br><span class="line">        <span class="comment"># max pooling, window size : 2x2</span></span><br><span class="line">        x = F.max_pool2d(F.relu(self.conv1(x)), (<span class="number">2</span>, <span class="number">2</span>))</span><br><span class="line">        <span class="comment"># 如果是 方形的输入，window size 可以只用一个参数</span></span><br><span class="line">        x = F.max_pool2d(F.relu(self.conv2(x)), <span class="number">2</span>)</span><br><span class="line">        x = x.view(<span class="number">-1</span>, self.num_flat_features(x))</span><br><span class="line">        x = F.relu(self.fc1(x))</span><br><span class="line">        x = F.relu(self.fc2(x))</span><br><span class="line">        x = self.fc3(x)</span><br><span class="line">        <span class="keyword">return</span> x</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">num_flat_features</span><span class="params">(self, x)</span>:</span> <span class="comment"># 展平 x</span></span><br><span class="line">        size = x.size()[<span class="number">1</span>:]  <span class="comment"># 获取各个维度的大小，除了第一维 batch_size</span></span><br><span class="line">        num_features = <span class="number">1</span></span><br><span class="line">        <span class="keyword">for</span> s <span class="keyword">in</span> size:</span><br><span class="line">            num_features *= s</span><br><span class="line">        <span class="keyword">return</span> num_features</span><br></pre></td></tr></table></figure>
+<p>诶，有没有觉得有点像 Keras，不过高级的 API 用起来就是爽，不用写那么多代码2333，接下来就是定义 loss 和进行 backprop 来更新参数：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch.optim <span class="keyword">as</span> optim</span><br><span class="line"><span class="comment"># 定义 loss</span></span><br><span class="line">criterion = nn.CrossEntropy()</span><br><span class="line"><span class="comment"># 创建 optimizer</span></span><br><span class="line">optimizer = optim.SGD(net.parameters(), lr=<span class="number">0.01</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 在循环里不断进行如下操作：</span></span><br><span class="line">optimizer.zero_grad()   <span class="comment"># 清零梯度</span></span><br><span class="line">output = net(input)</span><br><span class="line">loss = criterion(output, target)</span><br><span class="line">loss.backward()</span><br><span class="line">optimizer.step()    <span class="comment"># 梯度更新</span></span><br></pre></td></tr></table></figure>
+<p>和 TensorFlow 的区别就在于，TensorFlow 的话只要我们用 <code>session.run(optimizer)</code> 就可以完成梯度的更新操作，而 PyTorch 则需要：</p>
 <ol>
-<li>参加Coolpad的安卓开发大赛，无论结果，一定要努力去做。</li>
-<li>好好学习数据结构和算法，虽说没有ACM的想法，但是OJ的题似乎和招聘很有关，完成清华数据结构的所有题目</li>
-<li>继续深入学习Java 掌握底层实现 看完《深入理解Java虚拟机》 《Effective Java 》 《Java编程思想》</li>
-<li>学习Android 了解底层的机制 并且对于使用的开源库的源码和实现要有所了解 不能做一个面条程序员</li>
-<li>至少学会三首指弹曲子</li>
-<li>学会一个人生活 拓宽知识面 至少看10本 与专业无关的书籍 (这是注定不找女朋友了吗?</li>
-<li>拿到奖学金</li>
+<li>Optimizer 清零梯度</li>
+<li>对 loss 进行手动的 <code>backward()</code> 操作</li>
+<li>Optimizer 更新 <code>.step()</code></li>
 </ol>
-<p>时间总是越过越快的，每一秒的过去，都是无法挽回的。<br>并不是说最后一天就会变得特别漫长，其实6月的一天和12月的一天，是一样的。<br>能做的，就是充实地过好每一天。<br>你要成为一个很厉害的人啊，然后才能去守护你想要守护的人。</p>
-<p>2016,GoodBye ~<br>Hello,2017,<br>让美好发生!</p>
+<p>三步走，记住了没有！</p>
+<p>还有一点比较方便的是，和 Tensor 类似，我们可以使用 <code>Net.to()</code> 来把模型部署到 GPU 上：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">net.to(<span class="string">"cuda:0"</span>)</span><br></pre></td></tr></table></figure>
+<p>但是！记得要把你的输入也放到 GPU 上，不然就会报错：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">inputs, labels = inputs.to(device), labels.to(device) <span class="comment"># 把 input 和 label 同样迁移到 GPU 上</span></span><br></pre></td></tr></table></figure>
+<h2 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h2><p>初体验如果要给个评价的话，我觉得是比 TensorFlow 好很多（毕竟 TensorFlow 一上来的 Session、静态图会让人有点摸不着头脑）。但用什么框架其实都无所谓，就和语言一样，虽然争来争去，但每种语言都有自己的用武之地，以前我还会和室友争辩 Java 和 Python 谁才是最好的语言，现在就不会了（因为我也觉得 Python 好写一点，逃）。框架更不用说，TensorFlow 有他应用的工业场景（希望能早日接触到），PyTorch 现在看来也许更适合需要快速实现原型的科研人员。而我们能做的，就是多接触，横向比较着来看而不要因为自己擅长而蒙蔽了双眼，<strong>多学一技压身，总是没错的</strong>。</p>
 
       
 
@@ -203,7 +238,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">随笔</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Deep Learning</a>
         		</li>
       		
 		</ul>
@@ -261,7 +296,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2016/12/31/2016-GoodBye-Hello-2017/" alt="微信分享二维码">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2018/06/30/Pytorch-Tutorial-Walkthrough/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -275,18 +310,9 @@
   
 <nav id="article-nav">
   
-    <a href="/2017/01/02/Lambda-Expressions/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          Lambda学习笔记
-        
-      </div>
-    </a>
   
-  
-    <a href="/2016/12/15/java-1/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">三道清华Java测试题</div>
+    <a href="/2018/06/09/Brief-overview-of-text-generation/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Brief Overview of Text Generation</div>
       <i class="icon-circle-right"></i>
     </a>
   
