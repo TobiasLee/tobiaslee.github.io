@@ -15,7 +15,7 @@
 <meta property="og:url" content="http://yoursite.com/2017/11/17/Sentence-preprocessing-skills/index.html">
 <meta property="og:site_name" content="Stay Hungry,Stay Foolish.">
 <meta property="og:description" content="最近做 Sentiment Analysis 的问题，用 IMDB，Twitter 等 Dataset，拿到原始的一条条文本，直接喂给 Model 肯定不行，需要进行对文本进行预处理。预处理的精细程度很大程度上也会影响模型的性能。这篇 Blog 就记录一些预处理的方法。 Remove Stop Words​    Stop Words，也叫停用词，通常意义上，停用词大致分为两类。一类是人类语言中包">
-<meta property="og:updated_time" content="2017-12-06T14:19:09.000Z">
+<meta property="og:updated_time" content="2018-07-28T07:02:29.106Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="文本预处理方法小记">
 <meta name="twitter:description" content="最近做 Sentiment Analysis 的问题，用 IMDB，Twitter 等 Dataset，拿到原始的一条条文本，直接喂给 Model 肯定不行，需要进行对文本进行预处理。预处理的精细程度很大程度上也会影响模型的性能。这篇 Blog 就记录一些预处理的方法。 Remove Stop Words​    Stop Words，也叫停用词，通常意义上，停用词大致分为两类。一类是人类语言中包">
@@ -186,7 +186,7 @@
 <p>以上是 stop 中的部分 stop words，确实没有什么意义，接下来定义一个函数，将原始的数据集文本中的停用词去除：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">remove_stop</span><span class="params">(data)</span>:</span></span><br><span class="line">  	total_words = <span class="number">0</span> <span class="comment"># 用于计算平均长度 以方便后面截断长度的设定</span></span><br><span class="line">    after_remove = list()</span><br><span class="line">    length = len(data) <span class="comment"># 获取数据集的大小 一般是一个 ndarray</span></span><br><span class="line">    total_words = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(length): <span class="comment"># 依次处理文本</span></span><br><span class="line">        clean_sentence = list()</span><br><span class="line">        <span class="keyword">for</span> word <span class="keyword">in</span> data[i].split(): <span class="comment"># 将文本 spilit 成一个个单词</span></span><br><span class="line">            <span class="keyword">if</span> word <span class="keyword">not</span> <span class="keyword">in</span> stop:</span><br><span class="line">                clean_sentence.append(word)</span><br><span class="line">        total_words += len(clean_sentence)</span><br><span class="line">        afters.append(<span class="string">" "</span>.join(after))</span><br><span class="line"></span><br><span class="line">    print(<span class="string">"Average length:"</span>, total_words/length)</span><br><span class="line">    <span class="keyword">return</span> np.asarray(after_remove)</span><br></pre></td></tr></table></figure>
 <p>思路很简单，就是判断 word 是否在 stop words 的集合中，如果不在就保留下来，最后通过 <code>&quot; &quot;.join(list)</code> 将非停用词的列表生成一个字符串，这个 <code>.join</code> 非常有意思；同样，为了统计去掉停用词之后的平均句子长度，在代码中我们每次都计算一下每个句子的长度，最后求一个平均，这是为了一些需要进行截断操作的处理做准备。</p>
-<h2 id="To-Word-ID"><a href="#To-Word-ID" class="headerlink" title="To Word ID"></a>To Word ID</h2><p>文本是无法直接交给我们模型进行训练的，我们需要把它们变成数字，在 NLP 领域很常用的一种方法就是 Sentence -&gt; Word ID -&gt; Word Embedding，而Sentence -&gt; Word ID 这一步，就是把每一个词变成一个独立的整数，比如下面的例子：</p>
+<h2 id="To-Word-Index"><a href="#To-Word-Index" class="headerlink" title="To Word Index"></a>To Word Index</h2><p>文本是无法直接交给我们模型进行训练的，我们需要把它们变成数字，在 NLP 领域很常用的一种方法就是 Sentence -&gt; Word ID -&gt; Word Embedding，而Sentence -&gt; Word ID 这一步，就是把每一个词变成一个独立的整数，比如下面的例子：</p>
 <p>“I am a student”，“You are a student, too”</p>
 <p>两个句子中总共有 7 个不一样的单词，我们按照出现的顺序来编号：</p>
 <p>I：1  am: 2  a: 3  student: 4 You: 5  are: 6  too: 7</p>
@@ -197,6 +197,30 @@
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">vocab_processor = tf.contrib.learn.preprocessing.VocabularyProcessor(</span><br><span class="line">    MAX_LENGTH, min_frequency=<span class="number">2</span>)</span><br><span class="line">x_transform_train = vocab_processor.fit_transform(train_text)</span><br><span class="line">x_transform_test = vocab_processor.transform(test_text)</span><br></pre></td></tr></table></figure>
 <p>其主要有两个函数：<code>fit()</code> 和 <code>transform()</code>，fit 就是形成一个 word: id 的字典，transform 就是根据字典来把句子转换成 id 组成的向量，一般我们通过 fit 训练集，再根据由训练集得到的 vocab dict 来 transform 测试集。你可能会说这样岂不是会有很多 UNK？是的，这也是真实的情况，每时每刻都有新词被造出来，而我们的训练集是不可能 hold 住所有的词语的。</p>
 <p>值得一提的是，这里 <code>VocabularyProcessor</code> 的构造函数中还有一个 <code>min_frequency</code> 参数，可以筛掉出现次数少于这个参数的词，去低频次，也是一种预处理的手段。</p>
+<p><strong>Update</strong>: 随着 TensorFlow 版本的更新，原来 <code>contrib</code> 包里的 <code>VocabularyProcessor</code> 已经不被推荐使用了，改为使用 <code>tf.keras.preprocessing</code> 包中的相关 API 进行操作，其中最重要的一个类就是 <code>Tokenizer</code> 这个类：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Tokenizer</span></span><br><span class="line">tokenizer = tf.keras.preprocessing.text.Tokenizer(num_words=<span class="number">20000</span>， oov_token=<span class="string">'&lt;UNK&gt;'</span>)</span><br><span class="line">tokenizer.fit_on_texts(train_text)</span><br><span class="line">train_idxs = tokenizer.text_to_sequences(train_text)</span><br><span class="line">test_idxs = tokenizer.text_to_sequences(test_text)</span><br></pre></td></tr></table></figure>
+<p><code>Tokenizer()</code> 构造函数有几个比较有用的参数：</p>
+<ul>
+<li>num_words: 保留的 vocab_size 的个数，即词频最高的 <code>num_words</code> 个 word 在词表中，这和之前的 <code>min_frequency</code> 的设计是恰好相反的，一个是考虑留下多少，一个是考虑去掉多少出现频率较低的。</li>
+<li>oov_token: 超出词表（test 中有 train 中未出现的词）时，将其设置为指定的 token，<strong>这个 <code>&lt;UNK&gt;</code> 在不会出现在 <code>word_docs</code> 和 <code>word_counts</code> 中，但是会出现 <code>word_index</code> 中，所以在计算 vocab_size 时使用 <code>len(word_index)</code> 比较稳妥</strong></li>
+</ul>
+<p>流程也是一样的，先利用 fit_on_texts 进行词表的构建，再利用 <code>text_to_sequences()</code> 来将 word 转化为对应的 idx；Tokenizer 有三个非常有用的成员：</p>
+<ul>
+<li>word_docs：一个 <code>OrderedDict</code>，用于记录各个词出现的次数</li>
+<li>word_count：一个 <code>dict</code>，用于记录各个词出现的次数</li>
+<li>word_index：word2idx 的一个字典，我们可以根据 word 拿到对应的 index，也可以通过简单的一行代码来构建一个 idx2word 的字典用于之后将 indexes 翻译成文本 <code>idx2word = {idx: word for word, idx in zip(word2idx.keys(), word2idx.values())}</code></li>
+</ul>
+<p>转换成 index 序列之后，长度的截取和 padding 则需要利用 <code>tf.keras.preprocessing.sequence</code> 包中的 <code>pad_sequences</code> 函数来进行：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">train_padded = tf.keras.preprocessing.sequence.pad_sequences(train_idxs, </span><br><span class="line">                                    maxlen=MAX_LENGTH, padding=<span class="string">'post'</span>, truncating=<span class="string">'post'</span>)</span><br></pre></td></tr></table></figure>
+<p><code>MAX_LENGTH</code> 和之前一样，用于指定需要截取到或者补齐到的程度，而之后的 <code>padding</code> 和 <code>truncating</code> 关键字则用于指定补齐和截取是哪个方向（<code>post</code> 或者 <code>pre</code>），比如对于一个序列 <code>[1, 2, 3, 4, 5]</code> 如果我们用 <code>maxlen = 6</code> ，而 padding 选择 <code>pre</code> 得到的结果就是：</p>
+<blockquote>
+<p>[0, 1, 2, 3, 4, 5]</p>
+</blockquote>
+<p>而如果 padding 选择 <code>post</code> ，结果就是：</p>
+<blockquote>
+<p>[1, 2, 3, 4, 5, 0]</p>
+</blockquote>
+<p><code>truncating</code> 同理。</p>
 <h2 id="Load-Pre-trained-Word-Embedding"><a href="#Load-Pre-trained-Word-Embedding" class="headerlink" title="Load Pre-trained Word Embedding"></a>Load Pre-trained Word Embedding</h2><p>我们可以使用预训练好的 Word Embedding 来加快模型的训练速度，常用的有 Stanford 的 <a href="https://nlp.stanford.edu/projects/glove/" target="_blank" rel="noopener">GloVe</a> 和 Google 家的 <a href="https://code.google.com/archive/p/word2vec" target="_blank" rel="noopener">Word2Vec</a> ，这里就以 GloVe 为例，展示如何加载预训练的 Word Embedding。</p>
 <p>GloVe 解压后会得到几个 <code>.txt</code> 文件，分别是 50/100/200/300 维的 Word Embedding，其格式是 “词语 向量” ，如下所示</p>
 <blockquote>
@@ -471,15 +495,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Deep Learning</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Reinforcement Learning</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -507,19 +531,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -527,7 +539,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -539,15 +563,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">MediaCodec</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">OpenGL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
               </li>
              
               <li class="article-tag-list-item">

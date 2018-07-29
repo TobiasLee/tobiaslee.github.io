@@ -22,7 +22,7 @@
 <meta property="og:image" content="http://yoursite.com/img/relative_gan.png">
 <meta property="og:image" content="http://yoursite.com/img/ragan.png">
 <meta property="og:image" content="http://yoursite.com/img/algorithm_ragan.png">
-<meta property="og:updated_time" content="2018-07-23T14:04:56.958Z">
+<meta property="og:updated_time" content="2018-07-24T10:22:31.342Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="RaSGAN Notes">
 <meta name="twitter:description" content="在机器之心上看到说 Goodfellow 给一篇刚上 arXiv 的 The relativistic discriminator: a key element missing from standard GAN 文章点了赞，就去看了眼，发现确实很有意思。 Intuition文章说标准的 GAN（SGAN） 在 Generator（下文用 G 代替） 生成的样本越来越逼真的时候 Discrimin">
@@ -207,7 +207,7 @@
 <li>训练 G 的时候，$ D(x_f) = 0 $</li>
 <li>$C(x) \in \mathit{F}$，其中 $F$ 是一类实值函数（这个一般都能满足）</li>
 </ol>
-<p>考虑到 IPM-based GAN 相对于 SGAN 具有更好的稳定性，可以推断，如果将 SGAN 推向 IPM-based GAN，能够提高其稳定性。怎么才能达到这个转变呢？如果我们认为 D 足够好，即能够在训练 G 时做到认为 $D(x_r) = 1 \ and \  D(x_f) = 0 $（这是一个比较强的假设，但是在训练一开始是能够满足的），而在训练 D 的时候 $D(x_r) = D(x_f) = 1 $，如开头图片的 (b) 所示那种情况，那么唯一缺少的条件就是 $D(x_r) = 0 $。但是在 SGAN 中，$D(x_r)$ 只跟 real data 有关，也即是<strong>绝对的真假</strong>，如果 G 生成的样本能够影响 $D(x_r)$，让它变得不那么真实，也即<strong>相对的真假</strong>。这个时候，$D(x_r)$ 才可能变成 0。总结起来一句话就是，在 $D(x_f)$ 提升的时候 $D(x_r)$ 相应地减少（这是一种相对的变化），这样 GAN 的训练才能更加稳定。</p>
+<p>考虑到 IPM-based GAN 相对于 SGAN 具有更好的稳定性，可以推断，如果将 SGAN 推向 IPM-based GAN，能够提高其稳定性。怎么才能达到这个转变呢？如果我们认为 D 足够好，即能够在训练 G 时做到认为 $D(x_r) = 1 \ and \  D(x_f) = 0 ​$（这是一个比较强的假设，但是在训练一开始是能够满足的），而在训练 D 的时候 $D(x_r) = D(x_f) = 1 ​$，如开头图片的 (b) 所示那种情况，那么唯一缺少的条件就是 $D(x_r) = 0 ​$。但是在 SGAN 中，$D(x_r)​$ 只跟 real data 有关，也即是<strong>绝对的真假</strong>，如果 G 生成的样本能够影响 $D(x_r)​$，让它变得不那么真实，也即<strong>相对的真假</strong>。这个时候，$D(x_r)​$ 才可能变成 0。总结起来一句话就是，在 $D(x_f)​$ 提升的时候 $D(x_r)​$ 相应地减少（这是一种相对的变化），这样 GAN 的训练才能更加稳定。</p>
 <h2 id="Methods"><a href="#Methods" class="headerlink" title="Methods"></a>Methods</h2><h3 id="Relativistic-GAN"><a href="#Relativistic-GAN" class="headerlink" title="Relativistic GAN"></a>Relativistic GAN</h3><p>如何把这种相对为真和为假的概率考虑进去？很简单，只要把 logits 做一个简单相减，即：</p>
 <p><img src="/img/relative_gan.png" alt="Relative Loss"></p>
 <p>这里用 <code>sigmoid</code> 函数将 logits 转化成概率，然后再取对数；我们可以很容易地把这个式子进行泛化，即用更一般的函数（不一定是似然函数）来替换它。</p>
@@ -309,6 +309,15 @@
 
   
 <nav id="article-nav">
+  
+    <a href="/2018/07/24/Controllable-Text-Generation-Notes/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          Controllable Text Generation Notes
+        
+      </div>
+    </a>
   
   
     <a href="/2018/06/30/Pytorch-Tutorial-Walkthrough/" id="article-nav-older" class="article-nav-link-wrap">
@@ -467,15 +476,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Deep Learning</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Reinforcement Learning</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -503,19 +512,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -523,7 +520,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -535,15 +544,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">MediaCodec</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">OpenGL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
               </li>
              
               <li class="article-tag-list-item">

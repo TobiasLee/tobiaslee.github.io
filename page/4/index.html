@@ -154,6 +154,182 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-Text-Classification代码学习笔记" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/08/07/Text-Classification代码学习笔记/">Text Classification 代码学习笔记</a>
+    </h1>
+  
+
+        
+        <a href="/2017/08/07/Text-Classification代码学习笔记/" class="archive-article-date">
+  	<time datetime="2017-08-07T12:12:44.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-08-07</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>找到了 TensorFlow 官方的 Text Classification 的代码来学习研究，<a href="https://github.com/tensorflow/tensorflow/blob/master/tensorflow/examples/learn/text_classification.py" target="_blank" rel="noopener">GitHub地址</a>。官方有给了四个代码，用 <strong>CNN</strong> 和 <strong>RNN</strong> 分别对<strong>字符</strong>和<strong>词语</strong>做文本分类。这里的数据主要是 <code>dbpedia</code> 的数据，数据的描述是这样的:</p>
+<blockquote>
+<p>The DBpedia ontology classification dataset is constructed by picking 14 non-overlapping classes from DBpedia 2014. They are listed in classes.txt. From each of thse 14 ontology classes, we randomly choose 40,000 training samples and 5,000 testing samples. Therefore, the total size of the training dataset is 560,000 and testing dataset 70,000.</p>
+</blockquote>
+<p>也就是说我们有 14 个类别的文本数据，然后我们要做的就是给每一段文本进行分类。</p>
+        
+          <a class="article-more-a" href="/2017/08/07/Text-Classification代码学习笔记/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">NLP</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Machine Learning</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">TensorFlow</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+
+      
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/08/07/Text-Classification代码学习笔记/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-TensorFlow初步" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/08/01/TensorFlow初步/">TensorFlow初步</a>
+    </h1>
+  
+
+        
+        <a href="/2017/08/01/TensorFlow初步/" class="archive-article-date">
+  	<time datetime="2017-08-01T11:13:04.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-08-01</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>其实这是一篇 Google 官网 TensorFlow Tutorial 的学习笔记，主要侧重记录使用 TensorFlow 框架的一个流程，细节暂且按下不表。</p>
+<p>首先是导入 TensorFlow 以及准备数据</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf <span class="comment"># 约定的简写</span></span><br><span class="line"><span class="keyword">from</span> tensorflow.examples.tutorials.mnist <span class="keyword">import</span> input_data</span><br><span class="line"></span><br><span class="line"><span class="comment"># 准备mnist数据集</span></span><br><span class="line">mnist = input_data.read_data_sets(<span class="string">'MNIST_data'</span>, one_hot=<span class="keyword">True</span>)</span><br></pre></td></tr></table></figure>
+<p>提一下 <code>one hot encoding</code>，就是一个由 0/1 组成的向量来表示的 label，如果说数字是“0”，那么对应的 label 就是[1,0,0,…,0]，如果是“1”，那么就是[0,1,0,…,0]</p>
+<p>这篇教程里使用了两个模型，一个是线性的“Wx+b”，还有一个则是CNN，因为主要侧重使用的结构以及我对CNN不是很熟悉（后者才是主要原因），所以这篇就只介绍第一种模型。<br>
+        
+          <a class="article-more-a" href="/2017/08/01/TensorFlow初步/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Machine Learning</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">TensorFlow</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+
+      
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/08/01/TensorFlow初步/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-深圳·大一·未来" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -873,199 +1049,6 @@
 
 
   
-    <article id="post-自定义View初探" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/05/14/自定义View初探/">自定义View初探</a>
-    </h1>
-  
-
-        
-        <a href="/2017/05/14/自定义View初探/" class="archive-article-date">
-  	<time datetime="2017-05-14T03:03:50.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-05-14</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>​    这周敲完了《第一行代码》的最后一个项目酷欧天气，然后开始，第二本书《Android群英传》的敲代码之旅。虽然说项目驱动才是最好的学习方式，但照书敲然后思考，也不失为一种好办法。算是迈出Android进阶的第一步吧。</p>
-<h2 id="Android控件架构"><a href="#Android控件架构" class="headerlink" title="Android控件架构"></a>Android控件架构</h2><p>​    Android里的控件，大致被分为两类，<strong>ViewGroup 和 View</strong></p>
-<p>​    从字面上来看，ViewGroup就是一组View的集合，可以通过它来管理控制其包含的View。通过它，界面上的所有控件也就能够形成一个树形结构，也就是常说的<strong>控件树</strong>，上层控件负责下层子控件的测量与绘制，并且传递交互事件。我们在Activity里经常使用的findViewById()方法，就是在控件树中通过DFS来查找的（数据结构还是很有用的）。而对于每一颗控件树，都有一个ViewParent对象，这就是整颗树的控制核心，<strong>所有的交互管理事件都由它来进行统一调度和分配</strong>。大概就是下面这张图的样子：</p>
-<p><img src="/img/view_tree.png" alt="ViewTree"></p>
-        
-          <a class="article-more-a" href="/2017/05/14/自定义View初探/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Android</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">View</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-
-      
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/05/14/自定义View初探/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-FilterPlayer" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/04/23/FilterPlayer/">FilterPlayer</a>
-    </h1>
-  
-
-        
-        <a href="/2017/04/23/FilterPlayer/" class="archive-article-date">
-  	<time datetime="2017-04-23T12:24:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-04-23</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>​    上次讲了MediaCodec的用法，其实也是为了后面的视频渲染做准备的。一开始定的学习目标就是：能够导入视频，并且加上滤镜。这篇文章就主要讲一下导入视频之后的滤镜渲染。</p>
-<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>​    其实一开始实现的思路大致是这样:</p>
-<blockquote>
-<p>MediaCodec解码视频流 ——&gt; 输出到GLSurfaceView ——&gt; OpenGL渲染</p>
-</blockquote>
-<p>​    然而因为GLSurfaceView的Surface比较特殊，无法直接作为MediaCodec的Decoder的输出容器，所以失败了。</p>
-<p>​    后来开始研究 <a href="https://github.com/google/grafika" target="_blank" rel="noopener">grafika</a> 里的一个 Show+capture camera 的功能</p>
-<blockquote>
-<p><a href="https://github.com/google/grafika/blob/master/src/com/android/grafika/CameraCaptureActivity.java" target="_blank" rel="noopener">Show + capture camera</a>. Attempts to record at 720p from the front-facing camera, displaying the preview and recording it simultaneously.</p>
-<ul>
-<li>Use the record button to toggle recording on and off.</li>
-<li>Recording continues until stopped. If you back out and return, recording will start again, with a real-time gap. If you try to play the movie while it’s recording, you will see an incomplete file (and probably cause the play movie activity to crash).</li>
-<li>The recorded video is scaled to 640x480, so it will probably look squished. A real app would either set the recording size equal to the camera input size, or correct the aspect ratio by letter- or pillar-boxing the frames as they are rendered to the encoder.</li>
-<li>You can select a filter to apply to the preview. It does not get applied to the recording. The shader used for the filters is not optimized, but seems to perform well on most devices (the original Nexus 7 (2012) being a notable exception). Demo here: <a href="http://www.youtube.com/watch?v=kH9kCP2T5Gg" target="_blank" rel="noopener">http://www.youtube.com/watch?v=kH9kCP2T5Gg</a></li>
-<li>The output is a video-only MP4 file (“camera-test.mp4”).</li>
-</ul>
-</blockquote>
-<p>​    它的Show模块和我想要做滤镜预览的是非常类似的，只是我的输入源是来自于本地文件，只要用MediaCodec来解码成视频流作为输入就可以了。当然，也和它的说明一样，他的录制功能是不带滤镜的，而我要做的进行添加滤镜之后的保存就要另辟蹊径了（还在努力中）。</p>
-<p>​    grafika实现的思路是这样的:</p>
-<blockquote>
-<p>Decoder –&gt; Surface -&gt; SurfaceTexture –&gt; OpenGL Filter –&gt; GLSurfaceView</p>
-</blockquote>
-<p>​    关键在于，它并没有直接把GLSurfaceView的Surface交给Deocder作为输出容器，而是中间通过一个FullFrameRect的类来持有了一个OpenGL的Texture,然后我们可以用这个纹理来创建一个Surface交给Decoder。就避免了直接用GLSurfaceView的Surface作为输出的问题。</p>
-        
-          <a class="article-more-a" href="/2017/04/23/FilterPlayer/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Android</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">MediaCodec</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">OpenGL</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-
-      
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/04/23/FilterPlayer/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/3/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/5/">Next &raquo;</a>
@@ -1194,15 +1177,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Deep Learning</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Reinforcement Learning</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1230,19 +1213,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1250,7 +1221,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1262,15 +1245,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">MediaCodec</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">OpenGL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
               </li>
              
               <li class="article-tag-list-item">
