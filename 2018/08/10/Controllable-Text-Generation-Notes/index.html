@@ -22,7 +22,7 @@
 <meta property="og:image" content="http://yoursite.com/img/attr_z.png">
 <meta property="og:image" content="http://yoursite.com/img/a2s.png">
 <meta property="og:image" content="http://yoursite.com/img/ta-seq2seq.png">
-<meta property="og:updated_time" content="2018-08-18T03:13:15.167Z">
+<meta property="og:updated_time" content="2018-08-18T03:14:20.695Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Controllable Text Generation Notes">
 <meta name="twitter:description" content="Controllable Text Generation文本生成，包括机器翻译、文档摘要、Image Caption 在内，是一个非常广泛的问题，而这篇文章所讲述的文本生成，并不是类似机器翻译一样有具体的目的，有 x-y pair 的监督学习任务，而是侧重于无监督的生成模型。而这生成模型是可控的，即并不是仅仅根据 corpus 进行学习语言模型进行分布的模拟（SeqGAN），同时我们也希望能够对于">
@@ -182,7 +182,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="Controllable-Text-Generation"><a href="#Controllable-Text-Generation" class="headerlink" title="Controllable Text Generation"></a>Controllable Text Generation</h2><p>文本生成，包括机器翻译、文档摘要、Image Caption 在内，是一个非常广泛的问题，而这篇文章所讲述的文本生成，并不是类似机器翻译一样有具体的目的，有 x-y pair 的监督学习任务，而是侧重于无监督的生成模型。而这生成模型是<strong>可控</strong>的，即并不是仅仅根据 corpus 进行学习语言模型进行分布的模拟（SeqGAN），同时我们也希望能够对于生成的文本具备一定的控制能力，例如，我们可以控制生成的文本和某个主题相关，又或者是具有某种情感极性，在 charbot 这样的场景下，能够做到这到这一点是非常重要的。本文从三种模型架构出发，介绍关于可控文本生成的一些工作。</p>
+        <h2 id="Controllable-Text-Generation"><a href="#Controllable-Text-Generation" class="headerlink" title="Controllable Text Generation"></a>Controllable Text Generation</h2><p>文本生成，包括机器翻译、文档摘要、Image Caption 在内，是一个非常广泛的问题，而这篇文章所讲述的文本生成，并不是类似机器翻译一样有具体的目的，有 x-y pair 的监督学习任务，而是侧重于无监督的生成模型。而这生成模型是<strong>可控</strong>的，即并不是仅仅根据 corpus 进行学习语言模型进行分布的模拟（SeqGAN），同时我们也希望能够对于生成的文本具备一定的控制能力，例如，我们可以控制生成的文本和某个主题相关，又或者是具有某种情感极性，在 charbot 这样的场景下，能够做到这到这一点是非常重要的。本文从三种模型架构出发，介绍关于可控文本生成的一些工作。<br><a id="more"></a></p>
 <h2 id="GAN-based——SentiGAN"><a href="#GAN-based——SentiGAN" class="headerlink" title="GAN-based——SentiGAN"></a>GAN-based——SentiGAN</h2><p>基于 SeqGAN 框架的文本生成工作有很多，但之前的工作主要关注点在于解决 SeqGAN 生成文本过短、mode collapse 问题等问题，而 SentiGAN 则是基于 GAN 框架少有的可控文本生成的工作。</p>
 <p>很有幸邮件和 SentiGAN 的作者<a href="https://nrgeup.github.io/resume/" target="_blank" rel="noopener">王科</a>学长交流过，并且还面基蹭了一顿饭。<a href="https://www.ijcai.org/proceedings/2018/0618.pdf" target="_blank" rel="noopener">SentiGAN</a> 这篇文章也被评为了 IJCAI 的 Distinguished Paper，这篇文章的 motivation 是基于 GAN 框架来进行带有情感极性的文本生成，模型结构如下：</p>
 <p><img src="/img/sentigan.png" alt="SentiGAN"></p>
@@ -499,14 +499,6 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Deep Learning</a>
               </li>
              
@@ -515,11 +507,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
+                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">NLP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -535,7 +535,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
+                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -543,11 +543,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">C</a>
+                <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
+                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">C</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -556,10 +560,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -583,10 +583,6 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">SeqGAN</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Java</a>
               </li>
              
@@ -599,11 +595,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Python</a>
+                <a href="javascript:void(0)" class="js-tag color1">LaTeX</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">LaTeX</a>
+                <a href="javascript:void(0)" class="js-tag color2">Python</a>
               </li>
              
               <li class="article-tag-list-item">
