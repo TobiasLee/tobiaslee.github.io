@@ -154,6 +154,92 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-Attention-Mechanism-学习笔记" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/08/15/Attention-Mechanism-学习笔记/">Attention Mechanism 学习笔记1</a>
+    </h1>
+  
+
+        
+        <a href="/2017/08/15/Attention-Mechanism-学习笔记/" class="archive-article-date">
+  	<time datetime="2017-08-15T11:28:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-08-15</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><code>Attention Mechanism</code> （注意力机制），是目前在 Neural Network 中应用很广的一种优化模型的方法，下一阶段的目标就是能够利用 TensorFlow 写出 Attention-based LSTM 来做 Text Classification 问题，这篇文章的目的就是记录学习过程中阅读 Paper、Blog 的理解和总结。</p>
+<h2 id="Attention"><a href="#Attention" class="headerlink" title="Attention"></a>Attention</h2><p>首先一个问题就是，什么是 <code>Attention</code>？我的理解就是一种 <code>focus</code>，聚焦在某一个局部。打个比方，当我们看到一照片，我们会不自觉地被某一部分所吸引，然后从这一部分向四周延伸出去，注意到画面的其他部分。当然这个吸引的部分可能因人而异，后续的向四周拓展的顺序也不一定一样。</p>
+<p><img src="/img/landscape.jpg" alt="Landscape"></p>
+<p>拿上面这张图片来说，我先看到的是木房子的整体，然后关注到房子的条纹结构，再到远处的海边、山，最后是天空。这就是视觉上的注意力机制，在某种程度上说，这也是我们人脑为了节省计算资源的一种方式。</p>
+<p>那么到了深度学习领域，我们会用 CNN 去处理图片，比如给图片起标题（Image Captioning）或者说是用 RNN 处理文本，做机器翻译（Neural Machine Translation，简称 NMT），如果同样地引入注意力机制，让模型更关注图片或者是文本的某一部分，是不是也能够节省计算资源呢？答案是，Yes！<br>
+        
+          <a class="article-more-a" href="/2017/08/15/Attention-Mechanism-学习笔记/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Deep Learning</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Machine Learning</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+
+      
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/08/15/Attention-Mechanism-学习笔记/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Text-Classification代码学习笔记" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -961,97 +1047,9 @@
 
 
   
-    <article id="post-Python爬虫学习-1" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/05/21/Python爬虫学习-1/">Python爬虫学习-1</a>
-    </h1>
-  
-
-        
-        <a href="/2017/05/21/Python爬虫学习-1/" class="archive-article-date">
-  	<time datetime="2017-05-21T00:41:49.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-05-21</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>​    前几天看了Google I/O，主题是”Mobile First to AI First”，然后又去听了一场微软工程师关于Machine Learning，主要是数据分析方面的讲座。很明显的感受到，移动互联网的浪潮正在慢慢退去，而AI、ML浪潮蓄势待发。记得吴军在《浪潮之巅》里讲，能够成为浪潮中的弄潮儿是很幸运的。但是，傻呆呆地在岸上等待，只会被巨浪裹挟，然后被拍死；而只有迎面而上，才能拥抱浪潮。</p>
-<p>​    废话了那么多，大致意思就是：我要学习ML，避免落后。而学习ML，需要大量的数据，数据从哪来？Python爬虫。So，开始！</p>
-<h2 id="Python爬虫"><a href="#Python爬虫" class="headerlink" title="Python爬虫"></a>Python爬虫</h2><p>​    爬虫嘛，也不是第一次听说，就是把网页的内容抓取下来，然后进行分析处理。主要会用到的库大概有urllib, requests, BeautifulSoup4等等。然后前天貌似要做教师测评，于是乎就想能不能写个爬虫模拟登陆一下教务系统，然后帮我把测评做了？在HeroHR的帮助下，用urllib实现了查成绩（虽然和评测有点区别），后来听说requests才是“HTTP for Humans”(给人用的HTTP，和Java的手搓Socket比起来，确实啊)，然后就又用requests库写了一个。</p>
-<h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><p>​    登陆的过程大致分两步:</p>
-<pre><code>1. POST账号密码
-2. 服务器交给浏览器一个Cookie，以辨别身份
-</code></pre><p>当然有些时候很多网站会设置一些token来保证安全或者防止抓取，就需要我们从网页源代码中入手来观察。</p>
-        
-          <a class="article-more-a" href="/2017/05/21/Python爬虫学习-1/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Python</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">爬虫</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-
-      
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/05/21/Python爬虫学习-1/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/3/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/5/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/3/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/5/">Next &raquo;</a>
     </nav>
   
 
@@ -1173,14 +1171,6 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Deep Learning</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Reinforcement Learning</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">随笔</a>
               </li>
              
@@ -1189,11 +1179,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">NLP</a>
+                <a href="javascript:void(0)" class="js-tag color4">Deep Learning</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Reinforcement Learning</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">NLP</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1213,7 +1211,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
+                <a href="javascript:void(0)" class="js-tag color2">C</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1225,15 +1223,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">C</a>
+                <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">GAN</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1245,6 +1239,14 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">MediaCodec</a>
               </li>
              
@@ -1253,7 +1255,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
+                <a href="javascript:void(0)" class="js-tag color2">SeqGAN</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1398,6 +1400,14 @@ MathJax.Hub.Queue(function() {
           
             <li class="search-li">
               <a href="http://blog.csdn.net/qq_36124802/" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>yeleng</a>
+            </li>
+          
+            <li class="search-li">
+              <a href="http://jiaqingliu.com" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>FrankLiu</a>
+            </li>
+          
+            <li class="search-li">
+              <a href="http://liuaiting.ink" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>AiTing</a>
             </li>
           
         </ul>
