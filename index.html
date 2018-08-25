@@ -276,7 +276,8 @@
 <p>自己就带上了有色眼镜 我只想把世界分的更清 却发现自己却模糊了心</p>
 </blockquote>
 <p>正确答案是：<strong>第一行都是模型生成的，第二行是原作</strong>，你答对了吗？有没有被惊艳到，我们组内的测试结果显示，大家的正确率不超过 30%，值得一提的是：<strong>输入都是来自于测试集中</strong>，没有参与到模型的训练中。</p>
-<p>更多的例子和项目的代码已经上传到 <a href="https://github.com/TobiasLee/Chinese_Hip-pop_Generation" target="_blank" rel="noopener">Github</a>，欢迎大家 Star。</p>
+<p><strong>因为某些原因，代码和数据暂时无法开源，以后有机会会整理出来</strong>。</p>
+<p><del>更多的例子和项目的代码已经上传到 <a href="https://github.com/TobiasLee/Chinese_Hip-pop_Generation" target="_blank" rel="noopener">Github</a>，欢迎大家 Star。</del></p>
 <h2 id="数据"><a href="#数据" class="headerlink" title="数据"></a>数据</h2><p>创新工场的导师为我们提供了 10 w 条嘻哈歌词，并且已经将一些不符合社会主义核心价值观的句子标注了出来。数据的预处理主要步骤如下：</p>
 <ul>
 <li>在对句子进行筛选之后，我们利用 <a href="https://github.com/fxsjy/jieba" target="_blank" rel="noopener">Jieba</a> 进行分词，观察到单句长度集中在 8~10 左右；</li>
@@ -284,7 +285,7 @@
 <li>利用 <code>pad_sequence</code> 将句子 padding 到 20（和 SeqGAN 中相同）；</li>
 <li>构建 x-y pair，利用上一句预测下一句（导师后来建议可以借鉴用 Skip-gram 的思路，同时预测上一句和下一句，但没有时间去尝试了），分割数据集</li>
 </ul>
-<p>知道大家都不喜欢洗数据，所以我们的训练数据也已经放到了 <a href="https://drive.google.com/drive/folders/1QrO0JAti3A3vlZlUemouOW7jC3K5dFZr" target="_blank" rel="noopener">Google Drive</a>，大家自取即可。</p>
+<p><del>知道大家都不喜欢洗数据，所以我们的训练数据也已经放到了 <a href="https://drive.google.com/drive/folders/1QrO0JAti3A3vlZlUemouOW7jC3K5dFZr" target="_blank" rel="noopener">Google Drive</a>，大家自取即可。</del></p>
 <h2 id="模型"><a href="#模型" class="headerlink" title="模型"></a>模型</h2><p>我们的生成模型的整体基于 SeqGAN，并对其做了一些修改，模型架构如下：</p>
 <p><img src="/img/AI-hippop.jpg" alt="AI-Hippop"></p>
 <p>主要改动有两点：</p>
@@ -422,11 +423,11 @@
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Text Generation</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">GAN</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">GAN</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Text Generation</a>
         		</li>
       		
 		</ul>
@@ -870,11 +871,11 @@
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Text Generation</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">GAN</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">GAN</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Text Generation</a>
         		</li>
       		
 		</ul>
@@ -1339,15 +1340,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Machine Learning</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1355,15 +1348,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
+                <a href="javascript:void(0)" class="js-tag color2">Machine Learning</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1375,7 +1364,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">C</a>
+                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1383,11 +1376,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
+                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">C</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">GAN</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
               </li>
              
               <li class="article-tag-list-item">
