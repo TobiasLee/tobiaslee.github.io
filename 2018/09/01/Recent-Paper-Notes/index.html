@@ -21,7 +21,7 @@
 <meta property="og:image" content="http://yoursite.com/img/irl_tg.png">
 <meta property="og:image" content="http://yoursite.com/img/entropy_term.png">
 <meta property="og:image" content="http://yoursite.com/img/aef.png">
-<meta property="og:updated_time" content="2018-09-01T08:01:16.747Z">
+<meta property="og:updated_time" content="2018-09-01T12:12:58.988Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="论文杂记">
 <meta name="twitter:description" content="记录最近读的一些文本生成相关的 Paper。 Sentiment Modification这是一个比较有趣的问题，定义如下：  The task of sentiment modification requires re- versing the sentiment of the input and preserv- ing the sentiment-independent content.">
@@ -238,7 +238,7 @@
 </li>
 <li><p>解决 Mode Collapse 问题：这是一个老大难问题，我对于此的观察和理解是：GAN-based model 倾向于生成重复的句子，因为在最大化生成器的目标函数时，会将 G(X) （生成某个句子的概率）推向较大的一侧，即少数的几种句子 domain 整个生成空间。而基于这种理解的一种解决方案就是 SentiGAN 中的 Penalty-based Objective Function，迫使 G(X) 变小，更为均匀的分布，来缓解 mode collapse 问题，<strong>这一点在我的实验观察中得到了验证</strong>。IRL 中 Generator 的 Objective Function 是两项之和，前一项可以看做是最大化生成的文本的 reward，和 GAN 类似。后一项则被称之为 entropy term，作者说这一项能够鼓励 Generator 生成多样的文本。</p>
 <p><img src="/img/entropy_term.png" alt="Entropy Term"></p>
-<p>然而如果我们去对这一项进行求导，发现驻点为 $q(\tau) = \frac{1}{e}$ ，也即这个概率在 .4 左右，这个概率相对来说也是 很大的，2 个句子的概率可能就 domain 整个分布， 令人感到疑惑。</p>
+<p><strong>利用熵的极值性，当所有事件的概率都相同时，熵最大（即事件发生的不确定性最大）</strong>，这样概率分布就趋向于均匀，可以视作缓解 mode collapse 问题。</p>
 </li>
 </ul>
 <h2 id="Query-and-Output"><a href="#Query-and-Output" class="headerlink" title="Query and Output"></a>Query and Output</h2><p>前面所述的三篇文章都有一个共同点，即在进行文本生成的时候，都是生成一个<strong>词表上的概率分布</strong>，对其进行采样得到生成的词，而这会带来什么问题呢？孙栩老师组的 《Query and Output: Generating Words by Querying Distributed Word Representations for Paraphrase Generation》指出两点：</p>
@@ -502,15 +502,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Deep Learning</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Reinforcement Learning</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -526,6 +526,14 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Android</a>
               </li>
              
@@ -534,7 +542,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
+                <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">C</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -546,22 +562,6 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">C</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
               </li>
              
@@ -570,15 +570,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">MediaCodec</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">OpenGL</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -598,19 +598,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Python</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">LaTeX</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">爬虫</a>
+                <a href="javascript:void(0)" class="js-tag color2">Python</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">JVM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">爬虫</a>
               </li>
              
               <li class="article-tag-list-item">
