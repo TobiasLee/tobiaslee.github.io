@@ -154,6 +154,98 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-调参侠的自我修养" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/09/17/调参侠的自我修养/">调参侠的自我修养</a>
+    </h1>
+  
+
+        
+        <a href="/2017/09/17/调参侠的自我修养/" class="archive-article-date">
+  	<time datetime="2017-09-17T01:22:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-09-17</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>昨天刷完了 Andrew Ng 深度学习的第二部分课程</p>
+<blockquote>
+<p>Improving Deep Neural Networks: Hyperparameter tuing, Regularization and Optimization</p>
+</blockquote>
+<p>收获还是非常大的，虽然 Andrew Ng 对一些 tricks 的数学细节一笔带过，但通过画图之类的手段来让我获得了一个很形象的 intuition（直观感受），后面数学的部分也要靠自己再去啃书了。这篇 Blog 主要就是对课程内容的一个梳理。</p>
+<h2 id="Pre-processing-and-Regularization"><a href="#Pre-processing-and-Regularization" class="headerlink" title="Pre-processing and Regularization"></a>Pre-processing and Regularization</h2><p>对应第一周的内容，主要讲解了 Deep Learning 和传统 Machine Learning 一些细节的区别：</p>
+<ol>
+<li>Train / Dev (Cross Validation) / Test Sets 的分割。在 ML 里我们经常会用 6/2/2 这样一个比例，而在大数据量下的 Deep Learning，则一般会选用 <strong>98/1/1 甚至是 99.5/0.25/0.25</strong> 这样一个比例，尽可能的利用数据，来训练出一个更好的模型。另外需要注意的一点就是<strong>保证 Dev Set和 Test Set 这两个集合来自同一数据集</strong>，以确保我们能够通过在 Dev Set上的评估能正确反映在 Test Set 的性能。</li>
+<li>Deep Learning 中 Bias 和 Variance。Bias 和 Variance 需要和一个较为客观的指标进行对比，比如识别中的猫和狗，假设人类的正确率为 99.9%，那么如果我们的模型正确率只有 99%，那么这就可以说是 Bias 了。另外，在 ML 中有时需要进行 Bias 和 Variance 的权衡，但 Deep Learning 是可以训练出一个足够好的模型而不用进行这种权衡的。</li>
+</ol>
+<p>Andrew Ng 也给出了“Basic Recipe for Deep Learning”：<br>
+        
+          <a class="article-more-a" href="/2017/09/17/调参侠的自我修养/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Deep Learning</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Neural Networks</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+
+      
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/09/17/调参侠的自我修养/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Attention-based-LSTM-for-Text-Classification" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -960,94 +1052,6 @@
 
 
   
-    <article id="post-Android-Scroll学习笔记" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/06/05/Android-Scroll学习笔记/">Android Scroll学习笔记</a>
-    </h1>
-  
-
-        
-        <a href="/2017/06/05/Android-Scroll学习笔记/" class="archive-article-date">
-  	<time datetime="2017-06-05T15:10:58.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-06-05</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>​    友球要写一个跟纸片一样的能够翻转过来跟纸片一样的自定义View，所以我就去研究了一下View的Animation和滑动、拖拽。这篇就记录一下学习《Android群英传》里的滑动部分。</p>
-<h2 id="Key-Points"><a href="#Key-Points" class="headerlink" title="Key Points"></a>Key Points</h2><p>滑动的实现：<strong>不断地改变View的坐标</strong></p>
-<p>Android坐标系: <strong>左上角为原点，水平向右为X轴正方向，垂直向下为Y轴正方向</strong></p>
-<p>视图坐标系: 描述子视图在父视图中的位置关系，子视图的坐标以<strong>父视图左上角为原点</strong></p>
-<h3 id="触控事件—MotionEvent"><a href="#触控事件—MotionEvent" class="headerlink" title="触控事件—MotionEvent"></a>触控事件—MotionEvent</h3><p>MotionEvent中封装的常用事件常量:</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> fianl <span class="keyword">int</span> ACTION_DOWN = <span class="number">0</span>; <span class="comment">// 单点触摸 按下</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> fianl <span class="keyword">int</span> ACTION_UP = <span class="number">1</span>; <span class="comment">// 单点触摸 离开</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> fianl <span class="keyword">int</span> ACTION_MOVE = <span class="number">2</span>; <span class="comment">// 触摸点 移动</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> fianl <span class="keyword">int</span> ACTION_CANCEL = <span class="number">3</span>; <span class="comment">// 触摸动作 取消</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> fianl <span class="keyword">int</span> ACTION_OUTSIDE = <span class="number">4</span>; <span class="comment">// 触摸动作 超出边界</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> fianl <span class="keyword">int</span> ACTION_POINTER_DOWN = <span class="number">5</span>; <span class="comment">// 多点触摸 按下</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> fianl <span class="keyword">int</span> ACTION_POINTER_UP = <span class="number">6</span>; <span class="comment">// 多点触摸 离开</span></span><br></pre></td></tr></table></figure>
-<p>实现触摸实现的代码套路:在<code>onTouchEvent(MotionEvent event)</code>中通过<code>event.getAction()</code>获取触控事件类型，并且用switch-case语句来筛选我们所需要的动作。</p>
-        
-          <a class="article-more-a" href="/2017/06/05/Android-Scroll学习笔记/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Android</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">自定义View</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-
-      
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/06/05/Android-Scroll学习笔记/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/3/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/5/">Next &raquo;</a>
@@ -1176,15 +1180,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Deep Learning</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Reinforcement Learning</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1212,6 +1216,18 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
               </li>
              
@@ -1220,19 +1236,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1244,15 +1248,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">MediaCodec</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">OpenGL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1280,11 +1284,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">爬虫</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">JVM</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">爬虫</a>
+                <a href="javascript:void(0)" class="js-tag color2">Paper Notes</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1409,6 +1417,10 @@ MathJax.Hub.Queue(function() {
           
             <li class="search-li">
               <a href="http://liuaiting.ink" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>AiTing</a>
+            </li>
+          
+            <li class="search-li">
+              <a href="https://blog.ciaran.cn/" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>Ciaran</a>
             </li>
           
         </ul>
