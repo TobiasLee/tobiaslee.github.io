@@ -6,17 +6,21 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Tag: 设计模式 | Stay Hungry,Stay Foolish.</title>
+  <title>GAN 在文本生成上的一些体会 | Stay Hungry,Stay Foolish.</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Trying to be better!">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Stay Hungry,Stay Foolish.">
-<meta property="og:url" content="http://yoursite.com/tags/设计模式/index.html">
+  <meta name="description" content="先抛出我的结论： SeqGAN 这一框架下的 GAN-based 文本生成模型，work 很大程度上是 training trick 的堆砌，并不适合工程应用，但依旧值得探索，或者蹭热点发 Paper。 这段时间做用 GAN 做文本生成还是蛮多的，这里值得是 SeqGAN 这一框架，其简要特点如下：  RNN-based Generator + Classifier-baed Generator：">
+<meta name="keywords" content="NLP,GAN,Text Generation">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GAN 在文本生成上的一些体会">
+<meta property="og:url" content="http://yoursite.com/2018/09/30/Text-Generation-with-GAN/index.html">
 <meta property="og:site_name" content="Stay Hungry,Stay Foolish.">
-<meta property="og:description" content="Trying to be better!">
+<meta property="og:description" content="先抛出我的结论： SeqGAN 这一框架下的 GAN-based 文本生成模型，work 很大程度上是 training trick 的堆砌，并不适合工程应用，但依旧值得探索，或者蹭热点发 Paper。 这段时间做用 GAN 做文本生成还是蛮多的，这里值得是 SeqGAN 这一框架，其简要特点如下：  RNN-based Generator + Classifier-baed Generator：">
+<meta property="og:image" content="http://yoursite.com/img/dp-gan.png">
+<meta property="og:updated_time" content="2018-10-01T02:32:07.157Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Stay Hungry,Stay Foolish.">
-<meta name="twitter:description" content="Trying to be better!">
+<meta name="twitter:title" content="GAN 在文本生成上的一些体会">
+<meta name="twitter:description" content="先抛出我的结论： SeqGAN 这一框架下的 GAN-based 文本生成模型，work 很大程度上是 training trick 的堆砌，并不适合工程应用，但依旧值得探索，或者蹭热点发 Paper。 这段时间做用 GAN 做文本生成还是蛮多的，这里值得是 SeqGAN 这一框架，其简要特点如下：  RNN-based Generator + Classifier-baed Generator：">
+<meta name="twitter:image" content="http://yoursite.com/img/dp-gan.png">
   
     <link rel="alternative" href="/atom.xml" title="Stay Hungry,Stay Foolish." type="application/atom+xml">
   
@@ -152,60 +156,171 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-Text-Generation-with-GAN" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2017" class="archive-year">2017</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2017/04/04/AdapterPattern/" class="archive-article-date">
-  	<time datetime="2017-04-04T02:52:07.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-04-04</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/04/04/AdapterPattern/">AdapterPatternLearning</a>
+    <h1 class="article-title" itemprop="name">
+      GAN 在文本生成上的一些体会
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
+        
+        <a href="/2018/09/30/Text-Generation-with-GAN/" class="archive-article-date">
+  	<time datetime="2018-09-30T14:54:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-09-30</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>先抛出我的结论：</p>
+<p><strong>SeqGAN 这一框架下的 GAN-based 文本生成模型，work 很大程度上是 training trick 的堆砌，并不适合工程应用，但依旧值得探索，或者蹭热点发 Paper</strong>。</p>
+<p>这段时间做用 GAN 做文本生成还是蛮多的，这里值得是 SeqGAN 这一框架，其简要特点如下：</p>
+<ol>
+<li>RNN-based Generator + Classifier-baed Generator：用一个 RNN 来建模 language model； CNN 之类分类器来对生成的文本/真实文本进行判别，或者是对文本的某种属性进行判定</li>
+<li>利用 MLE 进行 Pretrain：让 G 和 D 具备初始的能力</li>
+<li>利用 Monte Carlo 来得到 reward，通过 Policy Gradient 指导 Generator 更新</li>
+</ol>
+<p>起初我也是为止着迷，认为这一框架非常 fancy，但是随着时间推移，跑了不少实验之后发现，adversarial training 在其中起到的作用实在是<strong>微不足道</strong>（对比之前的 MLE pretrain，adversarial training 并不会带来生成文本质量的显著提升），为什么呢？接下来谈一下 Adversarial Training 在 Text Generation 中的两个主要的问题。</p>
+<h2 id="Problem"><a href="#Problem" class="headerlink" title="Problem"></a>Problem</h2><h3 id="Sparse-reward"><a href="#Sparse-reward" class="headerlink" title="Sparse reward"></a>Sparse reward</h3><p>adversarial training 没起作用很大的一个原因就在于，discriminator 提供的 reward 具备的 guide signal 太少，Classifier-based Discriminator 提供的只是一个为真或者假的概率作为 reward，而这个 reward 在大部分情况下，是 0。这是因为对于 CNN 来说，分出 fake text 和 real text 是非常容易的，CNN 能在 Classification 任务上做到 99% 的 accuracy，而建模 Language Model 来进行生成，是非常困难的。除此以外，<strong>即使 generator 在这样的 reward 指导下有一些提升，此后的 reward 依旧很小</strong>。从这一点出发，现有不少工作一方法不再使用简单的 fake/true probability 作为 reward，我在之前的 <a href="https://tobiaslee.top/2018/04/22/GAN-in-NLP-Notes/" target="_blank" rel="noopener">GAN in NLP Notes</a> 中也提到了有 LeakyGAN（把 CNN 的 feature 泄露给 generator），RankGAN （用 IR 中的排序作为 reward）等工作来提供更加丰富的 reward；另一个解决的思路是使用 language model-based discriminator，以提供更多的区分度，北大孙栩老师组的 <a href="http://arxiv.org/abs/1802.01345" target="_blank" rel="noopener">DP-GAN</a> 在使用了 Languag model discrminator 之后，在 true data 和 fake data 中间架起了一座桥梁：</p>
+<p><img src="/img/dp-gan.png" alt="DP-GAN"></p>
+<p>从而 discriminator 不再是非 0 即 1。据其他同学的一些经验，DP-GAN 的实验效果也是非常不错的，这一点或许可以和之前的两个数据流型分布中间没有交集有关，使用了更 distinguishable 的 reward 之后，fake data 的分布和 true data 的分布加大了，GAN 的距离度量才有了变化。</p>
+<h3 id="Monte-Carlo-Search"><a href="#Monte-Carlo-Search" class="headerlink" title="Monte Carlo Search"></a>Monte Carlo Search</h3><p>在 SeqGAN 以及后续的很多工作之中，对于 Reward 的评估都是基于句级别的，也就是会先使用 Monte Carlo Search 的方法将句子进行补全再交给 Discriminator，但是这个采样方法的时间复杂度是 $O(n mL^2)$，其中 $n$ 是 batch size，$m$ 是采样的次数，$L$ 是句子的 max len。就 SeqGAN 的实验来说，$m = 16$ 并且 $L=20$  ，速度尚且可以接受，但是如果我们需要去生成一篇文章 $L=200$，那么每次计算 reward 就会来带很大的开销，我个人的体验是在 Tesla M40 上 $L$ 在 100 左右，$m = 16, n = 64$ 一个 batch 需要 230 s。对于常见的万级别的 corpus，一个 Epoch 的训练时间就到了一天，而最终对于性能的提升还不如 MLE 一个 epoch 来的显著，这也是我为什么不建议在工程上使用的很大程度的一个原因。 </p>
+<h2 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h2><ul>
+<li>Sparse Reward：这里可以用的除了 DP-GAN 以外，<a href="https://www.ijcai.org/proceedings/2018/0618.pdf" target="_blank" rel="noopener">SentiGAN</a> 也是一个不错的尝试，其 Penalty-based objective function 效果还是很不错的，可以尝试着使用一下；另外，我们也可以从 discriminator 的角度，适当地减弱其能力，像 GAN 中的一些 <a href="http://arxiv.org/abs/1606.03498" target="_blank" rel="noopener">trick</a> 比如 <code>label smothing</code> 也可以尝试。</li>
+<li>Monte Carlo Search：这一点的解决方法比较困难，<a href="http://arxiv.org/abs/1801.07736" target="_blank" rel="noopener">MaskGAN</a> 提出用 Actor-Critic 的结构来对 word level 给出 reward，并且在其“完形填空”的任务上效果不错，但对于语言模型来说， word-level reward 还是不怎么符合 intuition。降低 sample time 并不是一个可取的方案，因为本身 MC 带来的 variance 已经很大了，再降低 sample time 只能是雪上加霜；或许<strong>搜索的剪枝</strong>是一个可以考虑的方向，会去看看有没有一些方案。</li>
+</ul>
+<h2 id="Future"><a href="#Future" class="headerlink" title="Future"></a>Future</h2><p>展望一下未来，只能说 SeqGAN 这个坑不出意外还会吸引很多同学义无反顾地往里跳，想要做出一些东西，还是很有挑战性的。但是 RL 和 NLP 结合的思路是没什么大毛病的，Jiwei Li 最近的几篇 Dialogue 的文章也都是用着 RL，我觉得这一点很 fancy 的一个原因是我们可以通过设计 reward 来指导生成，这其实是蛮 hand-crafted 的，把<strong>规则比较隐式地放进神经网络里</strong>，或许 RL 是一条可以走的路；IRL 在 Text Generation 上的应用邱锡鹏老师也有一篇<a href="http://arxiv.org/abs/1804.11258" target="_blank" rel="noopener">文章</a>。希望自己也能够在这条路上走地更远一些~</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">设计模式</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">NLP</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">GAN</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Text Generation</a>
         		</li>
       		
 		</ul>
 	</div>
 
-          
+      
 
+
+      
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2018/09/30/Text-Generation-with-GAN/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
   
   
-    </div></section>
+    <a href="/2018/09/14/TensorFlow-Seq2Seq-踩坑记/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">TensorFlow——Seq2Seq 踩坑记</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+  
+  
   
 
-    
+  
+
+  
 
 
           </div>
@@ -234,9 +349,9 @@
 	var yiliaConfig = {
 		mathjax: true,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
-		isTag: true,
+		isTag: false,
 		isCategory: false,
 		open_in_new: false,
 		toc_hide_index: true,
