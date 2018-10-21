@@ -6,25 +6,19 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Actor-Critic - A improvement of Policy Gradient | Stay Hungry,Stay Foolish.</title>
+  <title>秋寒 | Stay Hungry,Stay Foolish.</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Improvement of Policy Gradient上篇 Blog 中讲到，我们对于 Agent 参数的更新是基于 reward function 对最大似然 loss 加权得到的 Objective Function，这里有两个问题：  reward function 需要在完整的一次 trajectory 后才能够计算，也就是说，是回合更新的。这样更新的频率更新就比较慢，相应地，训练就">
-<meta name="keywords" content="Deep Learning,Reinforcement Learning">
+  <meta name="description" content="​    前两天日子晴朗的时候，看到路两侧的银杏，黄的很干净，也很安静。这两天总是有些小雨，温度也骤然降下来。我是一个对时间流逝很敏感的人，用不着逐渐增厚的衣服提醒，我知道，在西电的第三个秋天到了。 近况​    开学以来的这段时间，非常地充实。整个暑假都在 DeeCamp，回来之后就投入到之前论文的修改中。说起来这篇处女作也是命途多舛，被拒之后经过了大幅度的修改，再投，竟然被秒拒，甚至没有送外审">
+<meta name="keywords" content="随笔">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Actor-Critic - A improvement of Policy Gradient">
-<meta property="og:url" content="http://yoursite.com/2018/03/09/Actor-Critic/index.html">
+<meta property="og:title" content="秋寒">
+<meta property="og:url" content="http://yoursite.com/2018/10/21/one-more-autumn/index.html">
 <meta property="og:site_name" content="Stay Hungry,Stay Foolish.">
-<meta property="og:description" content="Improvement of Policy Gradient上篇 Blog 中讲到，我们对于 Agent 参数的更新是基于 reward function 对最大似然 loss 加权得到的 Objective Function，这里有两个问题：  reward function 需要在完整的一次 trajectory 后才能够计算，也就是说，是回合更新的。这样更新的频率更新就比较慢，相应地，训练就">
-<meta property="og:image" content="http://yoursite.com/img/pg2.png">
-<meta property="og:image" content="http://yoursite.com/img/value_fit.png">
-<meta property="og:image" content="http://yoursite.com/img/target.png">
-<meta property="og:image" content="http://yoursite.com/img/critic.png">
-<meta property="og:image" content="http://yoursite.com/img/ret.gif">
-<meta property="og:updated_time" content="2018-04-19T15:25:37.710Z">
+<meta property="og:description" content="​    前两天日子晴朗的时候，看到路两侧的银杏，黄的很干净，也很安静。这两天总是有些小雨，温度也骤然降下来。我是一个对时间流逝很敏感的人，用不着逐渐增厚的衣服提醒，我知道，在西电的第三个秋天到了。 近况​    开学以来的这段时间，非常地充实。整个暑假都在 DeeCamp，回来之后就投入到之前论文的修改中。说起来这篇处女作也是命途多舛，被拒之后经过了大幅度的修改，再投，竟然被秒拒，甚至没有送外审">
+<meta property="og:updated_time" content="2018-10-21T12:06:47.008Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Actor-Critic - A improvement of Policy Gradient">
-<meta name="twitter:description" content="Improvement of Policy Gradient上篇 Blog 中讲到，我们对于 Agent 参数的更新是基于 reward function 对最大似然 loss 加权得到的 Objective Function，这里有两个问题：  reward function 需要在完整的一次 trajectory 后才能够计算，也就是说，是回合更新的。这样更新的频率更新就比较慢，相应地，训练就">
-<meta name="twitter:image" content="http://yoursite.com/img/pg2.png">
+<meta name="twitter:title" content="秋寒">
+<meta name="twitter:description" content="​    前两天日子晴朗的时候，看到路两侧的银杏，黄的很干净，也很安静。这两天总是有些小雨，温度也骤然降下来。我是一个对时间流逝很敏感的人，用不着逐渐增厚的衣服提醒，我知道，在西电的第三个秋天到了。 近况​    开学以来的这段时间，非常地充实。整个暑假都在 DeeCamp，回来之后就投入到之前论文的修改中。说起来这篇处女作也是命途多舛，被拒之后经过了大幅度的修改，再投，竟然被秒拒，甚至没有送外审">
   
     <link rel="alternative" href="/atom.xml" title="Stay Hungry,Stay Foolish." type="application/atom+xml">
   
@@ -160,58 +154,42 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-Actor-Critic" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-one-more-autumn" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      Actor-Critic - A improvement of Policy Gradient
+      秋寒
     </h1>
   
 
         
-        <a href="/2018/03/09/Actor-Critic/" class="archive-article-date">
-  	<time datetime="2018-03-09T13:59:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-09</time>
+        <a href="/2018/10/21/one-more-autumn/" class="archive-article-date">
+  	<time datetime="2018-10-21T10:22:44.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-10-21</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="Improvement-of-Policy-Gradient"><a href="#Improvement-of-Policy-Gradient" class="headerlink" title="Improvement of Policy Gradient"></a>Improvement of Policy Gradient</h2><p>上篇 Blog 中讲到，我们对于 Agent 参数的更新是基于 reward function 对最大似然 loss 加权得到的 Objective Function，这里有两个问题：</p>
+        <p>​    前两天日子晴朗的时候，看到路两侧的银杏，黄的很干净，也很安静。这两天总是有些小雨，温度也骤然降下来。我是一个对时间流逝很敏感的人，用不着逐渐增厚的衣服提醒，我知道，在西电的第三个秋天到了。</p>
+<h2 id="近况"><a href="#近况" class="headerlink" title="近况"></a>近况</h2><p>​    开学以来的这段时间，非常地充实。整个暑假都在 DeeCamp，回来之后就投入到之前论文的修改中。说起来这篇处女作也是命途多舛，被拒之后经过了大幅度的修改，再投，竟然被秒拒，甚至没有送外审。似乎是因为主题不符合，姑且算是为下一次攒人品吧。又修改了一次并且再次投出去，希望能够有一个好的结果。</p>
+<p>​    课程依旧是波澜不惊地进行着，lanco 的实习 Project 也让我在闲暇有事可做。说实话，我不算是那种虚度一秒钟都会觉得愧疚的人，但也会因为荒废大量的时间摸鱼感到一丝紧张。这种心理从高三一直延续到现在，究其背后的 motivation，其实也很简单，我也在之前提到过：高三的时候是为了千军万马过独木桥，如今则是”我不属于这里”的不甘。这种心情从大一到现在，淡化了很多，但依旧让我保持警醒。但其实这么两年下来下来，神经不再像刚入学时候一样一直紧绷着，很多时候，<strong>弄清楚自己想要的，选择一条路慢慢走下去，不用太过着急</strong>，结果没有那么的重要。<strong>不要让自己后悔的同时，尽可能过得舒服一点</strong>，找到自己的节奏，就 ok 了。</p>
+<p>​    身边其实也有很多优秀的同学，早早地联系老师，为未来打下基础。我觉得这真的很不错，因为之前去 THU 蹭讲座的时候发现相比北京的一些高校，西安的地理位置太吃亏了。不怕笨鸟先飞，就怕聪明的鸟飞的比你早。很多时候我们缺的是这种意识，而当你产生危机感之后，立马行动起来，是不会吃亏太多的。</p>
+<a id="more"></a>
+<h2 id="GitHub"><a href="#GitHub" class="headerlink" title="GitHub"></a>GitHub</h2><p>​    GitHub 是个好东西，作为一名 CS 学生，我觉得 GitHub 很多时候比什么英语竞赛更能够衡量专业能力。之前看杭高的学长 <a href="https://github.com/geeeeeeeeek" target="_blank" rel="noopener">Zhongyi Tong</a> 的主页， Star 加起来之前的几万，很是羡慕。所以一直在努力的维护自己的 GitHub 吧，希望有生之年能有个破千的项目（逃。之前的<a href="https://github.com/TobiasLee/Text-Classification" target="_blank" rel="noopener">文本分类</a>项目现在有 88 个 Star 了，希望能尽快破百吧哈哈哈哈哈，看到有人点 fork 但是不 star 的时候我真的好心痛啊！还有就是最近能够收到不少邮件或者是 Issue，作为项目的所有者，我很乐意去解答一些问题（当然这是要看人的，开源项目就是提供一个平台，owner 没有义务这么做）。在答复的过程中，相当于也逼迫自己再去思考一遍问题，之前就有几个小伙伴找出了一个很大的 bug，我也是再次学习了一次。<strong>这的确是一个能够帮助你快速成长的平台</strong>，也能帮助你 explore more。</p>
+<h2 id="书和影"><a href="#书和影" class="headerlink" title="书和影"></a>书和影</h2><p>​    这段时间看了两本书：《鹿鼎记》和《白鹿原》。金庸的小说真的很过瘾，看着就停不下来，韦小宝教给的我就是：混江湖一定要重义气。《白鹿原》讲的就是陕西这片土地上的故事了，我也才知道”葫芦鸡“的来历哈哈哈哈，白鹿原上两大户白家和鹿家三代人所经历的，也是中国近代历史的一个缩影了。白家的屹立不倒的原因莫过于家主“挺直的腰杆”，“耕读传家”相比勺勺客的趋炎附势，是更能经受住时间的考验的。这种中国历史背景之下个人家族的沉浮的故事也算得上是我的心头好了，之前看的一本《北鸢》也是同样的题材，读起来很舒服。</p>
+<p>​    看综艺真的是很能够平息做实验的烦躁，最近在看的有《向往的生活》《极限挑战》，但都不会追着看，有一搭没一搭地在看。Gakki 的新剧也有在看，但并不是很对口味，反倒是之前看了几季就撂下的《Shameless》的第九季，可以看得很轻松，就是打发等待实验的时间嘛。国庆的时候也看了不少电影，《快把我哥带走》居然催下了几滴眼泪，漫威的几部片子也就那样，毕竟不是一个真正的漫威粉，当做爆米花电影看就完事了。前几天久违地寝室小剧场一起看了《V 字仇杀队》，之前好像是在电影频道看过一些片段，这次补完也算是没有愧对这部神片。其余也就是刷了刷豆瓣 Top 250，也就是囫囵吞枣，增添一些谈资罢了。</p>
+<p>​    其实很希望有时间能去看看话剧、音乐会什么的，不过贵校这个地理位置也真是限制了我的行动，找机会回家看了只能。</p>
+<h2 id="希冀"><a href="#希冀" class="headerlink" title="希冀"></a>希冀</h2><p>接下来的日子里，做好下面几件事：</p>
 <ol>
-<li>reward function 需要在完整的一次 trajectory 后才能够计算，也就是说，是<strong>回合更新</strong>的。这样更新的频率更新就比较慢，相应地，训练就会缓慢一些。</li>
-<li>因为每次我们都是在当前的一个回合上计算 reward，但每次回合 Agent 所采取的策略都会有所不同，这样子就会导致我们的方差（variance）比较大。</li>
+<li>保持广泛地阅读：Paper 也好，艺术史小说也罢，多读多看，没有坏处。努力练就看 Paper 如喝水一样的状态。</li>
+<li>Keep Coding，Keep Thinking：回头看自己写的代码，真的觉得是一坨 Shit！写的时候仓促，能跑就行的毛病还是没改，于是就有随手就丢上 GitHub 然后被吐槽的故事，不过 GitHub 能够迫使我来重构自己的代码（毕竟是第二张简历），希望以后写代码的时候多想想。</li>
+<li>锻炼身体，为祖国健康工作五十年！</li>
 </ol>
-<p>对于第一个问题，我们的解决方法是，根据每个 Agent 的每次 Action 进行参数的更新，也就是我们接下来要说的 Actor-Critic；第二个问题，也就是我们最好能够对所有的样本进行估计来计算我们的 reward（也就是 reward 的数学期望），以此来降低方差。</p>
-<p>具体地，我们可以采取以下几种 reward function:</p>
-<p><img src="/img/pg2.png" alt="Different Reward Function"></p>
-<p><em>图源自知乎，详见 Reference</em></p>
-<p>第一种也就是最为普通的 reward function，各步的累加；第二种则是不考虑先前步的 reward，这里有一个 casualty 的性质，即今天的参数更新是无法影响昨天以及之前获得的 reward的，因而可以只考虑今天之后的 reward；第三种则是加入了 baseline，在基准之上衡量 reward，能够更好地指示动作的好坏，基准一般会采取所有回合的 reward 均值。值得强调的是，这三种方式都是<strong>对 reward 的无偏估计 (unbiased)</strong>，但天上不会掉馅饼，尽管第二种第三种方式对第一种方式修改后 variance 有所降低，但整体的方差还是比较大的。</p>
-<p>而后面三种，则是希望通过<strong>再用一个 NN，来评估当前的状态能够获得 reward</strong>。这样的估计，必然是 biased 的，因为这个 NN 基本不可能是 Perfect 的；当然，这样做的好处就能够降低 variance，所以这是一个 trade off 的问题，后面三种的详细式子如下：</p>
-<p><img src="/img/value_fit.png" alt="Value Functions"></p>
-<p>Q 是对当前状态 $s_t$和采取的动作$a_t$能够获得的 reward 进行估计；而 V 仅仅考虑对状态 $s_t$ 能获得的 reward，也就是对于所有 $a_t$ 的 Q 的数学期望；A 又称 Advantage Function，是衡量 $a_t$ 好坏的一个指标，从 $ A= Q-V$ 就能看出来。那么问题来了，这三个函数彼此相互关联，我们用 Neural Network(NN) 来拟合哪一个呢？</p>
-<p>答案其实也已经在上面的那种图里了，通过一些约等式，我们能够通过拟合 $V^{\pi}(s)$ 来得到 Advantage Function，实际应用中主要就是采取 Advantage Function 作为对当前所采取动作的评估函数。</p>
-<h2 id="Actor-Critic-Network"><a href="#Actor-Critic-Network" class="headerlink" title="Actor Critic Network"></a>Actor Critic Network</h2><p>上面的 Advantage Function 起到的作用类似一个教练（或者说是批评家），对于我们的 Actor 当前的状态和采取的动作做出指示，帮助他更好的达到目标，这也就是 Actor-Critic 算法的名字由来。我个人对 AC 算法的认识就是基于对 Policy Gradient 的优化而得到的，Actor 就是我们之前谈到的 Policy，其核心就在于<strong>用 NN 来扮演这个 Critic 的角色</strong>。</p>
-<p>既然是 <code>NN fit V function</code>，那么训练集是什么呢？即<strong>我们如何根据当前的状态，来估计整个回合获得的 reward</strong>呢？这里有两种做法：</p>
-<ol>
-<li>Monte Carlo evaluation：蒙特卡洛搜索，就是对未来可能采取的动作进行搜索，计算获得的 reward</li>
-<li>通过 V 本身来计算，获得的 reward 等于当前这一动作能获得的 r 和下一状态用 V 估计值之和，即 $ reward = r(s_t, a_t) + V (s_{t+1})$ </li>
-</ol>
-<p><img src="/img/target.png" alt="Two methods of evaluation of V"></p>
-<p>一般我们都会采用第二种方法，也称为 <code>bootstrapped estimate</code>，由此，我们就可以构造出相应的 training data，用 NN 解决一个 regression 问题：</p>
-<p><img src="/img/critic.png" alt="Regression Problem">   </p>
-<h2 id="Program"><a href="#Program" class="headerlink" title="Program"></a>Program</h2><p>又到了喜闻乐见的代码实现部分，其实也简单，两个 NN 嘛，有点 GAN 的感觉。实际上，有论文将 Actor 和 Critic 两个 NN 整合成一个 NN，并且做出了不错的效果，好处就是能够共享特征(shared features)，不好的地方就是，训练可能不是很稳定。这次就不贴完整代码，上一篇 Blog 和这篇以及后续 RL 相关的代码都会上传到 <a href="https://github.com/TobiasLee/ReinforcementLearningPractice" target="_blank" rel="noopener">GitHub</a> 上，这里只讲解部分核心的函数。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Actor 类</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Actor</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, sess, n_features, n_actions, lr=<span class="number">1e-3</span>)</span>:</span> </span><br><span class="line">	<span class="comment"># 相应的初始化，创建 placeholder</span></span><br><span class="line">	<span class="comment"># 构建全连接层</span></span><br><span class="line">	<span class="comment"># 设置 Optimizer 等</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">learn</span><span class="params">(self, s, a, td)</span>:</span></span><br><span class="line">     <span class="comment"># 根据 state, action, td error(即 Advantage) 更新参数</span></span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">choose_action</span><span class="params">(self, s)</span>:</span> <span class="comment"># choose action based on the state</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Critic 类</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Critic</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, sess, n_features, lr=<span class="number">1e-2</span>, gamma=<span class="number">0.99</span>)</span>:</span></span><br><span class="line">        <span class="comment"># 初始化 </span></span><br><span class="line">	    <span class="comment"># 构建 NN，</span></span><br><span class="line">       </span><br><span class="line">        <span class="keyword">with</span> tf.variable_scope(<span class="string">"td_square_error"</span>): <span class="comment"># Regression problem </span></span><br><span class="line">            <span class="comment"># 这里我们同样加入了 discount factor</span></span><br><span class="line">            self.td_error = self.r + gamma * self.v_ - self.v</span><br><span class="line">            <span class="comment"># 用 square 作为 loss function</span></span><br><span class="line">            self.loss = tf.square(self.td_error)</span><br><span class="line">        <span class="comment"># 设置 Optimizer </span></span><br><span class="line">        <span class="keyword">with</span> tf.variable_scope(<span class="string">"train"</span>):</span><br><span class="line">            self.train_op = tf.train.AdamOptimizer(lr).minimize(self.loss)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">learn_state</span><span class="params">(self, s, r, s_)</span>:</span></span><br><span class="line">        <span class="comment"># advantage function A = r + V_t+1 - V_t</span></span><br><span class="line">        s, s_ = s[np.newaxis, :], s_[np.newaxis, :]</span><br><span class="line">        v_ = self.sess.run(self.v, &#123;self.s: s_&#125;) <span class="comment"># v_ : V_t+1</span></span><br><span class="line">        <span class="comment"># 根据 training data 更新 Critic</span></span><br><span class="line">        td_error, _ = self.sess.run(</span><br><span class="line">            [self.td_error, self.train_op],</span><br><span class="line">            &#123;self.s: s,self.r: r,self.v_: v_&#125;)</span><br><span class="line">        <span class="keyword">return</span> td_error</span><br></pre></td></tr></table></figure>
-<p>训练部分，和 Policy Gradient 大同小异：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">sess = tf.Session()</span><br><span class="line"><span class="comment"># 创建 Actor Critic 实例</span></span><br><span class="line">actor = Actor(sess, n_features=N_F, n_actions=N_A, lr=LR_A)</span><br><span class="line">critic = Critic(sess, n_features=N_F, gamma=GAMMA)</span><br><span class="line"></span><br><span class="line">sess.run(tf.global_variables_initializer())</span><br><span class="line"><span class="comment"># 训练 MAX_EPISODE </span></span><br><span class="line"><span class="keyword">for</span> i_episode <span class="keyword">in</span> range(MAX_EPISODE):</span><br><span class="line">    s = env.reset()</span><br><span class="line">    t = <span class="number">0</span></span><br><span class="line">    track_r = list()</span><br><span class="line">    <span class="keyword">while</span> <span class="keyword">True</span>:</span><br><span class="line">        <span class="keyword">if</span> RENDER: env.render()</span><br><span class="line">        a = actor.choose_action(s)</span><br><span class="line">        s_, r, done, info = env.step(a)</span><br><span class="line">        <span class="keyword">if</span> done:</span><br><span class="line">            r = <span class="number">-20</span></span><br><span class="line">        track_r.append(r)</span><br><span class="line">        <span class="comment"># critic learn td_error</span></span><br><span class="line">        td_error = critic.learn_state(s, r, s_)</span><br><span class="line">        <span class="comment"># actor update behave based on the td_error</span></span><br><span class="line">        actor.learn(s, a, td_error)</span><br><span class="line"></span><br><span class="line">        s = s_ <span class="comment"># update state</span></span><br><span class="line">        t += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> done:</span><br><span class="line">            <span class="comment"># if done or t &gt;= MAX_EP_STEPS:</span></span><br><span class="line">            ep_rs_sum = sum(track_r)</span><br><span class="line">            <span class="keyword">if</span> <span class="string">"running_reward"</span> <span class="keyword">not</span> <span class="keyword">in</span> globals():</span><br><span class="line">                running_reward = ep_rs_sum</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                running_reward = running_reward * <span class="number">0.95</span> + ep_rs_sum*<span class="number">0.05</span></span><br><span class="line">            <span class="keyword">if</span> running_reward &gt; DISPLAY_REWARD_THRESHOLD: <span class="comment"># render the game</span></span><br><span class="line">                RENDER = <span class="keyword">True</span></span><br><span class="line">            print(<span class="string">"episode :"</span>, i_episode, <span class="string">" reward: "</span>, int(running_reward))</span><br><span class="line">            <span class="keyword">break</span></span><br></pre></td></tr></table></figure>
-<p>最后，我们来看一下结果：</p>
-<p><img src="/img/ret.gif" alt="Result"></p>
-<p>一个很有趣的现象就是，第一次玩出界了，第二次能够在快出界的时候纠偏回来，性能确实比简单的 Policy Gradient 好很多。不过，这个训练似乎并不收敛，跑了 200 epoch 之后又会因为一次错误的尝试而导致后面一系列的错误… 果不其然是玄学啊。</p>
-<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><p><a href="https://zhuanlan.zhihu.com/p/29486661" target="_blank" rel="noopener">知乎- Actor-Critic 算法小结</a></p>
-<p><a href="https://www.youtube.com/watch?v=tWNpiNzWuO8&amp;index=4&amp;list=PLkFD6_40KJIznC9CDbVTjAF2oyt8_VAe3" target="_blank" rel="noopener">CS294-112 9/6/17</a></p>
+<p>希望所有明媚的梦想都能够在不久之后绽放，Good Luck！</p>
 
       
 
@@ -225,11 +203,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Deep Learning</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Reinforcement Learning</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">随笔</a>
         		</li>
       		
 		</ul>
@@ -287,7 +261,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2018/03/09/Actor-Critic/" alt="微信分享二维码">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2018/10/21/one-more-autumn/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -301,18 +275,9 @@
   
 <nav id="article-nav">
   
-    <a href="/2018/03/11/SeqGAN/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          SeqGAN —— GAN + RL +NLP
-        
-      </div>
-    </a>
   
-  
-    <a href="/2018/03/06/Reinforcement-Learning1/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">Policy Graident 从数学到实现</div>
+    <a href="/2018/10/14/OS-IPC-Notes/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">IPC 问题</div>
       <i class="icon-circle-right"></i>
     </a>
   

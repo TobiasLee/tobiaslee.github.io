@@ -154,6 +154,114 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-MNIST手写数字识别-Python" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/07/09/MNIST手写数字识别-Python/">MNIST手写数字识别-Python</a>
+    </h1>
+  
+
+        
+        <a href="/2017/07/09/MNIST手写数字识别-Python/" class="archive-article-date">
+  	<time datetime="2017-07-09T08:31:19.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-07-09</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>​    上篇blog讲了神经网络中BP反向传播算法的推导，并且在Andrew Ng的课程中用Matlab实现了MNIST手写数字数据集的识别。这次决定用Python的sk-learn库来实现（调包）一次。</p>
+<h2 id="数据获取以及处理"><a href="#数据获取以及处理" class="headerlink" title="数据获取以及处理"></a>数据获取以及处理</h2><p>​    Google一下，就能找到<a href="http://yann.lecun.com/exdb/mnist/" target="_blank" rel="noopener">MNIST</a>的网站，下载四个数据集。分别是:</p>
+<blockquote>
+<p><code>train-images-idx3-ubyte.gz:  training set images (9912422 bytes)</code><br><code>train-labels-idx1-ubyte.gz:  training set labels (28881 bytes)</code><br><code>t10k-images-idx3-ubyte.gz:   test set images (1648877 bytes)</code><br><code>t10k-labels-idx1-ubyte.gz:   test set labels (4542 bytes)</code></p>
+</blockquote>
+<p>​    解压之后发现Window自作主张的把第二个<code>-</code>变成了<code>.</code>， 文件后缀也变成了<code>idx1-ubyte</code>。不过这不是什么大问题，问题是，我们怎么把这个格式的文件变成我们想要的一组特征向量以及labels。</p>
+<blockquote>
+<h3 id="TRAINING-SET-LABEL-FILE-train-labels-idx1-ubyte"><a href="#TRAINING-SET-LABEL-FILE-train-labels-idx1-ubyte" class="headerlink" title="TRAINING SET LABEL FILE (train-labels-idx1-ubyte):"></a>TRAINING SET LABEL FILE (train-labels-idx1-ubyte):</h3><p>offset      type                   value               description][description]</p>
+<p>0000     32 bit integer  0x00000801(2049) magic number (MSB first)</p>
+<p>0004     32 bit integer  60000            number of items</p>
+<p>0008     unsigned byte   ??               label</p>
+<p>0009     unsigned byte   ??               label</p>
+<p>……..</p>
+<p>xxxx     unsigned byte   ??               label</p>
+<p><code>The labels values are 0 to 9.</code></p>
+<h3 id="TRAINING-SET-IMAGE-FILE-train-images-idx3-ubyte"><a href="#TRAINING-SET-IMAGE-FILE-train-images-idx3-ubyte" class="headerlink" title="TRAINING SET IMAGE FILE (train-images-idx3-ubyte):"></a>TRAINING SET IMAGE FILE (train-images-idx3-ubyte):</h3><p>offset      type                   value               description</p>
+<p>0000     32 bit integer  0x00000803(2051) magic number</p>
+<p>0004     32 bit integer  60000            number of images</p>
+<p>0008     32 bit integer  28               number of rows</p>
+<p>0012     32 bit integer  28               number of columns</p>
+<p>0016     unsigned byte   ??               pixel</p>
+<p>0017     unsigned byte   ??               pixel</p>
+<p>……..</p>
+<p>xxxx     unsigned byte   ??               pixel</p>
+<p>Pixels are organized row-wise. Pixel values are 0 to 255. 0 means background (white), 255 means foreground (black).</p>
+</blockquote>
+<p>​    网站也很贴心的给出了文件格式的描述，train_set和label都是有一个文件头的。然而还是拿这个ubyte文件没有办法（PS:我Python真的菜)，最后在网上找到了利用<code>struct</code>模块来处理二进制的方法:</p>
+        
+          <a class="article-more-a" href="/2017/07/09/MNIST手写数字识别-Python/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Machine Learning</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Python</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+
+      
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/07/09/MNIST手写数字识别-Python/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-BP算法推导" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -968,90 +1076,6 @@
 
 
   
-    <article id="post-AdapterPattern" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/04/04/AdapterPattern/">AdapterPatternLearning</a>
-    </h1>
-  
-
-        
-        <a href="/2017/04/04/AdapterPattern/" class="archive-article-date">
-  	<time datetime="2017-04-04T02:52:07.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-04-04</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <pre><code>适配器模式：将一个类的接口转换成另一个接口，以符合需求。让接口不兼容的类可以合作无间。
-</code></pre><p>​    更重要的是，适配器将<strong>客户和被适配者解耦</strong>，当接口改变时，利用适配器来封装改变的部分，就可以在不改动客户调用方式的情况下实现更新。</p>
-<p>​    打个最简单的例子，插座转换器，比如买的港版手机不能插国内的插头，中间加一个插头转换器，就可以了。这个转换器，起到的就是适配器（Adapter）的作用。</p>
-<p><img src="/img/adapter.png" alt="Adapter"></p>
-<h2 id="Exmaple"><a href="#Exmaple" class="headerlink" title="Exmaple"></a>Exmaple</h2><p>​    Java早期的集合（Collection）类型（e.g. Vector,Stack,Hashtable）中都实现了一个名为elements（）的方法，这个方法会返回一个Enumeration（枚举），这个接口有两个方法<code>hasMoreElemnts()</code>和<code>nextElement()</code>，从而能够在不知道集合的情况下，遍历集合中的元素。</p>
-<p>​    Sun之后更新了集合类，开始使用Iterator（迭代器）接口，这个接口和枚举接口很类似，有三个方法，分别是<code>hasNext()</code>、<code>next()</code>、<code>remove()</code>，这个remove()就是二者主要的区别。</p>
-<p>​    那么问题来了，如何适配新老版本的枚举和迭代器接口？适配器就是这个时候派上用场的。<br>
-        
-          <a class="article-more-a" href="/2017/04/04/AdapterPattern/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">设计模式</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-
-      
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/04/04/AdapterPattern/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/4/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/6/">Next &raquo;</a>
@@ -1188,11 +1212,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">NLP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Machine Learning</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1204,23 +1236,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Machine Learning</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">C</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1228,11 +1244,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
+                <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">栈</a>
+                <a href="javascript:void(0)" class="js-tag color2">C</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1248,7 +1264,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
+                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">栈</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1260,6 +1280,10 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">SeqGAN</a>
               </li>
              
@@ -1268,19 +1292,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">RNN</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">论文笔记</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">LaTeX</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Python</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">RNN</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">论文笔记</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1296,11 +1320,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Retrofit</a>
+                <a href="javascript:void(0)" class="js-tag color2">Paper Notes</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Paper Notes</a>
+                <a href="javascript:void(0)" class="js-tag color4">Retrofit</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1308,11 +1332,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">C++</a>
+                <a href="javascript:void(0)" class="js-tag color5">View</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">View</a>
+                <a href="javascript:void(0)" class="js-tag color4">C++</a>
               </li>
             
             <div class="clearfix"></div>

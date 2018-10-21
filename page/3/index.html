@@ -154,6 +154,117 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-Actor-Critic" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/03/09/Actor-Critic/">Actor-Critic - A improvement of Policy Gradient</a>
+    </h1>
+  
+
+        
+        <a href="/2018/03/09/Actor-Critic/" class="archive-article-date">
+  	<time datetime="2018-03-09T13:59:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-09</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="Improvement-of-Policy-Gradient"><a href="#Improvement-of-Policy-Gradient" class="headerlink" title="Improvement of Policy Gradient"></a>Improvement of Policy Gradient</h2><p>上篇 Blog 中讲到，我们对于 Agent 参数的更新是基于 reward function 对最大似然 loss 加权得到的 Objective Function，这里有两个问题：</p>
+<ol>
+<li>reward function 需要在完整的一次 trajectory 后才能够计算，也就是说，是<strong>回合更新</strong>的。这样更新的频率更新就比较慢，相应地，训练就会缓慢一些。</li>
+<li>因为每次我们都是在当前的一个回合上计算 reward，但每次回合 Agent 所采取的策略都会有所不同，这样子就会导致我们的方差（variance）比较大。</li>
+</ol>
+<p>对于第一个问题，我们的解决方法是，根据每个 Agent 的每次 Action 进行参数的更新，也就是我们接下来要说的 Actor-Critic；第二个问题，也就是我们最好能够对所有的样本进行估计来计算我们的 reward（也就是 reward 的数学期望），以此来降低方差。</p>
+<p>具体地，我们可以采取以下几种 reward function:</p>
+<p><img src="/img/pg2.png" alt="Different Reward Function"></p>
+<p><em>图源自知乎，详见 Reference</em></p>
+<p>第一种也就是最为普通的 reward function，各步的累加；第二种则是不考虑先前步的 reward，这里有一个 casualty 的性质，即今天的参数更新是无法影响昨天以及之前获得的 reward的，因而可以只考虑今天之后的 reward；第三种则是加入了 baseline，在基准之上衡量 reward，能够更好地指示动作的好坏，基准一般会采取所有回合的 reward 均值。值得强调的是，这三种方式都是<strong>对 reward 的无偏估计 (unbiased)</strong>，但天上不会掉馅饼，尽管第二种第三种方式对第一种方式修改后 variance 有所降低，但整体的方差还是比较大的。</p>
+<p>而后面三种，则是希望通过<strong>再用一个 NN，来评估当前的状态能够获得 reward</strong>。这样的估计，必然是 biased 的，因为这个 NN 基本不可能是 Perfect 的；当然，这样做的好处就能够降低 variance，所以这是一个 trade off 的问题，后面三种的详细式子如下：</p>
+<p><img src="/img/value_fit.png" alt="Value Functions"></p>
+<p>Q 是对当前状态 $s_t$和采取的动作$a_t$能够获得的 reward 进行估计；而 V 仅仅考虑对状态 $s_t$ 能获得的 reward，也就是对于所有 $a_t$ 的 Q 的数学期望；A 又称 Advantage Function，是衡量 $a_t$ 好坏的一个指标，从 $ A= Q-V$ 就能看出来。那么问题来了，这三个函数彼此相互关联，我们用 Neural Network(NN) 来拟合哪一个呢？</p>
+<p>答案其实也已经在上面的那种图里了，通过一些约等式，我们能够通过拟合 $V^{\pi}(s)$ 来得到 Advantage Function，实际应用中主要就是采取 Advantage Function 作为对当前所采取动作的评估函数。</p>
+<h2 id="Actor-Critic-Network"><a href="#Actor-Critic-Network" class="headerlink" title="Actor Critic Network"></a>Actor Critic Network</h2><p>上面的 Advantage Function 起到的作用类似一个教练（或者说是批评家），对于我们的 Actor 当前的状态和采取的动作做出指示，帮助他更好的达到目标，这也就是 Actor-Critic 算法的名字由来。我个人对 AC 算法的认识就是基于对 Policy Gradient 的优化而得到的，Actor 就是我们之前谈到的 Policy，其核心就在于<strong>用 NN 来扮演这个 Critic 的角色</strong>。</p>
+<p>既然是 <code>NN fit V function</code>，那么训练集是什么呢？即<strong>我们如何根据当前的状态，来估计整个回合获得的 reward</strong>呢？这里有两种做法：</p>
+<ol>
+<li>Monte Carlo evaluation：蒙特卡洛搜索，就是对未来可能采取的动作进行搜索，计算获得的 reward</li>
+<li>通过 V 本身来计算，获得的 reward 等于当前这一动作能获得的 r 和下一状态用 V 估计值之和，即 $ reward = r(s_t, a_t) + V (s_{t+1})$ </li>
+</ol>
+<p><img src="/img/target.png" alt="Two methods of evaluation of V"></p>
+<p>一般我们都会采用第二种方法，也称为 <code>bootstrapped estimate</code>，由此，我们就可以构造出相应的 training data，用 NN 解决一个 regression 问题：</p>
+<p><img src="/img/critic.png" alt="Regression Problem">   </p>
+<h2 id="Program"><a href="#Program" class="headerlink" title="Program"></a>Program</h2><p>又到了喜闻乐见的代码实现部分，其实也简单，两个 NN 嘛，有点 GAN 的感觉。实际上，有论文将 Actor 和 Critic 两个 NN 整合成一个 NN，并且做出了不错的效果，好处就是能够共享特征(shared features)，不好的地方就是，训练可能不是很稳定。这次就不贴完整代码，上一篇 Blog 和这篇以及后续 RL 相关的代码都会上传到 <a href="https://github.com/TobiasLee/ReinforcementLearningPractice" target="_blank" rel="noopener">GitHub</a> 上，这里只讲解部分核心的函数。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Actor 类</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Actor</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, sess, n_features, n_actions, lr=<span class="number">1e-3</span>)</span>:</span> </span><br><span class="line">	<span class="comment"># 相应的初始化，创建 placeholder</span></span><br><span class="line">	<span class="comment"># 构建全连接层</span></span><br><span class="line">	<span class="comment"># 设置 Optimizer 等</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">learn</span><span class="params">(self, s, a, td)</span>:</span></span><br><span class="line">     <span class="comment"># 根据 state, action, td error(即 Advantage) 更新参数</span></span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">choose_action</span><span class="params">(self, s)</span>:</span> <span class="comment"># choose action based on the state</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Critic 类</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Critic</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, sess, n_features, lr=<span class="number">1e-2</span>, gamma=<span class="number">0.99</span>)</span>:</span></span><br><span class="line">        <span class="comment"># 初始化 </span></span><br><span class="line">	    <span class="comment"># 构建 NN，</span></span><br><span class="line">       </span><br><span class="line">        <span class="keyword">with</span> tf.variable_scope(<span class="string">"td_square_error"</span>): <span class="comment"># Regression problem </span></span><br><span class="line">            <span class="comment"># 这里我们同样加入了 discount factor</span></span><br><span class="line">            self.td_error = self.r + gamma * self.v_ - self.v</span><br><span class="line">            <span class="comment"># 用 square 作为 loss function</span></span><br><span class="line">            self.loss = tf.square(self.td_error)</span><br><span class="line">        <span class="comment"># 设置 Optimizer </span></span><br><span class="line">        <span class="keyword">with</span> tf.variable_scope(<span class="string">"train"</span>):</span><br><span class="line">            self.train_op = tf.train.AdamOptimizer(lr).minimize(self.loss)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">learn_state</span><span class="params">(self, s, r, s_)</span>:</span></span><br><span class="line">        <span class="comment"># advantage function A = r + V_t+1 - V_t</span></span><br><span class="line">        s, s_ = s[np.newaxis, :], s_[np.newaxis, :]</span><br><span class="line">        v_ = self.sess.run(self.v, &#123;self.s: s_&#125;) <span class="comment"># v_ : V_t+1</span></span><br><span class="line">        <span class="comment"># 根据 training data 更新 Critic</span></span><br><span class="line">        td_error, _ = self.sess.run(</span><br><span class="line">            [self.td_error, self.train_op],</span><br><span class="line">            &#123;self.s: s,self.r: r,self.v_: v_&#125;)</span><br><span class="line">        <span class="keyword">return</span> td_error</span><br></pre></td></tr></table></figure>
+<p>训练部分，和 Policy Gradient 大同小异：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">sess = tf.Session()</span><br><span class="line"><span class="comment"># 创建 Actor Critic 实例</span></span><br><span class="line">actor = Actor(sess, n_features=N_F, n_actions=N_A, lr=LR_A)</span><br><span class="line">critic = Critic(sess, n_features=N_F, gamma=GAMMA)</span><br><span class="line"></span><br><span class="line">sess.run(tf.global_variables_initializer())</span><br><span class="line"><span class="comment"># 训练 MAX_EPISODE </span></span><br><span class="line"><span class="keyword">for</span> i_episode <span class="keyword">in</span> range(MAX_EPISODE):</span><br><span class="line">    s = env.reset()</span><br><span class="line">    t = <span class="number">0</span></span><br><span class="line">    track_r = list()</span><br><span class="line">    <span class="keyword">while</span> <span class="keyword">True</span>:</span><br><span class="line">        <span class="keyword">if</span> RENDER: env.render()</span><br><span class="line">        a = actor.choose_action(s)</span><br><span class="line">        s_, r, done, info = env.step(a)</span><br><span class="line">        <span class="keyword">if</span> done:</span><br><span class="line">            r = <span class="number">-20</span></span><br><span class="line">        track_r.append(r)</span><br><span class="line">        <span class="comment"># critic learn td_error</span></span><br><span class="line">        td_error = critic.learn_state(s, r, s_)</span><br><span class="line">        <span class="comment"># actor update behave based on the td_error</span></span><br><span class="line">        actor.learn(s, a, td_error)</span><br><span class="line"></span><br><span class="line">        s = s_ <span class="comment"># update state</span></span><br><span class="line">        t += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> done:</span><br><span class="line">            <span class="comment"># if done or t &gt;= MAX_EP_STEPS:</span></span><br><span class="line">            ep_rs_sum = sum(track_r)</span><br><span class="line">            <span class="keyword">if</span> <span class="string">"running_reward"</span> <span class="keyword">not</span> <span class="keyword">in</span> globals():</span><br><span class="line">                running_reward = ep_rs_sum</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                running_reward = running_reward * <span class="number">0.95</span> + ep_rs_sum*<span class="number">0.05</span></span><br><span class="line">            <span class="keyword">if</span> running_reward &gt; DISPLAY_REWARD_THRESHOLD: <span class="comment"># render the game</span></span><br><span class="line">                RENDER = <span class="keyword">True</span></span><br><span class="line">            print(<span class="string">"episode :"</span>, i_episode, <span class="string">" reward: "</span>, int(running_reward))</span><br><span class="line">            <span class="keyword">break</span></span><br></pre></td></tr></table></figure>
+<p>最后，我们来看一下结果：</p>
+<p><img src="/img/ret.gif" alt="Result"></p>
+<p>一个很有趣的现象就是，第一次玩出界了，第二次能够在快出界的时候纠偏回来，性能确实比简单的 Policy Gradient 好很多。不过，这个训练似乎并不收敛，跑了 200 epoch 之后又会因为一次错误的尝试而导致后面一系列的错误… 果不其然是玄学啊。</p>
+<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><p><a href="https://zhuanlan.zhihu.com/p/29486661" target="_blank" rel="noopener">知乎- Actor-Critic 算法小结</a></p>
+<p><a href="https://www.youtube.com/watch?v=tWNpiNzWuO8&amp;index=4&amp;list=PLkFD6_40KJIznC9CDbVTjAF2oyt8_VAe3" target="_blank" rel="noopener">CS294-112 9/6/17</a></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Deep Learning</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Reinforcement Learning</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+
+      
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/03/09/Actor-Critic/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Reinforcement-Learning1" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1017,87 +1128,6 @@
 
 
   
-    <article id="post-Some-Feelings" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/11/01/Some-Feelings/">Some Feelings</a>
-    </h1>
-  
-
-        
-        <a href="/2017/11/01/Some-Feelings/" class="archive-article-date">
-  	<time datetime="2017-11-01T13:26:32.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-11-01</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>起标题的时候想了很久，一开始想用“大二上”这样的标题，但一想，大二上也才过去半个学期，可能到期末的时候再写比较合适吧；然后也想用“随笔/感想”这个标题，觉得略 low，想了想还是用英文名吧23333。</p>
-<h2 id="Feelings"><a href="#Feelings" class="headerlink" title="Feelings"></a>Feelings</h2><h3 id="大学的节奏"><a href="#大学的节奏" class="headerlink" title="大学的节奏"></a>大学的节奏</h3><p>应该是已经适应了大学生活的节奏了吧，开学之后就按部就班的上课，每天过着两点一线的生活，偶尔出去溜达一圈吃个饭。和大一的不同就是课变少了，有大块的时间空出来，期中考试也只要考一门离散数学，让我有一种上了假大学的错觉。</p>
-<p>作业也都在按时地完成，但始终觉得学的不像上学期一样认真了，可能是自认为摸清了套路吧：平时老老实实上课，写作业，考试前突击刷一波卷子，成绩都还能过得去。似乎确实是这样的。在我看来，大学课程的意义，就是<strong>告诉你有这样的一样东西，学校教给你关于它的一些基本的知识，等到你要用的时候，知道去哪里找到它，再捡起来就好</strong>。上学期学的高数、线代，现在脑子里已经没剩下多少了，但能让我看懂论文里的公式和符号，知道公式背后的 intuition，大概这就是这些课之于我的意义吧。</p>
-<p>所以就感觉，大学生活变得无比无趣，像是上了轨的列车，一眼就能看到终点，却要等待漫长的时间。特别希望有个时光机器能够直接穿梭到四年之后，过那个时候的生活。明知是痴心妄想，但请允许痴人说梦。<br>
-        
-          <a class="article-more-a" href="/2017/11/01/Some-Feelings/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">随笔</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-
-      
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/11/01/Some-Feelings/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/4/">Next &raquo;</a>
@@ -1234,11 +1264,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">NLP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Machine Learning</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1250,23 +1288,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Machine Learning</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">C</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1274,11 +1296,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
+                <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">栈</a>
+                <a href="javascript:void(0)" class="js-tag color2">C</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1294,7 +1316,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
+                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">栈</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1306,6 +1332,10 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">SeqGAN</a>
               </li>
              
@@ -1314,19 +1344,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">RNN</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">论文笔记</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">LaTeX</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Python</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">RNN</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">论文笔记</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1342,11 +1372,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Retrofit</a>
+                <a href="javascript:void(0)" class="js-tag color2">Paper Notes</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Paper Notes</a>
+                <a href="javascript:void(0)" class="js-tag color4">Retrofit</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1354,11 +1384,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">C++</a>
+                <a href="javascript:void(0)" class="js-tag color5">View</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">View</a>
+                <a href="javascript:void(0)" class="js-tag color4">C++</a>
               </li>
             
             <div class="clearfix"></div>
