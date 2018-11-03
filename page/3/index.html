@@ -154,6 +154,114 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-SeqGAN" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/03/11/SeqGAN/">SeqGAN —— GAN + RL +NLP</a>
+    </h1>
+  
+
+        
+        <a href="/2018/03/11/SeqGAN/" class="archive-article-date">
+  	<time datetime="2018-03-11T12:46:33.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-11</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>SeqGAN 是第一篇用 GAN 在 NLP 上做出一些成果的 model，<a href="http://lantaoyu.com/cv/" target="_blank" rel="noopener">Lantao Yu</a> 的 CV 看的我也是羡慕不已，想着同龄人已经有如此出色的成绩，不由得感觉自己还是太菜了。</p>
+<h2 id="GAN-for-NLP"><a href="#GAN-for-NLP" class="headerlink" title="GAN for NLP"></a>GAN for NLP</h2><p>先前写过一篇文章，<a href="http://tobiaslee.top/2017/12/10/Thoughts-about-adversarial-training-methods-in-NLP/" target="_blank" rel="noopener">关于 Adversarial Training 在 NLP 的一些思考</a>，Adversarial Training 算是 GAN 的源头，而 GAN 算是其在生成器领域的一大成就。但这个 GAN 在文本领域一直不怎么 work，先前我也做过用 GAN 中 Discriminator 作为 Classifier，希望对抗训练能够提升其分类准确度，然而并不成功。原因当时也总结了一下，记录在<a href="https://www.zhihu.com/question/68390841/answer/264504804" target="_blank" rel="noopener">这里</a>，一句话概括就是 Generator 太垃圾根本不能忽悠 Discriminator，反而 Discriminator 因为训练轮数少了（和 Generator 交替训练）被拖了后腿。那么问题又回到了 GAN 来生成文本的问题上了，图像和文本的核心区别在于<strong>图像的 Pixel 表示是连续的，而文本是由离散的 token 组成</strong>。因而，Goodfellow 也在 reddit 上说: </p>
+<blockquote>
+<p>You can make slight changes to the synthetic data only if it is based on continuous numbers. If it is based on discrete numbers, there is no way to make a slight change.</p>
+<p>If you output the word “penguin”, you can’t change that to “penguin + .001” on the next step, because there is no such word as “penguin + .001”. You have to go all the way from “penguin” to “ostrich”.</p>
+</blockquote>
+<p>参数的微小改变不能对结果产生影响，或者说影响的方向也不对，这就导致 Discriminator 的梯度回传变得没有意义。再进一步的关于 GAN for NLP 的讨论，建议可以阅读胡杨的<a href="https://zhuanlan.zhihu.com/p/29168803" target="_blank" rel="noopener">文章</a>。前面说的这些都是为了凸显 SeqGAN 这一工作的重要性，毕竟，GAN 在 NLP 上这么难搞，还能搞出来，肯定了不得。确实，<strong>SeqGAN 是了 RL + GAN 用于文本生成的一大创举</strong>，接下来，一睹风采。</p>
+<h2 id="Seq-GAN"><a href="#Seq-GAN" class="headerlink" title="Seq GAN"></a>Seq GAN</h2><p>Seq GAN 的模型很简洁：</p>
+<p><img src="/img/seqgan.png" alt="SeqGAN model"></p>
+<p>沿用 GAN 的架构， Generator 来生成文本和 Discriminator 来判别文本是真实的还是生成的，那么是怎么解决更新 Generator 参数的这个问题的呢？用 Policy Gradient！如果我们把 <strong>Generator 看成是一个 Agent，他在每一 time step 上生成的 word token 作为 action，此前生成的所有 tokens 作为 state</strong>，我们就可以设计一个 reward function 来指导 Generator 生成更真实的句子。因为 Discriminator 输出是真实句子的概率 0-1，直接拿来作为 reward，于是就有了下面的式子:</p>
+<p>$$ Q_{D_\phi}^{G_\theta}=(a = y_{T}, s= Y_{1:T-1} = D_{\phi}(Y_{1:T}))$$</p>
+<p>但是对于生成了一半的句子怎么评估其真实性呢？用蒙特卡洛（蒙特卡洛就是随机采样）搜索在一个 Generator 的拷贝上（为了避免搜索过程引入对梯度的影响）补全句子，然后再交给 Discriminator 评估。于是，完成的 Q function 如下：</p>
+<p><img src="/img/seqreward.png" alt="Q function"></p>
+<p>讲到这里，整个模型的架构已经讲完了，是不是很简单粗暴明了。接下来实作上还有一些小 tricks，文章的算法摘录如下：</p>
+<p><img src="/img/seq_algorithm.png" alt="SeqGAN Algorithm"></p>
+        
+          <a class="article-more-a" href="/2018/03/11/SeqGAN/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Deep Learning</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Reinforcement Learning</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">NLP</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">GAN</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">论文笔记</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+
+      
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/03/11/SeqGAN/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Actor-Critic" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1045,89 +1153,6 @@
 
 
   
-    <article id="post-Sentence-preprocessing-skills" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/11/17/Sentence-preprocessing-skills/">文本预处理方法小记</a>
-    </h1>
-  
-
-        
-        <a href="/2017/11/17/Sentence-preprocessing-skills/" class="archive-article-date">
-  	<time datetime="2017-11-17T12:41:59.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-11-17</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>最近做 Sentiment Analysis 的问题，用 IMDB，Twitter 等 Dataset，拿到原始的一条条文本，直接喂给 Model 肯定不行，需要进行对文本进行预处理。预处理的精细程度很大程度上也会影响模型的性能。这篇 Blog 就记录一些预处理的方法。</p>
-<h2 id="Remove-Stop-Words"><a href="#Remove-Stop-Words" class="headerlink" title="Remove Stop Words"></a>Remove Stop Words</h2><p>​    Stop Words，也叫停用词，通常意义上，停用词大致分为两类。一类是人类语言中包含的功能词，这些功能词极其普遍，与其他词相比，功能词没有什么实际含义，比如’the’、’is’、’at’、’which’、’on’等。另一类词包括词汇词，比如’want’等，这些词应用十分广泛，但是对这样的词搜索引擎无法保证能够给出真正相关的搜索结果，难以帮助缩小搜索范围，同时还会降低搜索的效率，所以通常会把这些词从问题中移去，从而提高搜索性能。</p>
-        
-          <a class="article-more-a" href="/2017/11/17/Sentence-preprocessing-skills/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">NLP</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">TensorFlow</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-
-      
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/11/17/Sentence-preprocessing-skills/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/4/">Next &raquo;</a>
@@ -1256,6 +1281,14 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Deep Learning</a>
               </li>
              
@@ -1264,39 +1297,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Android</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">自定义View</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Machine Learning</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">NLP</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1308,11 +1313,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
+                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
+                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1328,6 +1333,26 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Android</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">自定义View</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">MediaCodec</a>
               </li>
              
@@ -1336,15 +1361,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">SeqGAN</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Java</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">LaTeX</a>
+                <a href="javascript:void(0)" class="js-tag color2">SeqGAN</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1356,19 +1377,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Python</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">OS</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">爬虫</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Paper Notes</a>
+                <a href="javascript:void(0)" class="js-tag color1">LaTeX</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1376,11 +1385,31 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">OS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Python</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Retrofit</a>
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Paper Notes</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Seq2Seq</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">爬虫</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">LSTM</a>
               </li>
              
               <li class="article-tag-list-item">
