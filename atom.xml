@@ -125,9 +125,9 @@
     
       <category term="NLP" scheme="http://yoursite.com/tags/NLP/"/>
     
-      <category term="Text Generation" scheme="http://yoursite.com/tags/Text-Generation/"/>
-    
       <category term="GAN" scheme="http://yoursite.com/tags/GAN/"/>
+    
+      <category term="Text Generation" scheme="http://yoursite.com/tags/Text-Generation/"/>
     
   </entry>
   
@@ -259,9 +259,9 @@
     
       <category term="Deep Learning" scheme="http://yoursite.com/tags/Deep-Learning/"/>
     
-      <category term="Text Generation" scheme="http://yoursite.com/tags/Text-Generation/"/>
-    
       <category term="GAN" scheme="http://yoursite.com/tags/GAN/"/>
+    
+      <category term="Text Generation" scheme="http://yoursite.com/tags/Text-Generation/"/>
     
   </entry>
   
@@ -371,9 +371,9 @@
     
       <category term="NLP" scheme="http://yoursite.com/tags/NLP/"/>
     
-      <category term="Text Generation" scheme="http://yoursite.com/tags/Text-Generation/"/>
-    
       <category term="GAN" scheme="http://yoursite.com/tags/GAN/"/>
+    
+      <category term="Text Generation" scheme="http://yoursite.com/tags/Text-Generation/"/>
     
   </entry>
   
@@ -547,9 +547,9 @@
     
       <category term="NLP" scheme="http://yoursite.com/tags/NLP/"/>
     
-      <category term="论文笔记" scheme="http://yoursite.com/tags/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/"/>
-    
       <category term="RNN" scheme="http://yoursite.com/tags/RNN/"/>
+    
+      <category term="论文笔记" scheme="http://yoursite.com/tags/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/"/>
     
   </entry>
   
