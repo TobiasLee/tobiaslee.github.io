@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://yoursite.com/tobiaslee.html</loc>
+    
+    <lastmod>2018-12-14T13:07:18.867Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://yoursite.com/2018/11/02/customized-RNN-cell/</loc>
     
     <lastmod>2018-11-03T00:33:17.349Z</lastmod>
