@@ -164,6 +164,118 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-MaskGAN-Notes" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/04/01/MaskGAN-Notes/">MaskGAN 学习笔记</a>
+    </h1>
+  
+
+        
+        <a href="/2018/04/01/MaskGAN-Notes/" class="archive-article-date">
+  	<time datetime="2018-04-01T08:02:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-01</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>MaskGAN 是 Goodfellow 组的新作，已经被 ICLR 2018 接收，标题很是风骚，<a href="https://openreview.net/pdf?id=ByOExmWAb" target="_blank" rel="noopener">MaskGAN: Better Text Generation via Filling in the  <strong><strong>____</strong></strong></a>，这个下划线的操作真是… astounding。代码也已<a href="https://github.com/tensorflow/models/tree/master/research/maskgan" target="_blank" rel="noopener">开源</a>。这篇文章依旧是熟悉的套路，从模型 + 代码来解读论文，走起！</p>
+<h2 id="SeqGAN-To-MaskGAN"><a href="#SeqGAN-To-MaskGAN" class="headerlink" title="SeqGAN To MaskGAN"></a>SeqGAN To MaskGAN</h2><h3 id="SeqGAN-的缺点"><a href="#SeqGAN-的缺点" class="headerlink" title="SeqGAN 的缺点"></a>SeqGAN 的缺点</h3><p>上一篇讲 SeqGAN 的时候我们提到，SeqGAN 开创了 GAN 在 Text Generation 的先河，但是，实验结果证明，其 Idea 是能 Work（通过强化学习解决 GAN 无法在离散文本上梯度回传），合成数据中的 loss 确实有下降，但是在真实的古诗数据集上，其<strong>生成的文本质量不如人意</strong>。我利用全唐诗做了实验，不过囿于设备和时间原因，并没有充分的训练和调优，摘录部分生成结果如下：</p>
+<blockquote>
+<p>霞畅拍起妇 已煦肃兢恼 鶋仝棚愕迷 啼肃次念云 </p>
+<p>岂阳孤任帐 因伊牧掩牢 人原马槎问 弥章斗天钓 </p>
+<p>鸡行肩始昏 晨刺重云千 指瘼山月堂 一似蕃德率 </p>
+<p>有足偶有欲 威飏欢浩潋 戏鸟靓簪粘 性负觉狄至 </p>
+</blockquote>
+<p>有没有一种狗屁不通的感觉… 反正我是很绝望。</p>
+<p>也就是说 SeqGAN 效果不是很好（也有实验室做过实验，其中生成质量较好的古诗基本都是训练集中的），而 MaskGAN 可能为提升生成文本的质量指出了一个方向，其和 SeqGAN 有两点主要的区别：</p>
+<ol>
+<li>增加额外的 Information，Masked Sequence $m(x)$，这也导致了其使用的模型架构变成 Seq2Seq，而非 SeqGAN 中 LSTM（Generator）和 CNN（Discriminator）</li>
+<li>使用 Actor-Critic 来进行强化学习，而非 SeqGAN 中的 Policy Gradient + Monte Carlo </li>
+</ol>
+<p>接下来我们就从这两点不同入手，来讲解 MaskGAN。</p>
+<h3 id="Masked-Token"><a href="#Masked-Token" class="headerlink" title="Masked Token"></a>Masked Token</h3><p>MaskGAN 在文中指出了 GAN 的两个问题，一是 Mode Collapse，即可能出现少数的生成样本种类占据了整个生成集，缺乏多样性；二是训练不稳定，GAN 难调试是出了名的。文章解决这两个问题的方案是：不再让生成器来生成的完整的文本，而是做“完形填空”，不过关于为什么能解决，他们是这么说的：</p>
+<blockquote>
+<p> We believe the in-filling may mitigate the problem of severe mode-collapse. </p>
+</blockquote>
+<p>一个<code>believe</code> 再来 <code>may</code> 加上一个 <code>mitigate</code>，这就是论文的表述的艺术啊。解决训练不稳定的方法呢就是从 Policy Gradient 转换为 Actor-Critic，后面再说。</p>
+<p>“完形填空”相信大家高中都做过，就是把文章挖空然后让你选一个正确的单词填进去，MaskGAN 就是这么干的，对于一个输入序列 $x = （x_1,…, x_T)$，经过一个 mask： $m=(m_1,…m_T)$，其中 $m_i$ 的取值为 0 或者 1，0 就代表挖掉，1 就意味着保留。经过挖空的操作之后呢，我们就得到了 Masked Token $m(x)$，并将它交给我们以 Seq2Seq 为架构的 Generator 来进行生成，模型见下： </p>
+<p><img src="/img/maskgan_model.png" alt="MaskGAN"></p>
+<p>需要注意一点就是：生成的 token 不一定会作为下一个生成的 pre-token，而是取决于是否被挖空，如有原；这也是一个重要的细节，因为一个错误的答案可能会导致一整篇文章都是错误的，所以，如果有参考答案还是用参考答案。</p>
+        
+          <a class="article-more-a" href="/2018/04/01/MaskGAN-Notes/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Deep Learning</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">NLP</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">GAN</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">论文笔记</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+
+      
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/04/01/MaskGAN-Notes/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-SeqGAN" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1077,92 +1189,6 @@
 
 
   
-    <article id="post-Batch-Normalization-Learning-Notes" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/12/06/Batch-Normalization-Learning-Notes/">Batch Normalization 学习笔记</a>
-    </h1>
-  
-
-        
-        <a href="/2017/12/06/Batch-Normalization-Learning-Notes/" class="archive-article-date">
-  	<time datetime="2017-12-06T08:27:58.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-12-06</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Batch Normaliza（BN）是现在几乎已经成为深度学习，特别是图像领域几乎标配的一种 Technique，常常能在论文中见到。拜读了 <a href="https://arxiv.org/pdf/1502.03167.pdf" target="_blank" rel="noopener">Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift</a> 这篇 Citation 3000+ 的论文和李宏毅老师的<a href="https://www.bilibili.com/video/av9770302/#page=10" target="_blank" rel="noopener">深度学习</a>课程之后，写篇 Blog 作为学习笔记。</p>
-<h2 id="Motivation"><a href="#Motivation" class="headerlink" title="Motivation"></a>Motivation</h2><h3 id="Feature-Scaling"><a href="#Feature-Scaling" class="headerlink" title="Feature Scaling"></a>Feature Scaling</h3><p>李宏毅老师是以机器学习中常用的 Feature Scaling 来作为一开始的引入的，Feature Scaling 顾名思义，就是把各个特征的值通过计算数学期望和方差，进行一个放缩。</p>
-<p>这个放缩有什么意义呢？如果我们的 Feature，如下图中的 X<sub>1</sub> 和 X<sub>2</sub>，其数值不在一个数量级上（1 vs 100），而如果他们对于最终结果的影响的权重是差不多的，则在我们的 Minimize Loss 的过程中，Loss 对 权重 W<sub>1</sub> 和 W<sub>2</sub> 的梯度有很大的差别，类似一个椭圆，这就会导致 Training 过程变得比较困难：<strong>因为如果要达到 Optima，我们在横/纵两个方向上要选择不同的 Learning Rate</strong>（横向较大，纵向较小），事实上这样的设置是比较困难，所以一般我们都会倾向于选择一个较小的 Learning Rate，这就导致了训练速度的下降。</p>
-<p><img src="/img/feature_scaling.png" alt="Feature Scaling"></p>
-<p>而经过放缩之后的梯度就比较接近一个正圆，各个方向上的梯度差不多，就能够使用较大的 Learning Rate，从而使得训练过程更快。<br>
-        
-          <a class="article-more-a" href="/2017/12/06/Batch-Normalization-Learning-Notes/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Deep Learning</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Neural Networks</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-
-      
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/12/06/Batch-Normalization-Learning-Notes/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/4/">Next &raquo;</a>
@@ -1292,10 +1318,6 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Deep Learning</a>
               </li>
              
@@ -1304,11 +1326,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">NLP</a>
+                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">NLP</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1324,10 +1350,6 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
               </li>
              
@@ -1336,11 +1358,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
+                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">C</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1429,6 +1455,10 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">View</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Attention</a>
               </li>
             
             <div class="clearfix"></div>

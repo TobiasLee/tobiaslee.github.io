@@ -164,6 +164,92 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-Batch-Normalization-Learning-Notes" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/12/06/Batch-Normalization-Learning-Notes/">Batch Normalization 学习笔记</a>
+    </h1>
+  
+
+        
+        <a href="/2017/12/06/Batch-Normalization-Learning-Notes/" class="archive-article-date">
+  	<time datetime="2017-12-06T08:27:58.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-12-06</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Batch Normaliza（BN）是现在几乎已经成为深度学习，特别是图像领域几乎标配的一种 Technique，常常能在论文中见到。拜读了 <a href="https://arxiv.org/pdf/1502.03167.pdf" target="_blank" rel="noopener">Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift</a> 这篇 Citation 3000+ 的论文和李宏毅老师的<a href="https://www.bilibili.com/video/av9770302/#page=10" target="_blank" rel="noopener">深度学习</a>课程之后，写篇 Blog 作为学习笔记。</p>
+<h2 id="Motivation"><a href="#Motivation" class="headerlink" title="Motivation"></a>Motivation</h2><h3 id="Feature-Scaling"><a href="#Feature-Scaling" class="headerlink" title="Feature Scaling"></a>Feature Scaling</h3><p>李宏毅老师是以机器学习中常用的 Feature Scaling 来作为一开始的引入的，Feature Scaling 顾名思义，就是把各个特征的值通过计算数学期望和方差，进行一个放缩。</p>
+<p>这个放缩有什么意义呢？如果我们的 Feature，如下图中的 X<sub>1</sub> 和 X<sub>2</sub>，其数值不在一个数量级上（1 vs 100），而如果他们对于最终结果的影响的权重是差不多的，则在我们的 Minimize Loss 的过程中，Loss 对 权重 W<sub>1</sub> 和 W<sub>2</sub> 的梯度有很大的差别，类似一个椭圆，这就会导致 Training 过程变得比较困难：<strong>因为如果要达到 Optima，我们在横/纵两个方向上要选择不同的 Learning Rate</strong>（横向较大，纵向较小），事实上这样的设置是比较困难，所以一般我们都会倾向于选择一个较小的 Learning Rate，这就导致了训练速度的下降。</p>
+<p><img src="/img/feature_scaling.png" alt="Feature Scaling"></p>
+<p>而经过放缩之后的梯度就比较接近一个正圆，各个方向上的梯度差不多，就能够使用较大的 Learning Rate，从而使得训练过程更快。<br>
+        
+          <a class="article-more-a" href="/2017/12/06/Batch-Normalization-Learning-Notes/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Deep Learning</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Neural Networks</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+
+      
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/12/06/Batch-Normalization-Learning-Notes/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Sentence-preprocessing-skills" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -937,92 +1023,6 @@
 
 
   
-    <article id="post-TensorFlow初步" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/08/01/TensorFlow初步/">TensorFlow初步</a>
-    </h1>
-  
-
-        
-        <a href="/2017/08/01/TensorFlow初步/" class="archive-article-date">
-  	<time datetime="2017-08-01T11:13:04.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-08-01</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>其实这是一篇 Google 官网 TensorFlow Tutorial 的学习笔记，主要侧重记录使用 TensorFlow 框架的一个流程，细节暂且按下不表。</p>
-<p>首先是导入 TensorFlow 以及准备数据</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf <span class="comment"># 约定的简写</span></span><br><span class="line"><span class="keyword">from</span> tensorflow.examples.tutorials.mnist <span class="keyword">import</span> input_data</span><br><span class="line"></span><br><span class="line"><span class="comment"># 准备mnist数据集</span></span><br><span class="line">mnist = input_data.read_data_sets(<span class="string">'MNIST_data'</span>, one_hot=<span class="keyword">True</span>)</span><br></pre></td></tr></table></figure>
-<p>提一下 <code>one hot encoding</code>，就是一个由 0/1 组成的向量来表示的 label，如果说数字是“0”，那么对应的 label 就是[1,0,0,…,0]，如果是“1”，那么就是[0,1,0,…,0]</p>
-<p>这篇教程里使用了两个模型，一个是线性的“Wx+b”，还有一个则是CNN，因为主要侧重使用的结构以及我对CNN不是很熟悉（后者才是主要原因），所以这篇就只介绍第一种模型。<br>
-        
-          <a class="article-more-a" href="/2017/08/01/TensorFlow初步/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Machine Learning</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">TensorFlow</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-
-      
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/08/01/TensorFlow初步/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/3/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/5/">Next &raquo;</a>
@@ -1152,10 +1152,6 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Deep Learning</a>
               </li>
              
@@ -1164,11 +1160,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">NLP</a>
+                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">NLP</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1184,10 +1184,6 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
               </li>
              
@@ -1196,11 +1192,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
+                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">C</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1289,6 +1289,10 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">View</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Attention</a>
               </li>
             
             <div class="clearfix"></div>

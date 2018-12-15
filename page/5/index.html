@@ -164,6 +164,92 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-TensorFlow初步" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/08/01/TensorFlow初步/">TensorFlow初步</a>
+    </h1>
+  
+
+        
+        <a href="/2017/08/01/TensorFlow初步/" class="archive-article-date">
+  	<time datetime="2017-08-01T11:13:04.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-08-01</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>其实这是一篇 Google 官网 TensorFlow Tutorial 的学习笔记，主要侧重记录使用 TensorFlow 框架的一个流程，细节暂且按下不表。</p>
+<p>首先是导入 TensorFlow 以及准备数据</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf <span class="comment"># 约定的简写</span></span><br><span class="line"><span class="keyword">from</span> tensorflow.examples.tutorials.mnist <span class="keyword">import</span> input_data</span><br><span class="line"></span><br><span class="line"><span class="comment"># 准备mnist数据集</span></span><br><span class="line">mnist = input_data.read_data_sets(<span class="string">'MNIST_data'</span>, one_hot=<span class="keyword">True</span>)</span><br></pre></td></tr></table></figure>
+<p>提一下 <code>one hot encoding</code>，就是一个由 0/1 组成的向量来表示的 label，如果说数字是“0”，那么对应的 label 就是[1,0,0,…,0]，如果是“1”，那么就是[0,1,0,…,0]</p>
+<p>这篇教程里使用了两个模型，一个是线性的“Wx+b”，还有一个则是CNN，因为主要侧重使用的结构以及我对CNN不是很熟悉（后者才是主要原因），所以这篇就只介绍第一种模型。<br>
+        
+          <a class="article-more-a" href="/2017/08/01/TensorFlow初步/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Machine Learning</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">TensorFlow</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+
+      
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/08/01/TensorFlow初步/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-深圳·大一·未来" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -968,114 +1054,6 @@
 
 
   
-    <article id="post-FilterPlayer" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/04/23/FilterPlayer/">FilterPlayer</a>
-    </h1>
-  
-
-        
-        <a href="/2017/04/23/FilterPlayer/" class="archive-article-date">
-  	<time datetime="2017-04-23T12:24:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-04-23</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>​    上次讲了MediaCodec的用法，其实也是为了后面的视频渲染做准备的。一开始定的学习目标就是：能够导入视频，并且加上滤镜。这篇文章就主要讲一下导入视频之后的滤镜渲染。</p>
-<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>​    其实一开始实现的思路大致是这样:</p>
-<blockquote>
-<p>MediaCodec解码视频流 ——&gt; 输出到GLSurfaceView ——&gt; OpenGL渲染</p>
-</blockquote>
-<p>​    然而因为GLSurfaceView的Surface比较特殊，无法直接作为MediaCodec的Decoder的输出容器，所以失败了。</p>
-<p>​    后来开始研究 <a href="https://github.com/google/grafika" target="_blank" rel="noopener">grafika</a> 里的一个 Show+capture camera 的功能</p>
-<blockquote>
-<p><a href="https://github.com/google/grafika/blob/master/src/com/android/grafika/CameraCaptureActivity.java" target="_blank" rel="noopener">Show + capture camera</a>. Attempts to record at 720p from the front-facing camera, displaying the preview and recording it simultaneously.</p>
-<ul>
-<li>Use the record button to toggle recording on and off.</li>
-<li>Recording continues until stopped. If you back out and return, recording will start again, with a real-time gap. If you try to play the movie while it’s recording, you will see an incomplete file (and probably cause the play movie activity to crash).</li>
-<li>The recorded video is scaled to 640x480, so it will probably look squished. A real app would either set the recording size equal to the camera input size, or correct the aspect ratio by letter- or pillar-boxing the frames as they are rendered to the encoder.</li>
-<li>You can select a filter to apply to the preview. It does not get applied to the recording. The shader used for the filters is not optimized, but seems to perform well on most devices (the original Nexus 7 (2012) being a notable exception). Demo here: <a href="http://www.youtube.com/watch?v=kH9kCP2T5Gg" target="_blank" rel="noopener">http://www.youtube.com/watch?v=kH9kCP2T5Gg</a></li>
-<li>The output is a video-only MP4 file (“camera-test.mp4”).</li>
-</ul>
-</blockquote>
-<p>​    它的Show模块和我想要做滤镜预览的是非常类似的，只是我的输入源是来自于本地文件，只要用MediaCodec来解码成视频流作为输入就可以了。当然，也和它的说明一样，他的录制功能是不带滤镜的，而我要做的进行添加滤镜之后的保存就要另辟蹊径了（还在努力中）。</p>
-<p>​    grafika实现的思路是这样的:</p>
-<blockquote>
-<p>Decoder –&gt; Surface -&gt; SurfaceTexture –&gt; OpenGL Filter –&gt; GLSurfaceView</p>
-</blockquote>
-<p>​    关键在于，它并没有直接把GLSurfaceView的Surface交给Deocder作为输出容器，而是中间通过一个FullFrameRect的类来持有了一个OpenGL的Texture,然后我们可以用这个纹理来创建一个Surface交给Decoder。就避免了直接用GLSurfaceView的Surface作为输出的问题。</p>
-        
-          <a class="article-more-a" href="/2017/04/23/FilterPlayer/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Android</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">MediaCodec</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">OpenGL</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-
-      
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/04/23/FilterPlayer/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/4/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/6/">Next &raquo;</a>
@@ -1205,10 +1183,6 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Deep Learning</a>
               </li>
              
@@ -1217,11 +1191,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">NLP</a>
+                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">NLP</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1237,10 +1215,6 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
               </li>
              
@@ -1249,11 +1223,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
+                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">C</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1342,6 +1320,10 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">View</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Attention</a>
               </li>
             
             <div class="clearfix"></div>
