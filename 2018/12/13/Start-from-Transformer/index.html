@@ -27,7 +27,7 @@
 <meta property="og:image" content="http://yoursite.com/img/bert_repr.png">
 <meta property="og:image" content="http://yoursite.com/img/bert_downstream.png">
 <meta property="og:image" content="http://yoursite.com/img/bert_model.png">
-<meta property="og:updated_time" content="2018-12-15T03:44:47.676Z">
+<meta property="og:updated_time" content="2018-12-21T02:56:09.921Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="从 Transformer 说起">
 <meta name="twitter:description" content="从我开始学习 NLP 以来，带有轰动效应的 Paper 大概就是 Transformer 和 BERT，前者是在机器翻译领域全面超过原先的 Seq2Seq，而后者则是继 Word Embedding 作为 representation 之后的又一突破。而实际上 BERT 的提出也是建立在 Transformer 的基础上。这篇文章就是围绕这两篇 Paper 的笔记以及一些思考。就从 Transfo">
@@ -209,7 +209,7 @@
 <p>二者方式对比：</p>
 <ol>
 <li>二者复杂度接近，点乘方法可以通过矩阵计算的优化来实现快的速度</li>
-<li>点乘可能因为某个位置的元素过大而在 softmax 之后进入梯度的死区，即没有梯度，因此作者通过一个 $\sqrt{d_k}$$ 做了 scale 来避免这样的情况</li>
+<li>点乘可能因为某个位置的元素过大而在 softmax 之后进入梯度的死区，即没有梯度，因此作者通过一个 $\sqrt{d_k} $ 做了 scale 来避免这样的情况</li>
 </ol>
 <p>回到正主 Multi-head attention，先是 single head 的计算方式：</p>
 <p>$ Attention(Q, K ,V) = softmax( \frac{QK^T}{\sqrt{d_k}} )V$</p>
@@ -390,6 +390,15 @@
   
 <nav id="article-nav">
   
+    <a href="/2018/12/31/2018-summary/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          Goodbye 2018，Hello 2019
+        
+      </div>
+    </a>
+  
   
     <a href="/2018/11/02/customized-RNN-cell/" id="article-nav-older" class="article-nav-link-wrap">
       <div class="article-nav-title">定制 RNN Cell</div>
@@ -560,19 +569,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">NLP</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Android</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">自定义View</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -580,15 +577,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
+                <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">C</a>
+                <a href="javascript:void(0)" class="js-tag color4">NLP</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -596,15 +589,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
+                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
+                <a href="javascript:void(0)" class="js-tag color2">C</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
+                <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -616,7 +609,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
+                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Android</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -628,11 +629,23 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">SeqGAN</a>
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">自定义View</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Java</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Python</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -648,15 +661,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Python</a>
+                <a href="javascript:void(0)" class="js-tag color3">OS</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">JVM</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">OS</a>
               </li>
              
               <li class="article-tag-list-item">

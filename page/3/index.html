@@ -164,6 +164,113 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-How-to-Write-a-Paper" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/04/03/How-to-Write-a-Paper/">论文写作的一些经验</a>
+    </h1>
+  
+
+        
+        <a href="/2018/04/03/How-to-Write-a-Paper/" class="archive-article-date">
+  	<time datetime="2018-04-03T06:04:04.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-03</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>人生中第一篇论文总算接近完成，<a href="http://web.xidian.edu.cn/ysxu/" target="_blank" rel="noopener">徐老师</a>真的超级 nice，几乎是逐字逐句在帮忙修改论文，并且传授了很多论文写作的经验和技巧。这一阵子也在看杨强老师的《学术研究，你的成功之道》，也有一些收获和感悟，这篇文章就记录我这个新手在写作论文过程中的一些感想。</p>
+<h2 id="Why-Do-Reaserch"><a href="#Why-Do-Reaserch" class="headerlink" title="Why Do Reaserch"></a>Why Do Reaserch</h2><p>思考为什么要做研究其实是很重要的问题。在本科阶段，没有什么科研的压力（不会因为发不出 Paper 而毕不了业），选择做研究其实是我的一次尝试，探索一些某一个小领域的最前沿。<strong>就个人目前体验而言，我非常推荐同学们能够去尝试一下科研的</strong>。不过，鉴于我校的师生比以及老师们的兴趣可能都在项目上，科研机会是需要同学们自己去争取的，大胆发邮件陶瓷把。另外，我原来认为美赛也算是一种短期科研，但亲身经历过美赛的四天之后，我发现美赛建模的含金量全在于报名费 100 刀，一路瞎编乱造东拼西凑出来的东西真的很难称得上是一篇”论文“。</p>
+<p>但是话说回来，尝试这一个动机是不足以撑起一个人的研究生或者是博士生生涯的。如果真的选择要去做一名科研工作者，我觉得我现在的准备还是不足的。真的做研究需要 passion，而很多做研究的人又会因为各种压力而失去消磨原本就不多的激情，所以能找个舒服的地方无压力的做研究估计也是人生一大乐事了（逃</p>
+<h2 id="How-to-Reaserch"><a href="#How-to-Reaserch" class="headerlink" title="How to Reaserch"></a>How to Reaserch</h2><p>关于如何做研究，我就记录一下个人的经历：</p>
+<ol>
+<li>明确方向：这个也可能是最难的一步了，因为计算机是一个很大的领域，哪怕是现在最火的深度学习也是有无数的子问题亟待解决，因而找到自己感兴趣、并且合适的问题方向是关键的一步。</li>
+<li>学习基础知识：本科学的东西距离前沿的一些进展还是有一定距离，推荐利用好各种网课，像 Coursera 以及 YouTube 上各种 Standford、UCB 等名校的课程的视频，都能够帮我们迅速具备探索前沿内容的知识储备。</li>
+<li>阅读<strong>大量</strong>文献：有了方向和一定的基础之后，就需要对特定领域已有的工作进行深挖，知道别人在做什么，对于某个问题有哪些常见的做法，后续做研究中写 Reference 、Related Work 就需要有大量的文献储备。一开始可能会读的比较慢，但是到了后面熟悉套路之后，看一下模型就大概作者在做什么，也能够快速地筛选出对自己有帮助的内容。所以，一定要读，并且要关注最新的成果。</li>
+<li>代码实战：Talk is cheap,  show me the code. 这句至理名言无论是做科研还是做项目都是适用的。有些论文开源了代码，下载下来跑一下，看一下别人代码的实现，帮助是很大的。提升最快的自然是自己<strong>复现模型</strong>，这就要求对框架比如 TensorFlow 足够熟悉，并且对论文原理也很熟悉才能做到。代码和论文二者是相辅相成的，所以这一步和上一步要结合着进行。</li>
+<li>站在巨人的肩膀上，进行一些创新：<a href="https://blog.csdn.net/malefactor/article/details/50583474" target="_blank" rel="noopener">以Attention Model为例谈谈两种研究创新模式- CSDN博客</a>，当初在学习文本分类的时候看到了这篇文章，对于我帮助很大。文章中说创新主要是两种方式：应用创新和模型创新。应用创新是指在已有模型，一般是最新的模型，然后尝试去解决一个尚未使用新方法解决的问题，结果如果比以前都出色的话，那就是一篇很不错的文章，我见过的就有发了 ACL 以及 EMNLP 的两篇应用创新的文章；另外就是难度比较大的模型创新，不过难度也和创新程度息息相关，如果只是 increment 的创新，那么难度可能会相对小一点，但如果是开创一个领域的创新，像 GAN / ResNet 这种，就需要深刻的积累啦。</li>
+<li>验证 idea，修改 model：在 5、6 这两步之间迭代着更新自己的模型，并用在先前的代码积累之上进行验证，对实验的现象结果做好充分的记录和分析总结。</li>
+</ol>
+<h2 id="How-to-Write-a-Paper"><a href="#How-to-Write-a-Paper" class="headerlink" title="How to Write a Paper"></a>How to Write a Paper</h2><p>徐老师把写文章称之为”做后感“，我也挺认可这个说法。但是实验做好之后，如何把成果凝练成一篇能够发表的 paper 而不是写成 technique report，是需要技巧和打磨的。</p>
+<ol>
+<li><p>Sell Your Story：写文章其实是要讲一个故事，把你的故事讲好了，审稿人才会买你的帐。而讲故事的套路就是要突出你工作的重要性，字里行间中都需要有一种<strong>世界没有我的工作就不行啦</strong>的赶脚。</p>
+</li>
+<li><p>Structure：这是一个很容易被忽视的问题，但注意到这一点之后论文的写作也会一下子有了支撑。杨强老师的书里说:</p>
+<blockquote>
+<p>摘要是较高层面对论文工作的阐述，类似一个电梯演讲，在几分钟之内吸引到你的读者；</p>
+<p>引言则是摘要的详细版，可以看做是扩写的摘要，对论文的各个部分进一步的解释，介绍问题背景、研究动机等等，和摘要一样，需要回避技术细节</p>
+</blockquote>
+<p>之后的部分则是 Related Work 和我们自己的工作 Model、Experiment 等了，就需要突出<strong>我们</strong>的工作，多用 <strong>we</strong>，<strong>our</strong> 这样的词语；需要注意的是，Model 部分和 Experiment 同样需要结构上的对应，对模型介绍的顺序和实验的顺序也需要保持一致。我写的时候常常写着写着就 stuck 进去，不见庐山真面目，没有考虑到整体的结构布局。</p>
+</li>
+<li><p>语法/词汇/句法：语法错误是比较低级的错误，自己多读几遍，看看主语到底是人还是物，尽可能避免犯遮掩的错误；而词汇，我是一个对重复用词有着近乎偏执追求的人… 所以我一般会尽可能避免使用同样的词很多次，但老师说没关系… whatever；句法，大约就是不要写太长的句子，让句子结构有些变化，错落有致就可以了。</p>
+</li>
+<li><p>Feed your Idea to Readers：这个点也在杨强老师里的书中有强调，新手总是<strong>认为读懂文章是审稿人的义务</strong>，事实上审稿人就像一个婴儿，需要你把所有东西一口一口喂给它，最好是嚼烂了，这样他更高兴。所以对于所有你认为显而易见的结论和结果，请<strong>一定要明明白白地写出来</strong>，告诉你的读者，嘿在这里，我都写啦。</p>
+</li>
+<li><p>不要给别人留下能够批评你的漏洞：能做的实验别漏做，比如参数的对比实验；以及各类符号的说明以及解释，不要给审稿人任何可趁之机。</p>
+</li>
+</ol>
+<h2 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h2><p>感谢您阅读到这里，如果觉得有什么问题，欢迎随时与我交流~</p>
+<p>改论文去了，还有 MaskGAN 的代码要看！</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">随笔</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+
+      
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/04/03/How-to-Write-a-Paper/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-MaskGAN-Notes" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1105,90 +1212,6 @@
 
 
   
-    <article id="post-Thoughts-about-adversarial-training-methods-in-NLP" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/12/10/Thoughts-about-adversarial-training-methods-in-NLP/">关于 Adversarial Training 在 NLP 的一些思考</a>
-    </h1>
-  
-
-        
-        <a href="/2017/12/10/Thoughts-about-adversarial-training-methods-in-NLP/" class="archive-article-date">
-  	<time datetime="2017-12-10T07:40:48.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-12-10</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>围绕 ICLR 2017 的这篇 Adversarial Training Methods for Semi-Supervised Text Classification，谈谈关于对抗训练在自然语言处理领域应用的一些想法。</p>
-<hr>
-<p>这篇文章的核心思想：通过 Goodfellow 提出的 Fast Gradient Sign Method (FGSM) 来计算出扰动，添加到到连续的 Word Embedding 上产生 X_adv, 再一次喂给 model，得到 Adverarial Loss，通过和原来的 Classification Loss（Cross-Entropy）做一个相加得到新的 Loss。通过优化这个 Loss，能够在文本分类任务上取得超过目前 State-of-art 的表现。<br>
-        
-          <a class="article-more-a" href="/2017/12/10/Thoughts-about-adversarial-training-methods-in-NLP/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Deep Learning</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">NLP</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-
-      
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/12/10/Thoughts-about-adversarial-training-methods-in-NLP/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/4/">Next &raquo;</a>
@@ -1330,19 +1353,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">NLP</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Android</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">自定义View</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1350,15 +1361,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
+                <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">C</a>
+                <a href="javascript:void(0)" class="js-tag color4">NLP</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1366,15 +1373,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
+                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
+                <a href="javascript:void(0)" class="js-tag color2">C</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
+                <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1386,7 +1393,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
+                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Android</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1398,11 +1413,23 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">SeqGAN</a>
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">自定义View</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Java</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Python</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1418,15 +1445,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Python</a>
+                <a href="javascript:void(0)" class="js-tag color3">OS</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">JVM</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">OS</a>
               </li>
              
               <li class="article-tag-list-item">

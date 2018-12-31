@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://yoursite.com/2018/12/31/2018-summary/</loc>
+    <lastmod>2018-12-31T02:09:41.678Z</lastmod>
+  </url>  <url>
     <loc>http://yoursite.com/2018/12/13/Start-from-Transformer/</loc>
-    <lastmod>2018-12-15T03:44:47.676Z</lastmod>
+    <lastmod>2018-12-21T02:56:09.921Z</lastmod>
+  </url>  <url>
+    <loc>http://yoursite.com/2018/08/10/Controllable-Text-Generation-Notes/</loc>
+    <lastmod>2018-12-21T02:26:10.570Z</lastmod>
   </url>  <url>
     <loc>http://yoursite.com/2018/11/02/customized-RNN-cell/</loc>
     <lastmod>2018-11-03T00:33:17.349Z</lastmod>
@@ -27,9 +33,6 @@
   </url>  <url>
     <loc>http://yoursite.com/2018/08/24/My-sophomore-year/</loc>
     <lastmod>2018-08-25T02:51:34.345Z</lastmod>
-  </url>  <url>
-    <loc>http://yoursite.com/2018/08/10/Controllable-Text-Generation-Notes/</loc>
-    <lastmod>2018-08-18T03:14:20.695Z</lastmod>
   </url>  <url>
     <loc>http://yoursite.com/2018/07/29/DeeCamp-1st-Week-Feeling/</loc>
     <lastmod>2018-07-29T07:41:12.786Z</lastmod>
