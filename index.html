@@ -164,6 +164,90 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-compile-priciple-notes" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/01/15/compile-priciple-notes/">编译原理课程总结</a>
+    </h1>
+  
+
+        
+        <a href="/2019/01/15/compile-priciple-notes/" class="archive-article-date">
+  	<time datetime="2019-01-15T09:13:14.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-15</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>本学期学习了编译原理，轮子哥口中的三大浪漫之一，复习期间写这篇文章作为梳理，并且把大作业的 Code 放到了 GitHub 上，希望对学弟学妹有所帮助（逃。</p>
+<h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p>编译说白了就是翻译，把高级语言代码翻译成的机器能够执行的机器代码，主流有两种形式：编译器和解释器。前者将源程序翻译成目标程序后再进行运行，后者则是一遍翻译一遍执行。前者典型如 C++，执行效率高，后者如 Python，灵活性好但是效率有所逊色。但实际上，现在的大趋势就是编译和解释的融合，例如 Java 就是编译成字节码后进行由 JVM 来解释执行，带来良好的跨平台性，同时也引入 JIT（just in time）技术在 JVM 执行时提高程序运行的效率。</p>
+<p>编译大致可以分成如下几个阶段：词法分析、语法分析、语义分析、中间代码生成、代码优化以及目标代码生成，符号表管理和出错处理贯穿整个过程。如果把中间代码以前的阶段称之为前端，而其后的成为后端，便是另外一种角度下的编译器（分析/综合模式），而课程所涉及的也主要是前端部分，后端部分的优化事实上对程序有着重要的作用，希望以后有机会能进一步的探索。接下来就以课程所学的各个阶段为主线来梳理一下内容。</p>
+        
+          <a class="article-more-a" href="/2019/01/15/compile-priciple-notes/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Compile Principle</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Course Notes</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+
+      
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/01/15/compile-priciple-notes/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-2018-summary" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1034,148 +1118,9 @@
 
 
   
-    <article id="post-Generate-hip-pop-lyrcis-using-GAN" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/23/Generate-hip-pop-lyrcis-using-GAN/">DeeCamp 2018 - AI 有嘻哈，惊掉你下巴</a>
-    </h1>
-  
-
-        
-        <a href="/2018/08/23/Generate-hip-pop-lyrcis-using-GAN/" class="archive-article-date">
-  	<time datetime="2018-08-23T02:27:08.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-08-23</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>非常有幸参与了 2018 Dee Camp 人工智能夏令营，在这一个月的时间里面，我们享受了来自学界、业界各种大咖的分享，同时也和导师一起参与到一个项目中，将所学知识进行落地。我们组的题目是 AI 有嘻哈，利用相关技术进行嘻哈歌词的生成。</p>
-<p>先来看看模型的效果，给定第一句，生成接下来的几句，猜猜下面哪句是模型生成的哪句是原作？</p>
-<blockquote>
-<p> 不是乐理专修 做点儿曲式研究 我们的力量来自宇宙 自己的节奏</p>
-<p>不是乐理专修 所有听的观众 打破他们传统 进到环球 继续让你感受</p>
-</blockquote>
-<p>再来一个：</p>
-<blockquote>
-<p>自己就带上了有色眼镜 金钱摧毁多少事情 瓦解你的中枢神经</p>
-<p>自己就带上了有色眼镜 我只想把世界分的更清 却发现自己却模糊了心</p>
-</blockquote>
-<p>正确答案是：<strong>第一行都是模型生成的，第二行是原作</strong>，你答对了吗？有没有被惊艳到，我们组内的测试结果显示，大家的正确率不超过 30%，值得一提的是：<strong>输入都是来自于测试集中</strong>，没有参与到模型的训练中。</p>
-<p><strong>因为某些原因，代码和数据暂时无法开源，以后有机会会整理出来</strong>。</p>
-<p><del>更多的例子和项目的代码已经上传到 <a href="https://github.com/TobiasLee/Chinese_Hip-pop_Generation" target="_blank" rel="noopener">Github</a>，欢迎大家 Star。</del></p>
-<h2 id="数据"><a href="#数据" class="headerlink" title="数据"></a>数据</h2><p>创新工场的导师为我们提供了 10 w 条嘻哈歌词，并且已经将一些不符合社会主义核心价值观的句子标注了出来。数据的预处理主要步骤如下：</p>
-<ul>
-<li>在对句子进行筛选之后，我们利用 <a href="https://github.com/fxsjy/jieba" target="_blank" rel="noopener">Jieba</a> 进行分词，观察到单句长度集中在 8~10 左右；</li>
-<li>在利用 Tensorflow 中的 Tokenizer 进行 tokenize 并构建 word2idex 字典后，词表大小在 11000 左右，考虑到这个大小还可以接受，没有做限制词表大小的操作；</li>
-<li>利用 <code>pad_sequence</code> 将句子 padding 到 20（和 SeqGAN 中相同）；</li>
-<li>构建 x-y pair，利用上一句预测下一句（导师后来建议可以借鉴用 Skip-gram 的思路，同时预测上一句和下一句，但没有时间去尝试了），分割数据集</li>
-</ul>
-<p><del>知道大家都不喜欢洗数据，所以我们的训练数据也已经放到了 <a href="https://drive.google.com/drive/folders/1QrO0JAti3A3vlZlUemouOW7jC3K5dFZr" target="_blank" rel="noopener">Google Drive</a>，大家自取即可。</del></p>
-<h2 id="模型"><a href="#模型" class="headerlink" title="模型"></a>模型</h2><p>我们的生成模型的整体基于 SeqGAN，并对其做了一些修改，模型架构如下：</p>
-<p><img src="/img/AI-hippop.jpg" alt="AI-Hippop"></p>
-<p>主要改动有两点：</p>
-<ol>
-<li><p>增加输入语句的编码：这一点类似 Seq2Seq 的 Encoder，SeqGAN 原本的 initial state 是全 0 的，为了将上文的信息传递给生成器，我们采用了一个简单的全连接层（Fully Connected Layer），将输入句子的 Word Embedding 经过一个线性变化之后作为生成器的 LSTM。事实上也可以尝试使用 RNN（LSTM）来作为 Encoder，不过这样模型的速度可能会比较慢。</p>
-</li>
-<li><p>将原先 Generator 的 Loss Function 改为 Penalty-based Objective：在训练模型的过程中我们发现，模型在 Adversarial Training 多轮之后出现了严重的 mode collapse 问题，比如：</p>
-<blockquote>
-<p>别质疑自己<br>遮罩错的消息不要过得消极<br>世间人都笑我太疯癫<br>世间人都笑我太疯癫</p>
-<p>​</p>
-<p>守护地狱每座坟墓<br>世间人都笑我太疯癫<br>你不知道rapper付出多少才配纸醉金迷<br>世间人都笑我太疯癫</p>
-<p>​</p>
-<p>但却从来没有心狠过<br>如果你再想听<br>你不知道rapper付出多少才配纸醉金迷<br>你不知道rapper付出多少才配纸醉金迷</p>
-</blockquote>
-<p>可以看到 <code>世间人都笑我太疯癫</code> 和 <code>你不知道rapper付出多少才配纸醉金迷</code> 占据了我们生成的结果。mode collapse，简单来说就是输入的改变不会影响生成的结果。为此我们调研了一些 Paper，最终采用了<a href="https://www.ijcai.org/proceedings/2018/0618.pdf" target="_blank" rel="noopener">SentiGAN</a> 中提出的 Penalty-based Objective Function：</p>
-<p><img src="/img/pbof.png" alt="Penalty based Objective Function"></p>
-<p>SeqGAN 是将原先 Discriminator 的认为 Generator 生成句子为真的概率作为奖赏，Generator 通过最大化奖赏（最小化其相反数）来更新自己的梯度；而 SentiGAN 则恰好相反，将 Discriminator 判断为假的概率作为惩罚，Generator 通过最小化惩罚来更新自己，并且去掉了概率上的 log 函数。作者分析其起作用的效果在于：一、去掉 log，可以视作 WGAN 中的 generator loss（这一点我持怀疑态度，因为代码中并没有对梯度进行裁剪来满足 WGAN 所需的 Lipschitz 条件）；二、惩罚和奖赏存在一个 $ 1- V = D$ 的关系，根据 $ G(X|S;\theta_g) V(X) = G(X|S;\theta_g)(1-D(X;\theta_d) )=G(X|S;\theta_g) - G(X|S;\theta_g)D(X;\theta_g)$ ，这样会让 generator 偏向于一个更小的 $G(X|S;\theta_g) $ ，即概率比较小的句子，从而避免生成很多重复（概率比较大）的句子。Anyway，在我们的模型上，SentiGAN 的 loss 立竿见影，更多的细节请大家参考原作。</p>
-</li>
-</ol>
-<h2 id="押韵"><a href="#押韵" class="headerlink" title="押韵"></a>押韵</h2><p>嘻哈歌词非常重要的一个特点就是句与句之间的押韵，我们在实现这一功能的时候尝试了两种方案：</p>
-<ol>
-<li>Reward based，在 reward 函数上增加额外的押韵奖赏项， $ \  r_{rhyme}$：对 Generator 的生成的句子和输入的句子进行押韵的判断，如果押韵，则提供额外的奖赏。</li>
-<li>Rule-based，生成时只对押韵的词进行采样：在生成句尾的词的概率分布时候，通过获取和输入句尾押韵的词，只在这些押韵的词进行采样。</li>
-</ol>
-<p>方法一，如果能够通过设计 reward function 就能实现押韵的功能，那模型就是完全 end2end，非常 fancy 了。但是理想很丰满，现实很骨感，经过几天的调整押韵奖赏的权重，都没能看到押韵率（我们设置的用于检测押韵奖赏效果的指标，每个 batch 中和 input 押韵的句子的比例）的上升 。我们怀疑是<strong>这种奖赏的结合会让 Generator 产生混淆，并不能明确自己 reward 来自何处</strong>，应该需要更加具体的一些限制才能够实现这一方法。</p>
-<p>方法二，一开始我是拒绝这么做的，用基于规则的方法不是我的理想。</p>
-<p><img src="/img/zx.gif" alt="真香"></p>
-<p>但是为了做出产品来，我还是屈服了。但还有一个问题摆在面前：怎么知道生成的是句尾呢?导师提醒我们，我们可以把<strong>输入倒过来</strong>。这是 NMT 中常用的一个手段，对于 LSTM，句子是真的还是反的差别不大，即使有差别，也可以通过一个 Bi-LSTM 来捕获不同顺序的信息。而为了知道哪些字词是押韵的，我们实现制作了一张 <code>vocab_size x vocab_size</code> 的大表 <code>rhyme</code>，如果两个词（index 分别为 i, j）押韵，则 <code>rhyme[i, j]</code> 非 0，否则为 0。</p>
-<p><img src="/img/rhyme_module.png" alt="Rhyme Mask"></p>
-<p>如上图所示，如果我们的输入为“你真美丽”，句尾词为“美丽”，韵脚为 i；最终采样结果只会在押韵的词中采样，示例的采样结果为“春泥”。</p>
-<p>据此，我们就可以对生成过程的第一个词的词表分布进行一个 mask 操作，使得非押韵的词的概率都变成 0，就能够保证押韵了，代码片段如下：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 获取 input 的最后一个词</span></span><br><span class="line">first_token = self.inputs[:, <span class="number">0</span>]  <span class="comment"># (batch_size, 1)</span></span><br><span class="line"><span class="comment"># 控制押韵的概率, 现在设置为 1.0 ，即 100% 押韵</span></span><br><span class="line">select_sampler = Bernoulli(probs=<span class="number">1.0</span>, dtype=tf.bool)</span><br><span class="line">select_sample = select_sampler.sample(sample_shape=self.batch_size)</span><br><span class="line"><span class="comment"># 获取对应的 index 押韵行</span></span><br><span class="line">token_rhyme = tf.cast(tf.gather(self.table, first_token), tf.float32)</span><br><span class="line"><span class="comment"># 进行 mask</span></span><br><span class="line">prob_masked = tf.where(select_sample, tf.log(tf.multiply(token_rhyme, tf.nn.softmax(o_t))),tf.log(tf.nn.softmax(o_t)))</span><br><span class="line"><span class="comment"># 根据 mask 之后的概率分布进行采样</span></span><br><span class="line">next_token = tf.cast(tf.reshape(tf.multinomial(prob_masked, <span class="number">1</span>), [self.batch_size])</span><br></pre></td></tr></table></figure>
-<p>不过这个制表的过程比较耗费时间（大约跑了 3 个小时，i7）。另一种思路是可以根据韵脚对字词进行分类，将相同韵脚的词的 index 编到一起，这样我们可以通过获取每个词的韵脚来知道目标词的范围，而不用挨个的去判断是否押韵。</p>
-<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>在 DeeCamp 的一个月里，除了讲座以外，更让我觉得收获许多的是认识了很多非常优秀的小伙伴，以及开拓了自己的视野，看到了更大的舞台。我愈发地坚信，<strong>未来的十年，是属于人工智能的，是属于愿意投身于这波浪潮中我们的</strong>。也再次向大家安利一波 <a href="https://challenger.ai/" target="_blank" rel="noopener">DeeCamp</a>，如果你对人工智能感兴趣，明年暑假，千万别错过~ 最后希望 DeeCamp 能够一直办下去，并且越办越好！</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Deep Learning</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Text Generation</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">SeqGAN</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-
-      
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/08/23/Generate-hip-pop-lyrcis-using-GAN/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
     </nav>
   
 
@@ -1187,7 +1132,7 @@
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2018 TobiasLee
+    		&copy; 2019 TobiasLee
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
@@ -1302,7 +1247,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1310,11 +1255,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Reinforcement Learning</a>
+                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
+                <a href="javascript:void(0)" class="js-tag color3">Reinforcement Learning</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1322,11 +1267,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
+                <a href="javascript:void(0)" class="js-tag color4">NLP</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">NLP</a>
+                <a href="javascript:void(0)" class="js-tag color3">Android</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">自定义View</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1334,15 +1283,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">C</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
+                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1354,6 +1303,10 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">GAN</a>
               </li>
              
@@ -1362,7 +1315,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Android</a>
+                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1374,23 +1327,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">SeqGAN</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">自定义View</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Java</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Python</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1402,7 +1343,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">LaTeX</a>
+                <a href="javascript:void(0)" class="js-tag color2">Python</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1410,7 +1351,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">LaTeX</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">JVM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Retrofit</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1422,10 +1371,6 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Retrofit</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Attention</a>
               </li>
              
@@ -1434,15 +1379,23 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Compile Principle</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Course Notes</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">C++</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">LSTM</a>
+                <a href="javascript:void(0)" class="js-tag color5">View</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">View</a>
+                <a href="javascript:void(0)" class="js-tag color5">LSTM</a>
               </li>
             
             <div class="clearfix"></div>
