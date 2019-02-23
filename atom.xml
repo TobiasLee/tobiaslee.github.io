@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2019-01-15T12:53:42.975Z</updated>
+  <updated>2019-02-23T15:07:20.386Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>革命尚未成功，同志仍需努力</title>
+    <link href="http://yoursite.com/2019/02/23/what-I-learned-from-intership/"/>
+    <id>http://yoursite.com/2019/02/23/what-I-learned-from-intership/</id>
+    <published>2019-02-23T15:16:38.000Z</published>
+    <updated>2019-02-23T15:07:20.386Z</updated>
+    
+    <content type="html"><![CDATA[<p>一眨眼，35 天的寒假就过去了，我也即将踏上返校的旅途，简单地总结一下这段时间的工作和感悟。</p><h2 id="走出象牙塔"><a href="#走出象牙塔" class="headerlink" title="走出象牙塔"></a>走出象牙塔</h2><p>寒假刚开始两天，就去到之前联系的艾耕实习，继续我之前在文本生成方向的探索。</p><p>这是我第一次真正到一家公司去实习，收到第一个月工资的时候还是很激动的哈哈哈哈毕竟人生第一笔真正意义上的工资。另外，艾耕作为一家创业公司公司的氛围很不错，没有非常的 push；Mentor 们也很 nice，我也经常会和带我的组长以及 CTO 讨论。</p><p>除了工资、实习内容以外，我觉得这段时间并不长的工作经历带给的思考和感悟有：</p><ul><li>不管做什么，一定要找到有<strong>反馈</strong>的工作去做。人其实是一个很懒惰的动物，如果没有一些外界的激励，是很难让我们去做一些比较辛苦的事情。但是很多时候在学校里，是没有这种 feedback 的，或者说 feedback 要很久之后才能获得，比如学习和期末考试，中间就隔着一个学期，这似乎和<strong>延迟满足</strong>有些类似，但我觉得一种可行的方式可能是给自己设定一些 minestone，比如完成某个小目标就给自己一些 reward；在公司这种情况会稍好一些，毕竟有一份工资的激励，作为一个爱岗敬业的人自然是要努力工作的，但我也怀疑久了以后这份激励也会变成懒惰的动力，如果没有有效的考核机制的话，摸鱼也能拿钱那人人肯定都去摸鱼了，我觉得工作之后的 motivation 应该会变成<strong>算法落地所带来的成就感</strong>。</li><li>敢于尝试。其实一开始投实习我是没什么底气的，毕竟寒假时间很短，很难有什么产出。但最终还是获得了这个机会，感谢艾耕的同时我也觉得，真的还是<strong>要迈出那一步</strong>，当然了，到了岗位还是要努力工作，尽自己最大努力去探索。我也了解到，公司招实习生一方面是培养后备力量，另外一方面就是让实习生去做一些探索，能做出产品自然是最好的，没做出来也没什么大不了的，在过程中能够留下一些经验，记录下踩过的坑，也算是很重要的技术储备。</li><li>感受生活的不易。最直观的就是物价，平时吃一顿饭就是 20 起步，和学校里 8 块撑死十五的可谓天壤之别；另外，每天上下班的路程也不算近，通勤时间有 3h，早上七点起床晚上九点到家，加上这几天杭州一直下雨，高峰期甚至有过连着两班公交车都挤不上的情况，上班族真不容易啊。</li></ul><p>从象牙塔走向社会之前，能够切身地在实习生活中体会一次做社会人的滋味，还是很有意义的。</p><h2 id="仍需努力"><a href="#仍需努力" class="headerlink" title="仍需努力"></a>仍需努力</h2><p>刚拿到之前 NAACL 的投稿结果，又是被拒，好在之前两次 Journal 的被拒经历让我心理承受能力强大了很多，442 的结果对于一个第一次投顶会的菜鸡来说还是可以接受的，看了下 Review 的意见，4 分的两个说的也都很中肯；2 分居然喷 motivation 不足，好吧我服了。</p><p>Anyway，革命尚未成功，还需加把劲。这个社会还是很残酷的，我个人的看法是没有实质性的产出例如 Paper，那么很多付出不是说没有意义，而是说很难量化。希望能在不久的将来有一些成果吧。</p><p>希望新年的大家都能够年少有为！</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;一眨眼，35 天的寒假就过去了，我也即将踏上返校的旅途，简单地总结一下这段时间的工作和感悟。&lt;/p&gt;
+&lt;h2 id=&quot;走出象牙塔&quot;&gt;&lt;a href=&quot;#走出象牙塔&quot; class=&quot;headerlink&quot; title=&quot;走出象牙塔&quot;&gt;&lt;/a&gt;走出象牙塔&lt;/h2&gt;&lt;p&gt;寒假刚开
+      
+    
+    </summary>
+    
+    
+      <category term="随笔" scheme="http://yoursite.com/tags/%E9%9A%8F%E7%AC%94/"/>
+    
+      <category term="NLP" scheme="http://yoursite.com/tags/NLP/"/>
+    
+  </entry>
   
   <entry>
     <title>编译原理课程总结</title>
@@ -195,9 +221,9 @@
     
       <category term="NLP" scheme="http://yoursite.com/tags/NLP/"/>
     
-      <category term="GAN" scheme="http://yoursite.com/tags/GAN/"/>
-    
       <category term="Text Generation" scheme="http://yoursite.com/tags/Text-Generation/"/>
+    
+      <category term="GAN" scheme="http://yoursite.com/tags/GAN/"/>
     
   </entry>
   
@@ -329,9 +355,9 @@
     
       <category term="Deep Learning" scheme="http://yoursite.com/tags/Deep-Learning/"/>
     
-      <category term="GAN" scheme="http://yoursite.com/tags/GAN/"/>
-    
       <category term="Text Generation" scheme="http://yoursite.com/tags/Text-Generation/"/>
+    
+      <category term="GAN" scheme="http://yoursite.com/tags/GAN/"/>
     
   </entry>
   
@@ -441,9 +467,9 @@
     
       <category term="NLP" scheme="http://yoursite.com/tags/NLP/"/>
     
-      <category term="GAN" scheme="http://yoursite.com/tags/GAN/"/>
-    
       <category term="Text Generation" scheme="http://yoursite.com/tags/Text-Generation/"/>
+    
+      <category term="GAN" scheme="http://yoursite.com/tags/GAN/"/>
     
   </entry>
   
@@ -726,9 +752,9 @@
     
       <category term="Deep Learning" scheme="http://yoursite.com/tags/Deep-Learning/"/>
     
-      <category term="Reinforcement Learning" scheme="http://yoursite.com/tags/Reinforcement-Learning/"/>
-    
       <category term="NLP" scheme="http://yoursite.com/tags/NLP/"/>
+    
+      <category term="Reinforcement Learning" scheme="http://yoursite.com/tags/Reinforcement-Learning/"/>
     
       <category term="GAN" scheme="http://yoursite.com/tags/GAN/"/>
     
@@ -1158,9 +1184,9 @@
     </summary>
     
     
-      <category term="Machine Learning" scheme="http://yoursite.com/tags/Machine-Learning/"/>
-    
       <category term="NLP" scheme="http://yoursite.com/tags/NLP/"/>
+    
+      <category term="Machine Learning" scheme="http://yoursite.com/tags/Machine-Learning/"/>
     
       <category term="TensorFlow" scheme="http://yoursite.com/tags/TensorFlow/"/>
     
@@ -1212,9 +1238,9 @@
     </summary>
     
     
-      <category term="Machine Learning" scheme="http://yoursite.com/tags/Machine-Learning/"/>
-    
       <category term="NLP" scheme="http://yoursite.com/tags/NLP/"/>
+    
+      <category term="Machine Learning" scheme="http://yoursite.com/tags/Machine-Learning/"/>
     
       <category term="TensorFlow" scheme="http://yoursite.com/tags/TensorFlow/"/>
     

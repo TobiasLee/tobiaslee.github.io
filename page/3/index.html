@@ -164,6 +164,109 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-GAN-in-NLP-Notes" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/04/22/GAN-in-NLP-Notes/">GAN in NLP Notes</a>
+    </h1>
+  
+
+        
+        <a href="/2018/04/22/GAN-in-NLP-Notes/" class="archive-article-date">
+  	<time datetime="2018-04-22T14:16:25.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-22</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>最近在感兴趣的一个方向是文本生成，读了以 SeqGAN 为代表的一系列通过 RL 手段来做生成的文章，做一下简单的梳理。</p>
+<h2 id="SeqGAN"><a href="#SeqGAN" class="headerlink" title="SeqGAN"></a>SeqGAN</h2><p>算的上是开山之作，具体的解读可以看我之前的一篇文章 <a href="http://tobiaslee.top/2018/03/11/SeqGAN/" target="_blank" rel="noopener">SeqGAN – GAN + RL + NLP</a>，其通过引入强化学习中的 Policy Gradient 来解决因为离散 token 生成前采样动作造成的不可微。后面的文章也都是基于这个框架来进行深一步地探索。SeqGAN 在 Oracle 和古诗生成任务上做了测试，回过头来看，效果只能说一般。但其开创性的将文本生成看做序列决策问题， 并且将 RL 和 GAN 进行了有机的结合，令人佩服。</p>
+<h2 id="LeakGAN"><a href="#LeakGAN" class="headerlink" title="LeakGAN"></a>LeakGAN</h2><p>LeakGAN 是交大继 SeqGAN 之后的又一作品，其旨在解决 SeqGAN 中出现的一个问题：一方面，是 Discriminator 提供给 Generator 的 reward 需要等句子完成之后才能被计算（即使用 Monte Carlo 来计算，也只是一种近似的模拟），对于每一步的 token 生成不能得到及时的反馈；另一方面，是 Reward  本身只是一个 Scalar，并不能携带太多的信息。何况对于文本这种结构复杂，同样的意思不同的说法都是可以的，那么数值所包含的指导信号比较弱。这一点我在和学长的交流之中以及自身实验体会也有所感受，GAN 的训练很多时候 Discriminator 的作用不大， Generator 生成文本质量的提高更多是靠 Generator 自学。</p>
+<p>对于信息不足，就让 Discriminator 向 Generator “泄露”一些消息，也就是把作为 Discriminator 的 CNN 最后一层的 Feature Vector 交给 Generator，让这个 Feature Vector 携带大量的信息来指导 Generator 更好的生成。</p>
+<p>同时，语义结构的复杂也促使作者使用一个具有层次的生成器，因此在生成器端使用了 Manager 和 Worker 两个模块，分别用于解析 CNN 提供的 Feature Vector 和具体的 token 生成。</p>
+<p>整个模型的架构如下：</p>
+<p><img src="/img/leakgan.png" alt="Leak GAN"></p>
+<h2 id="RankGAN"><a href="#RankGAN" class="headerlink" title="RankGAN"></a>RankGAN</h2><p>RankGAN 认为 Discriminator 的 Binary Classification 对于生成多样、符合现实逻辑的文本是不够的。其通过让 Discriminator 对于一个由 human-written 和 machine-generated 构成 Reference 集中的句子进行排序，来指导 Generator 的生成。借鉴 IR 中的相似度的思想，其首先计算两个句子的 cosine，然后据此给出一个语料集上的排序分：</p>
+<p><img src="/img/cosine.png" alt="Cosine Similarity of Sentence"></p>
+<p><img src="/img/rank_score.png" alt="Rank Score"></p>
+<p>Softmax 之后得到的依旧是一个类似概率的结果，但这一次不再是真/假的概率，而是衡量句子之间相似程度的概率。最终，和 Reference 中的每个句子的相似概率的数学期望则作为一个 Rank Score 得出，显然，Discriminator 希望真实的句子 Rank Score 越高越好，同时机器生成的 Rank Score 越低越好，因此我们将这个想法套进 GAN 的公式：</p>
+<p><img src="/img/rank_gan.png" alt="Formula"></p>
+<p>所以，RankGAN 的核心就是<strong>用一个 Ranker 来替代 Discriminator，以提供更好地生成句子的评估，进而生帮助 Generator 生成更为真实的句子</strong>。</p>
+<h2 id="MaskGAN"><a href="#MaskGAN" class="headerlink" title="MaskGAN"></a>MaskGAN</h2><p>MaskGAN 的思路则是从<strong>生成器端</strong>来为生成提供更多的信息，具体的内容也可以参考我的这篇 <a href="http://tobiaslee.top/2018/04/01/MaskGAN-Notes/" target="_blank" rel="noopener">MaskGAN 学习笔记</a>。Masked Token 给 GAN 提供了额外的信息窗口，通过使用 Seq2Seq 架构来将进行生成，将提供的信息整合进生成过程之中，获取更好的结果。另外一点，Mask GAN 采用了 Actor-Critic 来替换 Policy Gradient，相比 Monte Carlo，能够较好地对 reward function 做一个拟合。</p>
+<h2 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h2><p>这四篇文章看下来，可以发现，SeqGAN 提出了这样一个框架之后，主要工作的方向有两个：</p>
+<ol>
+<li>提高生成文本的质量：我认为，将人类的语言学知识合理地整合进生成的过程，是提高文本生成质量的核心。现有的工作大致是从两个端入手，生成器端通过 Masked Token，比较粗暴地灌进 Generator，Discriminator 端利用句子地相似性，隐式地给判别器端输入语言的知识。<strong>二者如果能够做一个结合，可能是一个很有力的架构</strong>。</li>
+<li>短文本 -&gt; 长文本：想要生成长文本，一点是 LeakGAN 中提到的，Discriminator 的指导需要更加 informative；另外一点我觉得和 RNN 的 Long-dependency 的能力也息息相关，LSTM 虽然说能够解决长程依赖的一部分问题，但想要让机器写小说，那就不是 LSTM 能够 handle 的了。LeakGAN 能够把 SeqGAN 的长度由 20 提升到 40左右，但真的到作曲、写小说这种长度，可能需要一个新的框架。</li>
+<li>解决 Mode Collapse 问题：这个问题可能是前两个问题解决之后，才需要着手考虑的一个问题，即使是我们人类本身，也有着这方面的局限性。比如你的文风事实上就是被你所读过的文章所决定地，虽然说会有一些神来之笔，但我认为那也是早就植根于我们大脑深处的记忆。想要做到真正地创作而不是简单地重复，任重而道远。</li>
+</ol>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Deep Learning</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">NLP</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">GAN</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+
+      
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/04/22/GAN-in-NLP-Notes/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-IndRNN-Notes" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -546,11 +649,11 @@
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Reinforcement Learning</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">NLP</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">NLP</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Reinforcement Learning</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
@@ -1124,115 +1227,6 @@
 
 
   
-    <article id="post-Goodbye-2017-Hello-2018" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/12/29/Goodbye-2017-Hello-2018/">Goodbye 2017, Hello 2018</a>
-    </h1>
-  
-
-        
-        <a href="/2017/12/29/Goodbye-2017-Hello-2018/" class="archive-article-date">
-  	<time datetime="2017-12-29T14:53:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-12-29</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>2017年的余额还剩了两天，对照着去年的规划，梳理下今年吧。</p>
-<p>17年上半年，基本是按着写的规划在走：继续学习 Android，深入研究一些底层；研究 Java 的一些特性；读了一些畅销书；拿到了一笔奖学金，给爸妈买了礼物。</p>
-<p>下半年，是转变很大的一年，个人觉得比较有意义的事情有：</p>
-<ol>
-<li>Coursera，刷完 Machine Learning、Deep Learning（还有最后一门 Sequence Model，应该是今天开课）</li>
-<li>跟老师一起做 NLP</li>
-<li>去深圳暑实，感觉受到冷落</li>
-<li>加入掘金翻译计划，校对和翻译的文章和文档加起来大约二十篇</li>
-<li>接过 SSSTA 主席的锅，为续一年继续努力</li>
-<li>坚持写 Blog</li>
-</ol>
-<p>觉得比较遗憾的事情：</p>
-<ol>
-<li>没拿到国奖</li>
-<li>没找到女朋友</li>
-</ol>
-<p>其实这两件遗憾的事情也都算不上遗憾了，国奖是技不如人，甘拜下风，唯有再努力；</p>
-<p>女朋友也是可遇不可求，已经做好了单身到毕业的准备，只是有些时候看着他们的热闹，确实有些落寞。</p>
-<h2 id="感想"><a href="#感想" class="headerlink" title="感想"></a>感想</h2><ol>
-<li>越长大越能体会父母的辛苦，但中国国情，很少会当面说 I love you 这样的词汇，但心里还是非常感激的，希望能不辜负他们的期望吧</li>
-<li>想法真的会随着人的经历而改变，看着一年前信誓旦旦写下的毕业就业的规划，倒不是打脸，只是我觉得这样的调整确实是正常的，也是有必要的。</li>
-<li><strong>打造个人的品牌</strong>，self-branding 很重要。对于一个有大概率在未来成为技术人员的人来说，如何不依靠专业知识来增加收入。我觉得通过知识的输出，让圈子里的人能够知道你，认可你，这样无论是在今后求职也好，深造也好，还有增加“睡后收入”上都能够有所帮助</li>
-<li>自律很重要，回想这一年，保持雷打不动的作息，还有阅读，学习新知识的习惯，对各个方面帮助都很大</li>
-</ol>
-<h2 id="规划"><a href="#规划" class="headerlink" title="规划"></a>规划</h2><ol>
-<li>把手头的题目做完，发表论文</li>
-<li>暑假到深度学习公司实习</li>
-<li>构建个人品牌，提升影响力</li>
-<li>在竞赛方面增加投入</li>
-<li>保持 GPA</li>
-</ol>
-<blockquote>
-<p>Stay Hungry, Stay Foolish.</p>
-</blockquote>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">随笔</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-
-      
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/12/29/Goodbye-2017-Hello-2018/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/4/">Next &raquo;</a>
@@ -1362,10 +1356,6 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Deep Learning</a>
               </li>
              
@@ -1374,15 +1364,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Reinforcement Learning</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Machine Learning</a>
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">NLP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Reinforcement Learning</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1394,19 +1384,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">C</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
+                <a href="javascript:void(0)" class="js-tag color2">Machine Learning</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">C</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1418,15 +1408,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
+                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
+                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1446,10 +1440,6 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Java</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">RNN</a>
               </li>
              
@@ -1458,11 +1448,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Python</a>
+                <a href="javascript:void(0)" class="js-tag color5">Java</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">OS</a>
+                <a href="javascript:void(0)" class="js-tag color2">Python</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1470,11 +1460,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">JVM</a>
+                <a href="javascript:void(0)" class="js-tag color3">OS</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Retrofit</a>
+                <a href="javascript:void(0)" class="js-tag color4">JVM</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1486,11 +1476,27 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Attention</a>
+                <a href="javascript:void(0)" class="js-tag color4">Retrofit</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Seq2Seq</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Attention</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">C++</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">LSTM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">View</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1499,18 +1505,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Course Notes</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">C++</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">View</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">LSTM</a>
               </li>
             
             <div class="clearfix"></div>
