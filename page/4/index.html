@@ -164,6 +164,104 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-Latex-Learning" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/01/22/Latex-Learning/">LaTeX Learning Notes</a>
+    </h1>
+  
+
+        
+        <a href="/2018/01/22/Latex-Learning/" class="archive-article-date">
+  	<time datetime="2018-01-22T07:24:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-22</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>LaTeX 是论文写作中非常重要的一个排版工具，用这篇文章记录下学习过程中的一些语法、注意事项，以便日后查阅。</p>
+<h2 id="Installation"><a href="#Installation" class="headerlink" title="Installation"></a>Installation</h2><p>配置 MacOS 上的 LaTeX 环境还是比较轻松愉快的</p>
+<ol>
+<li><p>安装 <a href="https://www.sublimetext.com/" target="_blank" rel="noopener">Sublime Text</a></p>
+</li>
+<li><p>下载 <a href="http://www.tug.org/mactex/" target="_blank" rel="noopener">MacTeX</a>，选择最全的版本 3.1 G</p>
+</li>
+<li><p>安装 <a href="https://skim-app.sourceforge.io/" target="_blank" rel="noopener">Skim</a>，用来预览，并且在<code>选项-同步</code>中选择  <code>Sublime Text</code> ，如下所示：</p>
+<p><img src="/img/skim.png" alt="Skim Setting"></p>
+</li>
+<li><p>在 Sublime Text 中安装 LaTexTools 和配置编译路径，首先安装 Sublime Text 的包管理器，点击 <code>View&gt;Show Console</code> ，在控制台中输入下列 Python 代码安装：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> urllib.request,os,hashlib; h = <span class="string">'6f4c264a24d933ce70df5dedcf1dcaee'</span> + <span class="string">'ebe013ee18cced0ef93d5f746d80ef60'</span>; pf = <span class="string">'Package Control.sublime-package'</span>; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( <span class="string">'http://packagecontrol.io/'</span> + pf.replace(<span class="string">' '</span>, <span class="string">'%20'</span>)).read(); dh = hashlib.sha256(by).hexdigest(); print(<span class="string">'Error validating download (got %s instead of %s), please try manual install'</span> % (dh, h)) <span class="keyword">if</span> dh != h <span class="keyword">else</span> open(os.path.join( ipp, pf), <span class="string">'wb'</span> ).write(by)</span><br></pre></td></tr></table></figure>
+<p>安装成功之后，在 Sublime 中使用<code>Command+Shift+P</code>，输入 <code>install</code> ，按下<code>enter</code>，加载仓库后，再输入LatexTools，回车确认后等待安装完成。</p>
+</li>
+<li><p>但因为路径的锅，如果我们现在打开 Sublime Text 复制进去一段 LaTeX 代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">%!TEX program = xelatex</span><br><span class="line">\documentclass&#123;article&#125;</span><br><span class="line">\usepackage&#123;fontspec, xunicode, xltxtra&#125;</span><br><span class="line">\setmainfont&#123;Hiragino Sans GB&#125;</span><br><span class="line">\title&#123;Test&#125;</span><br><span class="line">\begin&#123;document&#125;</span><br><span class="line">Hello world!</span><br><span class="line">\end&#123;document&#125;</span><br></pre></td></tr></table></figure>
+<p>会发现报错：<code>CANNOT COMPILE</code></p>
+<p><strong>解决方案</strong>：通过 Package Control 安装一下 <code>Fix Mac Path</code> 这个包就能解决，安装步骤同 LaTex Tools。</p>
+</li>
+</ol>
+<p>安装完毕之后，我们就可以使用 <code>Command + B</code> 来对写好的 LaTeX 进行渲染，Skim 会弹出渲染后的窗口，并且在 Skim 窗口按住 <code>Command + Shift</code> 再点击，会自动跳转到 Sublime 中相应的部分。<br>
+        
+          <a class="article-more-a" href="/2018/01/22/Latex-Learning/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">LaTeX</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+
+      
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/01/22/Latex-Learning/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Goodbye-2017-Hello-2018" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -947,98 +1045,6 @@
 
 
   
-    <article id="post-调参侠的自我修养" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/09/17/调参侠的自我修养/">调参侠的自我修养</a>
-    </h1>
-  
-
-        
-        <a href="/2017/09/17/调参侠的自我修养/" class="archive-article-date">
-  	<time datetime="2017-09-17T01:22:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-09-17</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>昨天刷完了 Andrew Ng 深度学习的第二部分课程</p>
-<blockquote>
-<p>Improving Deep Neural Networks: Hyperparameter tuing, Regularization and Optimization</p>
-</blockquote>
-<p>收获还是非常大的，虽然 Andrew Ng 对一些 tricks 的数学细节一笔带过，但通过画图之类的手段来让我获得了一个很形象的 intuition（直观感受），后面数学的部分也要靠自己再去啃书了。这篇 Blog 主要就是对课程内容的一个梳理。</p>
-<h2 id="Pre-processing-and-Regularization"><a href="#Pre-processing-and-Regularization" class="headerlink" title="Pre-processing and Regularization"></a>Pre-processing and Regularization</h2><p>对应第一周的内容，主要讲解了 Deep Learning 和传统 Machine Learning 一些细节的区别：</p>
-<ol>
-<li>Train / Dev (Cross Validation) / Test Sets 的分割。在 ML 里我们经常会用 6/2/2 这样一个比例，而在大数据量下的 Deep Learning，则一般会选用 <strong>98/1/1 甚至是 99.5/0.25/0.25</strong> 这样一个比例，尽可能的利用数据，来训练出一个更好的模型。另外需要注意的一点就是<strong>保证 Dev Set和 Test Set 这两个集合来自同一数据集</strong>，以确保我们能够通过在 Dev Set上的评估能正确反映在 Test Set 的性能。</li>
-<li>Deep Learning 中 Bias 和 Variance。Bias 和 Variance 需要和一个较为客观的指标进行对比，比如识别中的猫和狗，假设人类的正确率为 99.9%，那么如果我们的模型正确率只有 99%，那么这就可以说是 Bias 了。另外，在 ML 中有时需要进行 Bias 和 Variance 的权衡，但 Deep Learning 是可以训练出一个足够好的模型而不用进行这种权衡的。</li>
-</ol>
-<p>Andrew Ng 也给出了“Basic Recipe for Deep Learning”：<br>
-        
-          <a class="article-more-a" href="/2017/09/17/调参侠的自我修养/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Deep Learning</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Neural Networks</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-
-      
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/09/17/调参侠的自我修养/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/3/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/5/">Next &raquo;</a>
@@ -1172,11 +1178,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
+                <a href="javascript:void(0)" class="js-tag color3">Reinforcement Learning</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
+                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1184,7 +1190,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Reinforcement Learning</a>
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1200,11 +1206,27 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
+                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1217,22 +1239,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">栈</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1252,15 +1258,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Java</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">RNN</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">论文笔记</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Java</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1292,23 +1298,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Seq2Seq</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Attention</a>
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Seq2Seq</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">C++</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">LSTM</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">View</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1317,6 +1315,14 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Course Notes</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">LSTM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">View</a>
               </li>
             
             <div class="clearfix"></div>
