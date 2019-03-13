@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://yoursite.com/2019/02/23/what-I-learned-from-intership/</loc>
+    <lastmod>2019-03-13T04:05:18.671Z</lastmod>
+  </url>  <url>
     <loc>http://yoursite.com/2019/03/09/knowledge-paper-notes/</loc>
     <lastmod>2019-03-09T08:32:42.621Z</lastmod>
   </url>  <url>
     <loc>http://yoursite.com/2018/03/09/Actor-Critic/</loc>
     <lastmod>2019-03-09T02:15:22.232Z</lastmod>
-  </url>  <url>
-    <loc>http://yoursite.com/2019/02/23/what-I-learned-from-intership/</loc>
-    <lastmod>2019-02-23T15:07:20.386Z</lastmod>
   </url>  <url>
     <loc>http://yoursite.com/2019/01/15/compile-priciple-notes/</loc>
     <lastmod>2019-01-15T12:53:42.975Z</lastmod>
