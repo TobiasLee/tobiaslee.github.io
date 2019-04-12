@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2019-03-09T08:32:42.621Z</updated>
+  <updated>2019-04-12T14:14:53.765Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -15,6 +15,29 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>图神经网络笔记</title>
+    <link href="http://yoursite.com/2019/04/12/gnn-notes/"/>
+    <id>http://yoursite.com/2019/04/12/gnn-notes/</id>
+    <published>2019-04-12T13:56:25.000Z</published>
+    <updated>2019-04-12T14:14:53.765Z</updated>
+    
+    <content type="html"><![CDATA[<p>图神经网络 (Graph Neural Networks, GNNs) 是最近很火热的一个 Topic，最近读了不少这方面的文章，梳理一下相关的内容。</p><h2 id="Models"><a href="#Models" class="headerlink" title="Models"></a>Models</h2><p>符号表示：$G = ( \mathcal{V},\mathcal{E}) $，图 $\mathcal{G}$ 由节点集合 $V$ 和边集合 $\mathcal{E}$ 组成。对于某些区分边类型的图(不仅仅表示有连接，而是更细致的某种连接)，还有一个关系集合 $\mathcal{R}$。GNN 的目标就是要对于图中的每一个节点 $v \in \mathcal{V}$ ，学习到它的一个表示 $h_v$ 。</p><a id="more"></a><h3 id="GCN"><a href="#GCN" class="headerlink" title="GCN"></a>GCN</h3><p><a href="#Reference">Kipf</a> 提出了图卷积网络用来在图上对节点进行分类。文章中的数学公式对于新人还是不怎么友好的，可以参考<a href="https://zhuanlan.zhihu.com/p/54505069" target="_blank" rel="noopener">图卷积网络(GCN)新手村完全指南</a>来阅读，这里省略了推导的过程，就从最后的前向传播公式和 Model 说起：</p><p><img src="/img/gcn_formula.png" alt="GCN-Formula"></p><p>公式中的 $X$ 对应的节点的 feature，$\hat A$ 则是经过处理的邻接矩阵，通过出度矩阵和原始的邻接矩阵计算得到。在文章中实验用的 Cora 数据集上，$X$ 用的是论文的 BOW feature，而邻接矩阵则是通过论文之间的引用关系得到（两篇文章有引用则说明有边）。模型的示意图如下：</p><p><img src="/img/gcn_model.png" alt="GCN-Model"></p><p>经过多层 GCN 的叠加，非直接连接的节点的信息也能传递到相应的节点（相当于 multi-hop）。最后每个节点的表示 $Z_v$ 可以用在下游任务中。对于不想深究数学细节的读者，一句话概括 GCN 就是：<strong>通过将邻接节点的表示做一个求和，然后做一个线性变换，再接上激活函数(ReLU)，就是一次 GCN 得到某个节点表示的过程</strong></p><h3 id="R-GCN"><a href="#R-GCN" class="headerlink" title="R-GCN"></a>R-GCN</h3><p>刚才的 GCN 没有考虑<strong>边的类型</strong>的信息，这对于一些复杂的图是一个比较大的缺点，例如下面的一个知识库，实体之间的联系也是包含着大量的信息：</p><p><img src="/img/rgcn_kb.png" alt="R-GCN KnowledgeBase"></p><p>作者举了一个例子：</p><p>知道 Mikhail Baryshnikov 在 Vaganova Academy 上过学说明 Mikhail Baryshnikov 是一个人，并且也以为着他应该住在 Russia。因此，为了将 Relation 的信息整合到 GCN 之中，作者提出了 R-GCN，核心的公式如下：</p><p><img src="/img/rgcn.png" alt="R-GCN"></p><p>后面一项是一个 self-connection，来保证自己的信息不在传播过程之中有太大的损失。和 GCN 的主要区别就在于：GCN 是简单的加和平均，而这里在每一个邻接节点的表示之前都做了一个 relation-specific 的线性变换，也就是 $W_r h_j$ 。而为了避免因为 relation 太多带来的过高矩阵维度以及对稀有 relation 的过拟合，作者对 relation 矩阵 $W_r$ 做了分解，利用小矩阵的线性组合来实现。模型的示意图如下：</p><p><img src="/img/rgcn_model.png" alt="R-GCN Model"></p><p>值得注意的一点就是，对于同一类型的关系，也分 in 和 out 的两种情况，所以在实际的代码中，我们需要对 relation * 2 来实现。</p><h3 id="GAT"><a href="#GAT" class="headerlink" title="GAT"></a>GAT</h3><p>前面两种 GNN 都可以看做是最邻接节点做一个加和得到的节点表示（GCN 是平均，R-GCN则是根据不同的 relation 有些许调整），想到加权和，很自然的想法就是用 self-attention，于是 Graph Attention Networks 应运而生：</p><p><img src="/img/gat.png" alt="GAT"></p><p>和之前的比较一下，最大的不同就是在<strong>邻接节点表示之前有一个权重</strong> $\alpha_{ij}​$，作者说这样能够:</p><blockquote><p>our model allows for (implicitly) assigning different importances to nodes of a same neighborhood</p></blockquote><p>当然还有不少和前作对比的好处，不然也不会发到 ICLR 上了。但是，把 self-attention 和 GCN 的结合是一个非常自然的想法，从这一点上来说，有一点灌水的嫌疑。后续作者还把 multi-head 也加了进来：</p><p><img src="/img/gat-mh.png" alt="GAT-Multi-Head"></p><p>做法就是把邻接节点的 representation 给 transform 到其他的 subspace 里，然后分别计算 weighted-sum 最后拼接起来。</p><h3 id="Uniform-Framework"><a href="#Uniform-Framework" class="headerlink" title="Uniform Framework"></a>Uniform Framework</h3><p>看了前面三个 model，有没有一种其实都差不多的感觉？没错，其实他们都可以看做是 Message Passing Networks 的一种：</p><p><img src="/img/mpn.png" alt="Message Passing Neural Network"></p><p>其中，$M_t(\cdot)$  是消息传递函数，描述邻接节点如何向被连接的节点传递 message；$U_t(\cdot)$ 则是一个更新函数，描述当前的节点如何根据周围节点传递来的消息来更新自己的表示。拿 GAT(self-attention 版本) 来说，$M_t$ 就是一个加权和，而 $U_t$ 就可以看做是一个 <code>sigmoid</code> 激活函数。<strong>设计 GNN，就是设计消息传递函数以及表示更新函数</strong>。最后，我们如何利用图中节点的表示来进行下游的任务，则是 task-specific 的了，被作为称为 readout (读出) 阶段。</p><p>最近有一篇<a href="#Reference">工作</a>探究的是 GNNs 的表达能力，作者是把 GNNs 的传播过程分成 Aggregate 和 Combine 两个阶段，其实也就是换了个说法，但是作者对于 GNNs 表达能力的证明（借用了一个图同构的测试方法来作为标准）还是很值得探索的一个方向。</p><p>总结一下：GNNs 就是将图中节点的信息，通过邻接这一种关系来进行传递，从而捕获到图整体的结构信息；通过设计合理的消息传递和更新函数（可能还包括图的构建，例如节点的 feature），我们可以得到一个适合下游任务的表示。进一步地，设计一个合理的读出函数，来在下游的任务上做诸如分类、聚类等操作。</p><h2 id="Applications"><a href="#Applications" class="headerlink" title="Applications"></a>Applications</h2><p>利用 GNNs 获得图中节点的表示之后，下一步就是应用到各类问题上了，而 GNNs 特别是 GCN 目前在 NLP 上的应用还不是特别多，似乎现有的工作还 focus 在如何改进结构上，因此这里就简单的举两个例子。</p><h3 id="Text-Classification"><a href="#Text-Classification" class="headerlink" title="Text Classification"></a>Text Classification</h3><p>如果图中每个节点是一个 document，那么我们在得到节点的表示之后就相当于获得了一个 document vector，过一个全连接层然后做分类是很自然的想法。提出 Model 的 Paper 基本都是在 Citation Dataset 上做的测试，即把每一篇 Paper 作为节点，Paper 之间的引用关系作为边，把 Paper 的BOW 作为节点的 feature (GCN 中的 $X​$ )，最后在节点之上做分类(判断 Paper 是属于哪个领域的)。而泛化到 Text Classification 上，<strong>核心问题就是如何构建 doument 之间的 edge</strong>，和 Paper 不同的是，一般的 Document 没有直接的联系。<a href="#Reference">Graph Convolutional Networks for Text Classification</a> 就提出了一种解决的方法：把 word 看成是一种极端的 <code>document</code>，去做 word-word 和 word-document 之间的边：</p><p><img src="/img/gcn_tc.png" alt="GCN for Text Classification"></p><p>这里的邻接矩阵进一步泛化，不再是单纯的 1/0 indicator，而是更细致的权重。对于 word-word，是两个词之间的互信息，互信息衡量的是一个词之间的语义关联程度；而对于 word-document，则是对应的 TF-IDF 值，衡量一个词对于一个 document 的重要程度。注意到，word 和 document 是两个 level 的 <code>document</code> ，所以这是一张异质图，并且作者提到：</p><blockquote><p>although there is no direct document-document edges in the graph, the two-layer GCN allows the information exchange be- tween pairs of documents. </p></blockquote><p>通过 GCN 的信息传递机制，来实现 document 级别的信息传递。最后在一系列 dataset 上，GCN Model 都能够超过 LSTM 和 CNN 的 baseline。</p><h3 id="Text-Generation"><a href="#Text-Generation" class="headerlink" title="Text Generation"></a>Text Generation</h3><p>另外一个很有意思的应用是文本生成，现在有很多 Data-to-Text 的问题的 Source 是类似 Wikipedia 的一张表，而这其中其实也就一张很大的知识图的一部分，<a href="#Reference">Deep Graph Convolutional Encoders for Structured Data to Text Generation</a> 把 GCN 用到了生成上。样例数据如下：</p><p><img src="/img/rdf.png" alt="RDF"></p><p>根据上方的三元组来生成下面的描述。主要的思路就是把原先 Seq2Seq 中的 Encoder 替换成一个 GCN 来编码 Source 端的三元组。相比于 RNN 类的 Encoder，因为三元组之间并不存在时序关系，而更多的是图的结构和节点之间的边，所以用 GCN 来得到节点的表示作为 hidden state，然后在 decode 的时候 attention，也是一个比较自然的想法。</p><h2 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h2><p>从在 Text Classification 上的结果来看，GCN 对图的信息表示能力还是比较强的。我个人认为，未来的探索方向大约是两个：</p><ul><li>现有的机制还是对邻接节点的整合，依旧在消息传递这样一个框架下，如何设计更 expressive 和 power 的 framework 是很有意义的；</li><li>和下游任务的结合，目前还只有少量的工作在做 GCN 的应用，因此可能也是很好发文章的一个方向，我相信不久以后会有更多关于将 GCN 和特定的问题结合的工作</li></ul><h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><ol><li><a href="http://arxiv.org/abs/1609.02907" target="_blank" rel="noopener">Semi-Supervised Classification With Graph Convolutional Networks</a></li><li><a href="http://arxiv.org/abs/1704.01212" target="_blank" rel="noopener">Neural Message Passing for Quantum Chemistry</a></li><li><a href="">Graph Attention Networks</a></li><li><a href="https://arxiv.org/abs/1703.06103" target="_blank" rel="noopener">Modeling Relational Data with Graph Convolutional Networks</a></li><li><a href="https://arxiv.org/abs/1809.05679" target="_blank" rel="noopener">Graph Convolutional Networks for Text Classification</a></li><li><a href="http://arxiv.org/abs/1810.09995" target="_blank" rel="noopener">Deep Graph Convolutional Encoders for Structured Data to Text Generation</a></li><li><a href="http://arxiv.org/abs/1810.00826" target="_blank" rel="noopener">How Powerful are Graph Neural Networks</a></li></ol>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;图神经网络 (Graph Neural Networks, GNNs) 是最近很火热的一个 Topic，最近读了不少这方面的文章，梳理一下相关的内容。&lt;/p&gt;
+&lt;h2 id=&quot;Models&quot;&gt;&lt;a href=&quot;#Models&quot; class=&quot;headerlink&quot; title=&quot;Models&quot;&gt;&lt;/a&gt;Models&lt;/h2&gt;&lt;p&gt;符号表示：$G = ( \mathcal{V},\mathcal{E}) $，图 $\mathcal{G}$ 由节点集合 $V$ 和边集合 $\mathcal{E}$ 组成。对于某些区分边类型的图(不仅仅表示有连接，而是更细致的某种连接)，还有一个关系集合 $\mathcal{R}$。GNN 的目标就是要对于图中的每一个节点 $v \in \mathcal{V}$ ，学习到它的一个表示 $h_v$ 。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="Deep Learning" scheme="http://yoursite.com/tags/Deep-Learning/"/>
+    
+      <category term="Graph Neural Networks" scheme="http://yoursite.com/tags/Graph-Neural-Networks/"/>
+    
+  </entry>
   
   <entry>
     <title>Knowledge in Neural Language Models</title>
@@ -244,9 +267,9 @@
     
       <category term="NLP" scheme="http://yoursite.com/tags/NLP/"/>
     
-      <category term="GAN" scheme="http://yoursite.com/tags/GAN/"/>
-    
       <category term="Text Generation" scheme="http://yoursite.com/tags/Text-Generation/"/>
+    
+      <category term="GAN" scheme="http://yoursite.com/tags/GAN/"/>
     
   </entry>
   
@@ -378,9 +401,9 @@
     
       <category term="Deep Learning" scheme="http://yoursite.com/tags/Deep-Learning/"/>
     
-      <category term="GAN" scheme="http://yoursite.com/tags/GAN/"/>
-    
       <category term="Text Generation" scheme="http://yoursite.com/tags/Text-Generation/"/>
+    
+      <category term="GAN" scheme="http://yoursite.com/tags/GAN/"/>
     
   </entry>
   
@@ -490,9 +513,9 @@
     
       <category term="NLP" scheme="http://yoursite.com/tags/NLP/"/>
     
-      <category term="GAN" scheme="http://yoursite.com/tags/GAN/"/>
-    
       <category term="Text Generation" scheme="http://yoursite.com/tags/Text-Generation/"/>
+    
+      <category term="GAN" scheme="http://yoursite.com/tags/GAN/"/>
     
   </entry>
   

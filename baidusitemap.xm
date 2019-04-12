@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://yoursite.com/2019/04/12/gnn-notes/</loc>
+    <lastmod>2019-04-12T14:14:53.765Z</lastmod>
+  </url>  <url>
     <loc>http://yoursite.com/2019/02/23/what-I-learned-from-intership/</loc>
     <lastmod>2019-03-13T04:05:18.671Z</lastmod>
   </url>  <url>

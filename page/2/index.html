@@ -164,6 +164,111 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-TensorFlow-Seq2Seq-踩坑记" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/09/14/TensorFlow-Seq2Seq-踩坑记/">TensorFlow——Seq2Seq 踩坑记</a>
+    </h1>
+  
+
+        
+        <a href="/2018/09/14/TensorFlow-Seq2Seq-踩坑记/" class="archive-article-date">
+  	<time datetime="2018-09-14T02:31:09.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-09-14</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="缘起"><a href="#缘起" class="headerlink" title="缘起"></a>缘起</h2><p>Seq2Seq 的 TensorFlow 实现有很多，而 TensorFlow 之前也推出了一套新的 <a href="https://www.tensorflow.org/api_docs/python/tf/contrib/seq2seq" target="_blank" rel="noopener">API</a>，文档依旧是令人蛋疼地杂乱。最近在用新的 API 写一个 Many2Many 结构的 Seq2Seq，踩到了一个坑，记录之，也进一步地提醒我应该把主力框架迁移到 PyTorch 提上日程了。</p>
+<h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><p>根据示例，只要把 encoder 和 decoder 拼接起来，并且使用 TrainingHelper + BasicDecoder：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 省略参数</span></span><br><span class="line">helper_pt = tf.contrib.seq2seq.TrainingHelper()</span><br><span class="line">decoder_pt = tf.contrib.seq2seq.BasicDecoder()</span><br><span class="line">outputs_pt, _final_state, sequence_lengths_pt = tf.contrib.seq2seq.dynamic_decode()</span><br><span class="line"><span class="comment"># logits</span></span><br><span class="line">logits = outputs_pt.rnn_output </span><br><span class="line"><span class="comment"># loss</span></span><br><span class="line">loss = tf.contrib.seq2seq.sequence_loss(logits, target, target_mask,</span><br><span class="line">                    average_across_timesteps=<span class="keyword">True</span>,</span><br><span class="line">                    average_across_batch=<span class="keyword">False</span>)</span><br></pre></td></tr></table></figure>
+<p>其中 <code>logits</code> 是 vocab_size 上的分布，shape 为 <code>[batch_size, ?, vocab_size]</code></p>
+<p>而 <code>target</code> 则是正确的输出，这里我将其做了 padding，补齐到最大长度，shape 为 <code>[batch_size, max_len]</code>，<code>target_mask</code> 是对应的一个权重，非补齐的部分才会参与到 loss 的计算。 </p>
+<p>如果不 Padding，则会在 feed_dict 这一步报错：</p>
+<blockquote>
+<p>ValueError: setting an array element with a sequence.</p>
+</blockquote>
+<p><strong>因为 target_input 的长度是变长的 </strong>，NumPy 无法将其视作一个 array，导致错误。</p>
+<p>然后问题就来了，<code>sequence_loss</code> 函数报错，说其内部调用的 <code>sparse_soft_max</code> 函数的 <code>labels</code> 和 <code>logits</code>     第一维不匹配，其中：logits 的形状为 <code>[?, vocab_size]</code> ；label 的形状为 <code>[batch_size x max_len]</code></p>
+<p>为什么会这样呢？来进一步的分析分析</p>
+<h2 id="Source-Code"><a href="#Source-Code" class="headerlink" title="Source Code"></a>Source Code</h2><p>首先是看一下 <code>sequence_loss</code> 的源代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> ops.name_scope(name, <span class="string">"sequence_loss"</span>, [logits, targets, weights]):</span><br><span class="line">   num_classes = array_ops.shape(logits)[<span class="number">2</span>]</span><br><span class="line">   logits_flat = array_ops.reshape(logits, [<span class="number">-1</span>, num_classes])</span><br><span class="line">   targets = array_ops.reshape(targets, [<span class="number">-1</span>])</span><br><span class="line">   <span class="keyword">if</span> softmax_loss_function <span class="keyword">is</span> <span class="keyword">None</span>:</span><br><span class="line">     crossent = nn_ops.sparse_softmax_cross_entropy_with_logits(</span><br><span class="line">         labels=targets, logits=logits_flat)</span><br></pre></td></tr></table></figure>
+<p>先是对 logits 和 labels 做了 reshape 操作，之前的形状也能对上，也就是说 logits reshape 之后的 <code>? = ? x batch_size</code> ，那么这个 <code>?</code> 究竟是是什么呢，不出意外，应该是生成的序列长度，但为什么是不定长的呢？</p>
+<p>来看看 <code>TrainingHelper</code> 的核心源代码:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># TrainingHelper</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">next_inputs</span><span class="params">(self, time, outputs, state, name=None, **unused_kwargs)</span>:</span></span><br><span class="line">      next_time = time + <span class="number">1</span></span><br><span class="line">      finished = (next_time &gt;= self._sequence_length)</span><br><span class="line">      all_finished = math_ops.reduce_all(finished)</span><br><span class="line">      <span class="function"><span class="keyword">def</span> <span class="title">read_from_ta</span><span class="params">(inp)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> inp.read(next_time)</span><br><span class="line">      next_inputs = control_flow_ops.cond(</span><br><span class="line">          all_finished, <span class="keyword">lambda</span>: self._zero_inputs,</span><br><span class="line">          <span class="keyword">lambda</span>: nest.map_structure(read_from_ta, self._input_tas))</span><br><span class="line">      <span class="keyword">return</span> (finished, next_inputs, state)</span><br></pre></td></tr></table></figure>
+<p><code>next_inputs</code> 函数是 RNN 不断获取下一步的迭代函数，其中 <code>finished</code> 相当于指示了当前的时间步是否已经超出最大长度，即 <code>self._sequence_length</code> 一个记录目标输出长度 int32 向量。<code>reduce_all()</code> 是对某一个维度求逻辑与，如果没有指定 axis 参数，则是对所有元素进行与运算。由此，我们可以得知：当未运行至 target 目标时间步时，会用 Groud-Truth 作为下一个的输入，否则则为 0。但这里并没有给出什么时候停止，所以进一步地，看看 decoder 在哪里调用这个的函数：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">step</span><span class="params">(self, time, inputs, state, name=None)</span>:</span></span><br><span class="line">    cell_outputs, cell_state = self._cell(inputs, state)</span><br><span class="line">    <span class="keyword">if</span> self._output_layer <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">None</span>:</span><br><span class="line">        cell_outputs = self._output_layer(cell_outputs)</span><br><span class="line">    sample_ids = self._helper.sample(</span><br><span class="line">    time=time, outputs=cell_outputs, state=cell_state)</span><br><span class="line">    (finished, next_inputs, next_state) = self._helper.next_inputs(</span><br><span class="line">              time=time,</span><br><span class="line">              outputs=cell_outputs,</span><br><span class="line">              state=cell_state,</span><br><span class="line">              sample_ids=sample_ids)</span><br><span class="line">    outputs = BasicDecoderOutput(cell_outputs, sample_ids)</span><br><span class="line">    <span class="keyword">return</span> (outputs, next_state, next_inputs, finished)</span><br></pre></td></tr></table></figure>
+<p>这是 decoder 的 <code>step</code> 函数，相当于对 <code>helper</code> 进一步地封装，以便使用一些功能（TrainingHelper 是训练时 feed groud-truth，在 inference 阶段会使用 GreedyEmbeddingHelper 在无 Groud-Truth 帮助下进行生成等）。再向上，我们去看 <code>dynamic_decode</code> 的函数：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># dynamic_decode 为了节约篇幅，仅保留重要的代码</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dynamic_decode</span><span class="params">()</span>:</span></span><br><span class="line"></span><br><span class="line">    initial_finished, initial_inputs, initial_state = decoder.initialize()</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">condition</span><span class="params">(unused_time, unused_outputs_ta, unused_state, unused_inputs,</span></span></span><br><span class="line"><span class="function"><span class="params">                  finished, unused_sequence_lengths)</span>:</span></span><br><span class="line">      <span class="keyword">return</span> math_ops.logical_not(math_ops.reduce_all(finished))</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">body</span><span class="params">(time, outputs_ta, state, inputs, finished, sequence_lengths)</span>:</span></span><br><span class="line">      (next_outputs, decoder_state, </span><br><span class="line">       next_inputs, decoder_finished) = decoder.step(time, inputs, state)</span><br><span class="line">		<span class="comment"># next_finished 是 decoder_finished 和 finished 的 or</span></span><br><span class="line">      next_finished = math_ops.logical_or(decoder_finished, finished)</span><br><span class="line">      next_sequence_lengths = array_ops.where(</span><br><span class="line">          math_ops.logical_not(finished),</span><br><span class="line">          array_ops.fill(array_ops.shape(sequence_lengths), time + <span class="number">1</span>),</span><br><span class="line">          sequence_lengths)</span><br><span class="line">      <span class="keyword">return</span> (time + <span class="number">1</span>, outputs_ta, next_state, next_inputs, next_finished,</span><br><span class="line">              next_sequence_lengths)</span><br><span class="line"></span><br><span class="line">    res = control_flow_ops.while_loop(</span><br><span class="line">        condition,</span><br><span class="line">        body,</span><br><span class="line">        loop_vars=(</span><br><span class="line">            initial_time,</span><br><span class="line">            initial_outputs_ta,</span><br><span class="line">            initial_state,</span><br><span class="line">            initial_inputs,</span><br><span class="line">            initial_finished,</span><br><span class="line">            initial_sequence_lengths,</span><br><span class="line">        ),</span><br><span class="line">        parallel_iterations=parallel_iterations,</span><br><span class="line">        maximum_iterations=maximum_iterations,</span><br><span class="line">        swap_memory=swap_memory)</span><br></pre></td></tr></table></figure>
+<p>这里，总算看到了我们要的 while loop，循环的控制变量是 <code>finished</code>，而其又 是 decoder_finished 和 finished 的逻辑或所得到，所以可以得出：当 decoder 解码到 sequence_length 时，其才会停止；另一方面，因为一个 batch 中的长度不都相同，所以得到的 dynamic_length 应该是某个 batch 中最长的一句的长度，到了这里，问题总算是知道根源所在了，那么，怎么解决呢？</p>
+<h2 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h2><p>GitHub 上有人提出过这个问题 <a href="https://github.com/tensorflow/nmt/issues/2" target="_blank" rel="noopener">Issue</a> ，并且有很长的讨论，有一个比较粗暴的解决方案，在无法喂给它 padding 之前的情况下，对 target 做一个截取，因为之前的研究能够让我们确信生成的序列的长度是一定小于等于 batch 中 target 最长的长度的，所以：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 获取当前的长度，max_len 和 logits 的较小者，事实上，我们可以认为就是 logits 的长度</span></span><br><span class="line">current_ts = tf.to_int32(tf.minimum(tf.shape(self.target_input)[<span class="number">1</span>], tf.shape(logits)[<span class="number">1</span>]))</span><br><span class="line"><span class="comment"># 对 target 进行截取</span></span><br><span class="line">target_sequence = tf.slice(self.target_input, begin=[<span class="number">0</span>, <span class="number">0</span>], size=[<span class="number">-1</span>, current_ts])</span><br><span class="line">mask_ = tf.sequence_mask(lengths=self.target_len, maxlen=current_ts, dtype=logits.dtype)</span><br><span class="line">logits = tf.slice(self.logits_pt, begin=[<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>], size=[<span class="number">-1</span>, current_ts, <span class="number">-1</span>])</span><br></pre></td></tr></table></figure>
+<p>截取之后，就可以保证二者的长度一致，再使用<code>sequence_loss()</code> 计算就可以了。</p>
+<p>另外有一个疑问就是，有些代码是可以运行不会报错（网上 Seq2Seq 的教程都是这么写的），猜测是输入数据的格式问题，日后碰到了再提。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">TensorFlow</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Seq2Seq</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+
+      
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/09/14/TensorFlow-Seq2Seq-踩坑记/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Recent-Paper-Notes" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -529,11 +634,11 @@
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">GAN</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Text Generation</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Text Generation</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">GAN</a>
         		</li>
       		
 		</ul>
@@ -977,11 +1082,11 @@
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">GAN</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Text Generation</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Text Generation</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">GAN</a>
         		</li>
       		
 		</ul>
@@ -1082,110 +1187,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2018/06/09/New-Stage/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Attention-Notes" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/05/13/Attention-Notes/">别人家的 Attention</a>
-    </h1>
-  
-
-        
-        <a href="/2018/05/13/Attention-Notes/" class="archive-article-date">
-  	<time datetime="2018-05-13T05:48:19.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-05-13</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><a href="https://arxiv.org/abs/1706.03762" target="_blank" rel="noopener">Attention Is All You Need</a> 前段时间火了一把，其提出完全用 Attention 替代传统的 CNN 和 RNN 架构来做特征的提取，也在 NMT 上也取得了 state-of-the-art。这两天读了一下这篇 Paper，并且在熟悉的 Text Classification 问题上用其模型做了一下尝试，这篇 Blog 就用来记录过程中的一些想法和感受。</p>
-<h2 id="What-is-Attention"><a href="#What-is-Attention" class="headerlink" title="What is Attention"></a>What is Attention</h2><p>注意力机制之前在学的时候就有过一次<a href="http://tobiaslee.top/2017/08/15/Attention-Mechanism-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" target="_blank" rel="noopener">梳理</a>，上一次对于什么是注意力机制，我的回答是：</p>
-<blockquote>
-<p>聚焦在某个局部的 focus</p>
-</blockquote>
-<p>现在我的回答是：Attention（一般指的是 Self-Attention），是特征提取过程中，信息融合的手段。其目的是能够让模型的信息视野有的放矢，其数学上的表现就是加权和。</p>
-<p>NLP community 曾经有过这么一种说法：</p>
-<blockquote>
-<p>an LSTM with attention will yield state-of-the-art performance on any task</p>
-</blockquote>
-<p>以及这样一张图：</p>
-<p><img src="/img/joke.jpg" alt="Joke"></p>
-<p>中心思想就是：Attention + LSTM 是一个非常 Powerful 的 model，基本能在所有的 NLP 任务上 work。就我有限的经验来说，大抵如此了。特别是 Attention，简直是即插即用效果还特别好的万金油。</p>
-<p>而论文中对 Attention 的定义是这样的：</p>
-<blockquote>
-<p>An attention function can be described as mapping a query and a set of key-value pairs to an output, where the query, keys, values, and output are all vectors. </p>
-</blockquote>
-<p>这里的 query、key、value 是理解的重点：</p>
-<p>对于机器翻译任务来说，在传统的 Seq2Seq 架构中，假设我们将要输出第 k 个词，那么这个 query 就代表这<strong>第 k 个词</strong>对应的 hidden state，key 和 value 一般是相等的（作者也提出了一种不相等的方式，详见下图），即之前 encode 的所有 hidden state：</p>
-<p><img src="/img/qkv.jpg" alt="Query、Key and Values"></p>
-<p>一开始提出 Attention 的使用一个 Alignment Function 来描述，并且提出了几种 score 的计算方式。这里的计算公式就是用最普通的矩阵乘法：</p>
-<p>$Attention(Q, K, V) = softmax( \frac{QK^T}{\sqrt{d_k}})V$</p>
-<p>Softmax 项就是权重项，$V$ 是一系列 hidden states，也就是说，attention 最终的表现形式依旧是<strong>加权和</strong>。</p>
-        
-          <a class="article-more-a" href="/2018/05/13/Attention-Notes/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Deep Learning</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">NLP</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-
-      
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/05/13/Attention-Notes/">展开全文 >></a>
         </p>
       
 
@@ -1344,19 +1345,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Deep Learning</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Reinforcement Learning</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1376,19 +1373,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1396,7 +1385,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
+                <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1412,15 +1401,27 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">MediaCodec</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">OpenGL</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1432,14 +1433,6 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">LaTeX</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Python</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">RNN</a>
               </li>
              
@@ -1448,11 +1441,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">OS</a>
+                <a href="javascript:void(0)" class="js-tag color1">LaTeX</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">爬虫</a>
+                <a href="javascript:void(0)" class="js-tag color2">Python</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1460,7 +1453,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Paper Notes</a>
+                <a href="javascript:void(0)" class="js-tag color3">爬虫</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1468,11 +1461,23 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Paper Notes</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Attention</a>
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">OS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Seq2Seq</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Graph Neural Networks</a>
               </li>
              
               <li class="article-tag-list-item">
