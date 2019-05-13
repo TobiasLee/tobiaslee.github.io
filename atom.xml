@@ -1267,9 +1267,9 @@
     </summary>
     
     
-      <category term="NLP" scheme="http://yoursite.com/tags/NLP/"/>
-    
       <category term="Machine Learning" scheme="http://yoursite.com/tags/Machine-Learning/"/>
+    
+      <category term="NLP" scheme="http://yoursite.com/tags/NLP/"/>
     
       <category term="TensorFlow" scheme="http://yoursite.com/tags/TensorFlow/"/>
     
@@ -1321,9 +1321,9 @@
     </summary>
     
     
-      <category term="NLP" scheme="http://yoursite.com/tags/NLP/"/>
-    
       <category term="Machine Learning" scheme="http://yoursite.com/tags/Machine-Learning/"/>
+    
+      <category term="NLP" scheme="http://yoursite.com/tags/NLP/"/>
     
       <category term="TensorFlow" scheme="http://yoursite.com/tags/TensorFlow/"/>
     
