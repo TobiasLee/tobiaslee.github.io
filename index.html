@@ -179,6 +179,88 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-evolution-and-application-of-BERT" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/07/08/evolution-and-application-of-BERT/">BERT 的演进和应用</a>
+    </h1>
+  
+
+        
+        <a href="/2019/07/08/evolution-and-application-of-BERT/" class="archive-article-date">
+  	<time datetime="2019-07-08T14:00:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-08</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Pre-train language model 风头正盛，以 BERT 为代表的模型也在各个任务上屠榜，有一统天下的趋势。知乎上也有不少文章对 BERT 的原理、应用做分析和总结的，例如张俊林老师的一系列<a href="https://zhuanlan.zhihu.com/p/68446772" target="_blank" rel="noopener">文章</a>对 BERT 和 Transformer 的解读就很有深度。但<strong>看别人写和自己读文章梳理一遍的效果是天差地别的</strong>，因此借着最近难得的闲暇，来对 Pre-train Language Model 的文章做一次整理。</p>
+        
+          <a class="article-more-a" href="/2019/07/08/evolution-and-application-of-BERT/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Deep Learning</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">NLP</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+
+      
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/07/08/evolution-and-application-of-BERT/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-PGM-Notes" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1060,100 +1142,6 @@
 
 
   
-    <article id="post-OS-IPC-Notes" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/10/14/OS-IPC-Notes/">IPC 问题</a>
-    </h1>
-  
-
-        
-        <a href="/2018/10/14/OS-IPC-Notes/" class="archive-article-date">
-  	<time datetime="2018-10-14T06:45:16.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-10-14</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>操作系统线程之间的通信是一个很重要的问题，在用 C 语言在 Linux 实现经典的“生产者和消费者”以及“读者写者”问题时产生了一些疑惑，记录之。</p>
-<h2 id="Problem"><a href="#Problem" class="headerlink" title="Problem"></a>Problem</h2><p>进程间通信的需要解决的核心问题就是<strong>线程之间的同步</strong>，比如说，有一个程序，两个线程同时对一个共享变量 <code>cnt</code> 分别进行 <code>n</code> 次加法操作，如果其初始值为 0 的话，那么正确的运行结果应该是 <code>cnt = 2n</code>，但如果我们在一台单 CPU 的机器上运行的话，结果往往不是 <code>2n</code>。为什么呢？因为机器可能不会按照我们思考的方式去执行这样的指令，一种很容易想到的产生错误的方式就是：一个线程修改了值（对 <code>cnt</code> 进行加 1 ）之后还没写回去，这个时候另一个线程就读到了 <code>cnt</code> 的旧值并且在旧值之上进行了更新操作，二者都写回去的时候，<code>cnt</code> 的值只加一而不是加二。一个显而易见的解决方式就是将各自的操作都变成<strong>原子化</strong>，也即一个线程带来的任何改变都能被另一个线程所感知到，不过这样带来的 overhead（额外开销）过大，对性能是个很大的影响。因此伟大的计算机科学家们提出了两个概念用于解决这个问题，分别是 mutex（互斥量）和 semphore（信号量）：</p>
-<blockquote>
-<p>Strictly speaking, <strong>a mutex is a locking mechanism</strong> used to synchronize access to a resource. Only one task (can be a thread or process based on OS abstraction) can acquire the mutex. It means there will be ownership associated with mutex, and only the owner can release the lock (mutex).</p>
-<p><strong>Semaphore is signaling mechanism</strong> (“I am done, you can carry on” kind of signal). For example, if you are listening songs (assume it as one task) on your mobile and at the same time your friend called you, an interrupt will be triggered upon which an interrupt service routine (ISR) will signal the call processing task to wakeup.</p>
-</blockquote>
-<p>互斥量是一把锁，用于控制对资源的访问，同一时间只有一个线程能够获得这把锁，也只有获得锁的线程才能够释放这把锁；信号量是一个信号，用于线程之间的通讯。特别地，信号量 s 有两种操作：</p>
-<ul>
-<li>P(s)：如果 s 非零，则将 s -1 并返回；如果 s 为 0，则挂起该线程，直到 s 非 0，一般来说，是等待 V 操作的通知。</li>
-<li>V(s)：V 操作将 s + 1。如果有任何线程阻塞在 P 操作等待，则 V 操作会<strong>通知</strong>折线线程中的一个，让他苏醒完成 s - 1 操作。</li>
-</ul>
-<p>这里几点需要注意：</p>
-<ol>
-<li>P 和 V 操作都是原子化的，也就是说检测信号值、执行操作、写回信号值这三个子操作时不可能被打断的。也只有这样，P、V 操作才有意义。</li>
-<li>V 操作唤醒等待线程时是随机的，我们无法预测哪个线程会苏醒，这里没有<strong>先来先走</strong>的事情存在</li>
-</ol>
-<p>概念就先介绍到这里，可能还有一些不清楚的地方，就结合接下来的两个问题的代码实现，再进一步的讲解。<br>
-        
-          <a class="article-more-a" href="/2018/10/14/OS-IPC-Notes/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">OS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-
-      
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/10/14/OS-IPC-Notes/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
@@ -1297,6 +1285,10 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">随笔</a>
               </li>
              
@@ -1313,15 +1305,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Android</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">自定义View</a>
+                <a href="javascript:void(0)" class="js-tag color4">NLP</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1329,19 +1313,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">NLP</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1349,7 +1321,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">C</a>
+                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1358,6 +1330,14 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">栈</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">C</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1373,6 +1353,10 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Android</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">MediaCodec</a>
               </li>
              
@@ -1381,15 +1365,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">SeqGAN</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Java</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">LaTeX</a>
+                <a href="javascript:void(0)" class="js-tag color2">SeqGAN</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1401,7 +1381,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">LaTeX</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Python</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">JVM</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1413,7 +1401,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">JVM</a>
+                <a href="javascript:void(0)" class="js-tag color3">自定义View</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1449,11 +1437,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">LSTM</a>
+                <a href="javascript:void(0)" class="js-tag color2">Graph Neural Networks</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Graph Neural Networks</a>
+                <a href="javascript:void(0)" class="js-tag color5">LSTM</a>
               </li>
              
               <li class="article-tag-list-item">
