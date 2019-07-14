@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>http://yoursite.com/2019/07/08/evolution-and-application-of-BERT/</loc>
-    <lastmod>2019-07-09T03:27:44.685Z</lastmod>
+    <loc>http://yoursite.com/2019/07/14/A-Long-Way-To-Go/</loc>
+    <lastmod>2019-07-14T15:00:13.960Z</lastmod>
   </url>  <url>
     <loc>http://yoursite.com/2019/05/07/PGM-Notes/</loc>
-    <lastmod>2019-05-08T09:23:12.730Z</lastmod>
+    <lastmod>2019-07-12T02:06:22.815Z</lastmod>
+  </url>  <url>
+    <loc>http://yoursite.com/2019/07/08/evolution-and-application-of-BERT/</loc>
+    <lastmod>2019-07-09T03:27:44.685Z</lastmod>
   </url>  <url>
     <loc>http://yoursite.com/2019/04/12/gnn-notes/</loc>
     <lastmod>2019-04-12T14:14:53.765Z</lastmod>

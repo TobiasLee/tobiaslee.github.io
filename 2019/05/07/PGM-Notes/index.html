@@ -24,7 +24,7 @@
 <meta property="og:image" content="http://yoursite.com/img/crf.png">
 <meta property="og:image" content="http://yoursite.com/img/lstm-pos.png">
 <meta property="og:image" content="http://yoursite.com/img/lstm-crf.png">
-<meta property="og:updated_time" content="2019-05-08T09:23:12.730Z">
+<meta property="og:updated_time" content="2019-07-12T02:06:22.815Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="概率图模型学习笔记">
 <meta name="twitter:description" content="概率图模型（PGM）是很重要的一类模型，听闻很久以前的”概率图模型加边”和现在的”神经网络加层”是同样的地位，但随着 DL 的发展，PGM 已经有一些不吃香了。但我依旧觉得这个一个很重要的知识点，对于 NLP 而言，还有很多序列标注的问题的 sota 还是基于 CRF（条件随机场，概率图模型的一种）取得的，所以还是很有必要学习一下，并且和之前的一些知识给串起来看，会有更多的收获。这篇文章就我记录《">
@@ -240,7 +240,7 @@
 <p>下面把求解这三个问题方法的核心思想做一个简要的介绍：</p>
 <p><strong>问题1</strong>：给定 $\lambda$ 和 $O$， 求 $O$ 的概率</p>
 <p>显然，<strong>我们需要借助状态序列来完成对观测序列概率的估计</strong>，即</p>
-<p>$$P(O | Q, \lambda) = \Pi_{t = 1}^T P(O_t | q_t, \lambda) = b_{q_1}(O_1)<em>b_{q_2}(O_2)\dots</em>b_{q_T}(O_T)$$</p>
+<p>$P(O | Q, \lambda) = \Pi_{t = 1}^T P(O_t | q_t, \lambda) = b_{q_1}(O_1)<em>b_{q_2}(O_2)\dots</em>b_{q_T}(O_T)$</p>
 <p>就是一系列发射概率的乘积，而注意到 </p>
 <p>$$P(O | \lambda) = \sum_Q P(O, Q|\lambda) = \sum_QP(O|Q, \lambda)P(Q|\lambda)$$</p>
 <p>式子就变成了枚举所有可能的状态序列，计算其出现 $O$ 的概率，如果状态集合的数量为 $N$ ，长度为 $T$，则枚举的时间复杂度是 $O(N^T)$ ，是无法高效地计算的。为什么计算量这么大？因为枚举过程中会存在多次重复计算已经算过的部分状态序列，为了解决这个问题，可以通过使用动态规划来限制搜索的范围，从而提升效率，而 DP 的计算方式有两种：</p>
@@ -294,11 +294,11 @@
 <p>其中 $w \sim v$ 表示与 $v$ 相连的节点。说人话就是，随机变量 $Y_v$ 和 $X$ 有关，并且也和与其相连的随机变量有关。举个例子就是，词性标注任务，一个词的词性，除了与这个词 ($X$) 有关以外，也和其相邻的词性标签有关。拿图说话就是：</p>
 <p><img src="/img/crf.png" alt="CRF"></p>
 <p>对于 CRF，到这里就已经足够我们将其应用到一些序列标注问题上了，所以就不再放公式了。接下来就来看两篇 Paper 来缓解一下被公式统治的恐惧。</p>
-<h2 id="LSTM-CRF-for-Sequence-Labeling"><a href="#LSTM-CRF-for-Sequence-Labeling" class="headerlink" title="LSTM-CRF for Sequence Labeling"></a>LSTM-CRF for Sequence Labeling</h2><p>首先我在学习 CRF 之前，一直不知道为什么词性标注任务需要用 LSTM+CRF 这样的结构，我理解为词性标注的输出和输出都是序列，那么用 Seq2Seq 的方法做不就可以了吗？《Bidirectional LSTM-CRF Models for Sequence Tagging》 这篇文章给了我答案，看下面两张图：</p>
+<h2 id="LSTM-CRF-for-Sequence-Labeling"><a href="#LSTM-CRF-for-Sequence-Labeling" class="headerlink" title="LSTM-CRF for Sequence Labeling"></a>LSTM-CRF for Sequence Labeling</h2><p>首先我在学习 CRF 之前，一直不知道为什么词性标注任务需要用 LSTM+CRF 这样的结构，我理解为词性标注的输入和输出都是序列，那么用 Seq2Seq 的方法做不就可以了吗？《Bidirectional LSTM-CRF Models for Sequence Tagging》 这篇文章给了我答案，看下面两张图：</p>
 <p><img src="/img/lstm-pos.png" alt="LSTM for POS"></p>
 <p><img src="/img/lstm-crf.png" alt="LSTM for POS"></p>
 <p>看到区别了吗？区别就是<strong>前者 Label 之前是没有边相连的，而后者边之前是有关联的</strong>，这能解决什么问题呢？比如说，在英文中形容词后面跟的往往是名词而不是动词，这种标签之间的关系，就是 CRF 所考虑的。另外，实体识别中，也会有类似的情况出现，一个人的名字还没结束的情况下一般不会出现另外一个地名。因此，CRF 就显得非常重要了。</p>
-<p>上面的文章提出，我们把 LSTM 的输出看做是状态到 label 的发射概率，而 CRF 层其实就是一个 label x label 大小的矩阵，建模的就是 label 之间的转移概率。有了这些概率和权重之后，就相当于有了之前 HMM 中的 $\lambda$，然后我们通过问题 2 的解法求出最优的词性标注序列，然后再通过 MLE 来更新参数即可(因为这个问题还是一个 Seq2Seq，所以 loss 还是 label-wise negative log-likelihood)。其实可以看到，神经网络在这里面扮演了两个角色：</p>
+<p>上面的文章提出，<strong>我们把 LSTM 的输出看做是状态到 label 的发射概率，而 CRF 层其实就是一个 label x label 大小的矩阵</strong>，建模的就是 label 之间的转移概率。有了这些概率和权重之后，就相当于有了之前 HMM 中的 $\lambda$，然后我们通过问题 2 的解法求出最优的词性标注序列，然后再通过 MLE 来更新参数即可(因为这个问题还是一个 Seq2Seq，所以 loss 还是 label-wise negative log-likelihood)。其实可以看到，神经网络在这里面扮演了两个角色：</p>
 <ol>
 <li>特征抽取，通过 LSTM 和 CRF 层来学习发射概率和转移概率，而不用手工的去定义规则，做特征工程</li>
 <li>通过 SGD 等梯度下降算法可以很好地优化参数，避免使用 EM 算法的繁琐，交给 GPU 去算就是了</li>
@@ -558,11 +558,15 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -574,19 +578,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">NLP</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Machine Learning</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -594,15 +586,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">栈</a>
+                <a href="javascript:void(0)" class="js-tag color4">NLP</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -614,11 +598,27 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">GAN</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">栈</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -638,11 +638,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">SeqGAN</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Java</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">SeqGAN</a>
+                <a href="javascript:void(0)" class="js-tag color3">自定义View</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -662,6 +666,10 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">ML</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">JVM</a>
               </li>
              
@@ -670,23 +678,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">ML</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">自定义View</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">爬虫</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Paper Notes</a>
+                <a href="javascript:void(0)" class="js-tag color4">Retrofit</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Retrofit</a>
+                <a href="javascript:void(0)" class="js-tag color2">Paper Notes</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -710,11 +710,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Graph Neural Networks</a>
+                <a href="javascript:void(0)" class="js-tag color5">LSTM</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">LSTM</a>
+                <a href="javascript:void(0)" class="js-tag color2">Graph Neural Networks</a>
               </li>
              
               <li class="article-tag-list-item">

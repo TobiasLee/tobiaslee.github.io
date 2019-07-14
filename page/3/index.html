@@ -179,6 +179,132 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-Pytorch-Tutorial-Walkthrough" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/06/30/Pytorch-Tutorial-Walkthrough/">Pytorch 初体验</a>
+    </h1>
+  
+
+        
+        <a href="/2018/06/30/Pytorch-Tutorial-Walkthrough/" class="archive-article-date">
+  	<time datetime="2018-06-30T13:48:55.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-06-30</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>深度学习框架很多，TensorFlow 算是比较流行的了，但静态图有时候确实写的很难受，以及一些比较复杂的 model 实现起来比较蛋疼；最近在看的文章的实现没有 TensorFlow 版本，起初我想改写一个 TensorFlow 版本出来，结果实现不了，一方面可能我确实比较菜，另一方面，也只能说 TensorFlow 有些东西在设计上让人为难。所以，那就试试 PyTorch 咯。这篇文章主要是记录我学习 PyTorch 官方 60 分钟<a href="https://pytorch.org/tutorials/beginner/deep_learning_60min_blitz.html" target="_blank" rel="noopener">教程</a>的过程。</p>
+<h2 id="Tensor"><a href="#Tensor" class="headerlink" title="Tensor"></a>Tensor</h2><p>逃不开的还是 Tensor 这个对象，PyTorch 创建、操作 Tensor 的方法和 numpy 很类似，据说 Torch 一开始就是 Numpy 的 GPU 加速版，简单列些一些 API：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">x = torch.empty(<span class="number">5</span>, <span class="number">3</span>) <span class="comment"># 创建一个未初始化的 5x3 tensor</span></span><br><span class="line">x = torch.rand(<span class="number">5</span>, <span class="number">3</span>) <span class="comment"># 随机生成 5x3 </span></span><br><span class="line">x = torch.zeros(<span class="number">5</span>, <span class="number">3</span>, dtype=torch.long)</span><br></pre></td></tr></table></figure>
+<p>比较有意思的是，创建 Tensor 的时候 size 参数不是一个 <code>tuple</code> e.g. <code>(5, 3)</code> ，而是用 <code>*args</code> 的方式传入。</p>
+<p>常用的算术操作可以通过 <code>x+y</code> 或者是 <code>torch.add(x, y)</code> 来实现，同时 PyTorch 也提供了<strong>就地 </strong>(in place) 的操作：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">y.add_(x) <span class="comment"># equals y = y + x</span></span><br></pre></td></tr></table></figure>
+<p>所有的操作名 + 下划线都是一个就地操作，<code>x.copy_(y)</code> 会用 <code>y</code> 的值<strong>替代</strong><code>x</code>。</p>
+<p>另外，对于单元素的 Tensor，可以通过使用 <code>.item()</code> 来获取它；TensorFlow 中的 <code>reshape()</code> 对应的是 <code>view()</code>，并且，和 numpy 一样，<strong>Tensor</strong> 支持切片操作：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">x = torch.randn(<span class="number">4</span>, <span class="number">4</span>) <span class="comment"># x -&gt; 4x4</span></span><br><span class="line">x.view(<span class="number">-1</span> , <span class="number">8</span>) <span class="comment"># x -&gt; 2 x 8</span></span><br><span class="line">x[:, <span class="number">1</span>] <span class="comment"># 取第二列的所有元素</span></span><br></pre></td></tr></table></figure>
+<p>既然之前说 Torch 是 Numpy 的一个 GPU 版本，也就支持 ndarray 和 Tensor 的相互转化（这就比 TensorFlow 用起来舒服很多），可以用 <code>Tensor.numpy()</code> 获取到对应的 ndarray，逆操作则是 <code>torch.from_numpy()</code>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># example 1 tensor -&gt; numpy</span></span><br><span class="line">a = torch.ones(<span class="number">3</span>) <span class="comment"># tensor([1., 1. , 1.])</span></span><br><span class="line">b = a.numpy() <span class="comment"># 通过 tensor.numpy() 获取对应的 ndarray 对象</span></span><br><span class="line">a.add_(<span class="number">1</span>)  <span class="comment"># 就地 + 1 , a= a+1</span></span><br><span class="line">print(a)<span class="comment"># tensor([2., 2., 2.])</span></span><br><span class="line">print(b) <span class="comment"># [2., 2., 2.]</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># example 2   numpy -&gt; tensor</span></span><br><span class="line">a = np.ones(<span class="number">3</span>)</span><br><span class="line">b = torch.from_numpy(a)</span><br><span class="line">np.add(a, <span class="number">1</span>, out=a)</span><br><span class="line">print(a)  <span class="comment"># [2., 2., 2.]</span></span><br><span class="line">print(b) <span class="comment"># tensor([2., 2., 2.])</span></span><br></pre></td></tr></table></figure>
+<p>上面这个例子很重要，说明了<strong>ndarray 和 Tensor 对象之间的转换是一种引用关系，而非创建新的对象</strong>。也就是说，<strong>任何一个相关对象的变化都会影响到另一方</strong>，就像例子 1 中，我们对原始的 <code>a</code> 进行 <code>add_(1)</code>，在此之前得到的 <code>b</code> 对象的值也改变了，例子二中同样出现了这样的情况，这一点需要特别注意。</p>
+<h3 id="CUDA-Tensors"><a href="#CUDA-Tensors" class="headerlink" title="CUDA Tensors"></a>CUDA Tensors</h3><p>我们可以把 Tensor 放到 GPU 上来加速计算，而 PyTorch 为此提供了很方便的方式：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> torch.cuda.is_available(): <span class="comment"># 如果 CUDA 可用</span></span><br><span class="line">    device = torch.device(<span class="string">"cuda"</span>)          <span class="comment"># CUDA 设备对象</span></span><br><span class="line">    y = torch.ones_like(x, device=device)  <span class="comment"># 直接在 GPU 上创建 Tensor 对象</span></span><br><span class="line">    x = x.to(device)                       <span class="comment"># 也可以用``.to("cuda")`` 代替</span></span><br><span class="line">    z = x + y</span><br><span class="line">    print(z)</span><br><span class="line">    print(z.to(<span class="string">"cpu"</span>, torch.double))       <span class="comment"># ``.to`` 同时可以改变数据类型</span></span><br></pre></td></tr></table></figure>
+<p>如上面的例子所示，我们可以在创建 Tensor 对象时指定 <code>device</code> 参数来指明 Tensor 创建的位置，也可以再创建了之后使用 <code>.to()</code> 方法来进行双向的迁移：既可以从 CPU 到 GPU（例子中的 <code>x.to(device)</code>，也可以从 GPU 到 CPU（<code>z.to(&quot;cpu&quot;, torch.double)</code>）。对比 TensorFlow ：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> tf.device(<span class="string">'/cpu:0'</span>):</span><br><span class="line">    <span class="comment"># something you want to do on CPU</span></span><br><span class="line"><span class="keyword">with</span> tf.device(<span class="string">'/gpu:0'</span>):</span><br><span class="line">    <span class="comment"># somethin you want to do on GPU</span></span><br></pre></td></tr></table></figure>
+<p>就我所知，TensorFlow 只能在创建的时候指明位置，而无法像 PyTorch 这般灵活的迁移。</p>
+<h2 id="Autograd"><a href="#Autograd" class="headerlink" title="Autograd"></a>Autograd</h2><p>自动求导已经是深度学习框架的必备了，首先，我们可以通过设置 Tensor 的 <code>.requires_grad</code> 参数来指明 Tensor 是否参与梯度运算，这和 TensorFlow 中的 <code>trainable</code> 是类似的；接着我们通过对某个对象（比如 loss ）函数进行 <code>.backward()</code> 操作，来进行反向梯度的计算，并且能够通过计算链上对象的 <code>.grad</code> 属性来获取到对应的梯度。拿官方的例子做一个简单的说明：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">x = torch.ones(<span class="number">2</span>, <span class="number">2</span>, requires_grad=<span class="keyword">True</span>) <span class="comment"># 声明 x，指明需要参加梯度的计算 x: 2x2 全 1</span></span><br><span class="line">y = x + <span class="number">2</span></span><br><span class="line">z = y * y * <span class="number">3</span> <span class="comment"># z = 3 * (x+2)^2</span></span><br><span class="line">out = z.mean()</span><br></pre></td></tr></table></figure>
+<p>梯度计算的过程如下：</p>
+<p>$ o =\frac{1}{4}\sum_i z_i$</p>
+<p>$ z_i = 3(x_i+2)^2 $</p>
+<p>$ z_i\bigr\rvert_{x_i=1} = 27 $</p>
+<p>$ \frac{\partial o}{\partial x_i} = \frac{3}{2}(x_i+2) $</p>
+<p>$  \frac{\partial o}{\partial x_i}\bigr\rvert_{x_i=1} = \frac{9}{2} = 4.5 $</p>
+<p>因此，<code>x.grad</code> 的值在我们对 <code>out</code> 进行 <code>out.backward()</code> 操作之后，结果为：</p>
+<blockquote>
+<p>tensor([[ 4.5000,  4.5000],</p>
+<p>​             [ 4.5000,  4.5000]])</p>
+</blockquote>
+<p><code>backward()</code> 函数的原型如下：</p>
+<blockquote>
+<p> torch.autograd.backward(<em>tensors</em>, <em>grad_tensors=None</em>, <em>retain_graph=None</em>, <em>create_graph=False</em>, <em>grad_variables=None</em>)</p>
+</blockquote>
+<p>其中第一个参数用来声明<strong>梯度的权重</strong>。如果目标函数是一个标量，则可以不传这个参数，比如上面的 <code>out.backward()</code> ，则默认权重为 <code>1</code> ，如果我们改成 <code>out.backward(torch.tensor(2,dtype=torch.float))</code> 则各个 $$x_i$$ 梯度就会变成原来的 2 倍，利用权重我们就可以来控制各个参数的更新速度。</p>
+<h2 id="Build-A-Neural-Network"><a href="#Build-A-Neural-Network" class="headerlink" title="Build  A Neural Network"></a>Build  A Neural Network</h2><p>学框架不搭一个 NN 来玩 MNIST 或者 CIFAR 怎么能叫入门呢？来来来，走一波~</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Net</span><span class="params">(nn.Module)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        super(Net, self).__init__()</span><br><span class="line">        self.conv1 = nn.Conv2d(<span class="number">3</span>, <span class="number">6</span>, <span class="number">5</span>) <span class="comment"># input 3 channels, output 6 channels , filter size = 5</span></span><br><span class="line">        self.conv2 = nn.Conv2d(<span class="number">6</span>, <span class="number">16</span>, <span class="number">5</span>) <span class="comment"># input 3 channels, output 16 channels, filter size = 5</span></span><br><span class="line">        <span class="comment"># Wx + b</span></span><br><span class="line">        self.fc1 = nn.Linear(<span class="number">16</span> * <span class="number">5</span> * <span class="number">5</span>, <span class="number">120</span>)</span><br><span class="line">        self.fc2 = nn.Linear(<span class="number">120</span>, <span class="number">84</span>)</span><br><span class="line">        self.fc3 = nn.Linear(<span class="number">84</span>, <span class="number">10</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span><span class="params">(self, x)</span>:</span></span><br><span class="line">        <span class="comment"># max pooling, window size : 2x2</span></span><br><span class="line">        x = F.max_pool2d(F.relu(self.conv1(x)), (<span class="number">2</span>, <span class="number">2</span>))</span><br><span class="line">        <span class="comment"># 如果是 方形的输入，window size 可以只用一个参数</span></span><br><span class="line">        x = F.max_pool2d(F.relu(self.conv2(x)), <span class="number">2</span>)</span><br><span class="line">        x = x.view(<span class="number">-1</span>, self.num_flat_features(x))</span><br><span class="line">        x = F.relu(self.fc1(x))</span><br><span class="line">        x = F.relu(self.fc2(x))</span><br><span class="line">        x = self.fc3(x)</span><br><span class="line">        <span class="keyword">return</span> x</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">num_flat_features</span><span class="params">(self, x)</span>:</span> <span class="comment"># 展平 x</span></span><br><span class="line">        size = x.size()[<span class="number">1</span>:]  <span class="comment"># 获取各个维度的大小，除了第一维 batch_size</span></span><br><span class="line">        num_features = <span class="number">1</span></span><br><span class="line">        <span class="keyword">for</span> s <span class="keyword">in</span> size:</span><br><span class="line">            num_features *= s</span><br><span class="line">        <span class="keyword">return</span> num_features</span><br></pre></td></tr></table></figure>
+<p>诶，有没有觉得有点像 Keras，不过高级的 API 用起来就是爽，不用写那么多代码2333，接下来就是定义 loss 和进行 backprop 来更新参数：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch.optim <span class="keyword">as</span> optim</span><br><span class="line"><span class="comment"># 定义 loss</span></span><br><span class="line">criterion = nn.CrossEntropy()</span><br><span class="line"><span class="comment"># 创建 optimizer</span></span><br><span class="line">optimizer = optim.SGD(net.parameters(), lr=<span class="number">0.01</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 在循环里不断进行如下操作：</span></span><br><span class="line">optimizer.zero_grad()   <span class="comment"># 清零梯度</span></span><br><span class="line">output = net(input)</span><br><span class="line">loss = criterion(output, target)</span><br><span class="line">loss.backward()</span><br><span class="line">optimizer.step()    <span class="comment"># 梯度更新</span></span><br></pre></td></tr></table></figure>
+<p>和 TensorFlow 的区别就在于，TensorFlow 的话只要我们用 <code>session.run(optimizer)</code> 就可以完成梯度的更新操作，而 PyTorch 则需要：</p>
+<ol>
+<li>Optimizer 清零梯度</li>
+<li>对 loss 进行手动的 <code>backward()</code> 操作</li>
+<li>Optimizer 更新 <code>.step()</code></li>
+</ol>
+<p>三步走，记住了没有！</p>
+<p>还有一点比较方便的是，和 Tensor 类似，我们可以使用 <code>Net.to()</code> 来把模型部署到 GPU 上：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">net.to(<span class="string">"cuda:0"</span>)</span><br></pre></td></tr></table></figure>
+<p>但是！记得要把你的输入也放到 GPU 上，不然就会报错：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">inputs, labels = inputs.to(device), labels.to(device) <span class="comment"># 把 input 和 label 同样迁移到 GPU 上</span></span><br></pre></td></tr></table></figure>
+<h2 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h2><p>初体验如果要给个评价的话，我觉得是比 TensorFlow 好很多（毕竟 TensorFlow 一上来的 Session、静态图会让人有点摸不着头脑）。但用什么框架其实都无所谓，就和语言一样，虽然争来争去，但每种语言都有自己的用武之地，以前我还会和室友争辩 Java 和 Python 谁才是最好的语言，现在就不会了（因为我也觉得 Python 好写一点，逃）。框架更不用说，TensorFlow 有他应用的工业场景（希望能早日接触到），PyTorch 现在看来也许更适合需要快速实现原型的科研人员。而我们能做的，就是多接触，横向比较着来看而不要因为自己擅长而蒙蔽了双眼，<strong>多学一技压身，总是没错的</strong>。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Deep Learning</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+
+      
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/06/30/Pytorch-Tutorial-Walkthrough/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Brief-overview-of-text-generation" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1107,117 +1233,6 @@
 
 
   
-    <article id="post-Actor-Critic" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/03/09/Actor-Critic/">Actor-Critic - A improvement of Policy Gradient</a>
-    </h1>
-  
-
-        
-        <a href="/2018/03/09/Actor-Critic/" class="archive-article-date">
-  	<time datetime="2018-03-09T13:59:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-09</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="Improvement-of-Policy-Gradient"><a href="#Improvement-of-Policy-Gradient" class="headerlink" title="Improvement of Policy Gradient"></a>Improvement of Policy Gradient</h2><p>上篇 Blog 中讲到，我们对于 Agent 参数的更新是基于 reward function 对最大似然 loss 加权得到的 Objective Function，这里有两个问题：</p>
-<ol>
-<li>reward function 需要在完整的一次 trajectory 后才能够计算，也就是说，是<strong>回合更新</strong>的。这样更新的频率更新就比较慢，相应地，训练就会缓慢一些。</li>
-<li>因为每次我们都是在当前的一个回合上计算 reward，但每次回合 Agent 所采取的策略都会有所不同，这样子就会导致我们的方差（variance）比较大。</li>
-</ol>
-<p>对于第一个问题，我们的解决方法是，根据每个 Agent 的每次 Action 进行参数的更新，也就是我们接下来要说的 Actor-Critic；第二个问题，也就是我们最好能够对所有的样本进行估计来计算我们的 reward（也就是 reward 的数学期望），以此来降低方差。</p>
-<p>具体地，我们可以采取以下几种 reward function:</p>
-<p><img src="/img/pg2.png" alt="Different Reward Function"></p>
-<p><em>图源自知乎，详见 Reference</em></p>
-<p>第一种也就是最为普通的 reward function，各步的累加；第二种则是不考虑先前步的 reward，这里有一个 casualty 的性质，即今天的参数更新是无法影响昨天以及之前获得的 reward的，因而可以只考虑今天之后的 reward；第三种则是加入了 baseline，在基准之上衡量 reward，能够更好地指示动作的好坏，基准一般会采取所有回合的 reward 均值。值得强调的是，这三种方式都是<strong>对 reward 的无偏估计 (unbiased)</strong>，但天上不会掉馅饼，尽管第二种第三种方式对第一种方式修改后 variance 有所降低，但整体的方差还是比较大的。</p>
-<p>而后面三种，则是希望通过<strong>再用一个 NN，来评估当前的状态能够获得 reward</strong>。这样的估计，必然是 biased 的，因为这个 NN 基本不可能是 Perfect 的；当然，这样做的好处就能够降低 variance，所以这是一个 trade off 的问题，后面三种的详细式子如下：</p>
-<p><img src="/img/value_fit.png" alt="Value Functions"></p>
-<p>Q 是对当前状态 $s_t$和采取的动作$a_t$能够获得的 reward 进行估计；而 V 仅仅考虑对状态 $s_t$ 能获得的 reward，也就是对于所有 $a_t$ 的 Q 的数学期望；A 又称 Advantage Function，是衡量 $a_t$ 好坏的一个指标，从 $ A= Q-V$ 就能看出来。那么问题来了，这三个函数彼此相互关联，我们用 Neural Network(NN) 来拟合哪一个呢？</p>
-<p>答案其实也已经在上面的那种图里了，通过一些约等式，我们能够通过拟合 $V^{\pi}(s)$ 来得到 Advantage Function，实际应用中主要就是采取 Advantage Function 作为对当前所采取动作的评估函数。</p>
-<h2 id="Actor-Critic-Network"><a href="#Actor-Critic-Network" class="headerlink" title="Actor Critic Network"></a>Actor Critic Network</h2><p>上面的 Advantage Function 起到的作用类似一个教练（或者说是批评家），对于我们的 Actor 当前的状态和采取的动作做出指示，帮助他更好的达到目标，这也就是 Actor-Critic 算法的名字由来。我个人对 AC 算法的认识就是基于对 Policy Gradient 的优化而得到的，Actor 就是我们之前谈到的 Policy，其核心就在于<strong>用 NN 来扮演这个 Critic 的角色</strong>。</p>
-<p>既然是 <code>NN fit V function</code>，那么训练集是什么呢？即<strong>我们如何根据当前的状态，来估计整个回合获得的 reward</strong>呢？这里有两种做法：</p>
-<ol>
-<li>Monte Carlo evaluation：蒙特卡洛搜索，就是对未来可能采取的动作进行搜索，计算获得的 reward</li>
-<li>通过 V 本身来计算，获得的 reward 等于当前这一动作能获得的 r 和下一状态用 V 估计值之和，即 $ reward = r(s_t, a_t) + V (s_{t+1})$ </li>
-</ol>
-<p><img src="/img/target.png" alt="Two methods of evaluation of V"></p>
-<p>一般我们都会采用第二种方法，也称为 <code>bootstrapped estimate</code>，由此，我们就可以构造出相应的 training data，用 NN 解决一个 regression 问题：</p>
-<p><img src="/img/critic.png" alt="Regression Problem">   </p>
-<h2 id="Program"><a href="#Program" class="headerlink" title="Program"></a>Program</h2><p>又到了喜闻乐见的代码实现部分，其实也简单，两个 NN 嘛，有点 GAN 的感觉。实际上，有论文将 Actor 和 Critic 两个 NN 整合成一个 NN，并且做出了不错的效果，好处就是能够共享特征(shared features)，不好的地方就是，训练可能不是很稳定。这次就不贴完整代码，上一篇 Blog 和这篇以及后续 RL 相关的代码都会上传到 <a href="https://github.com/TobiasLee/ReinforcementLearningPractice" target="_blank" rel="noopener">GitHub</a> 上，这里只讲解部分核心的函数。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Actor 类</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Actor</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, sess, n_features, n_actions, lr=<span class="number">1e-3</span>)</span>:</span> </span><br><span class="line">	<span class="comment"># 相应的初始化，创建 placeholder</span></span><br><span class="line">	<span class="comment"># 构建全连接层</span></span><br><span class="line">	<span class="comment"># 设置 Optimizer 等</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">learn</span><span class="params">(self, s, a, td)</span>:</span></span><br><span class="line">     <span class="comment"># 根据 state, action, td error(即 Advantage) 更新参数</span></span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">choose_action</span><span class="params">(self, s)</span>:</span> <span class="comment"># choose action based on the state</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Critic 类</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Critic</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, sess, n_features, lr=<span class="number">1e-2</span>, gamma=<span class="number">0.99</span>)</span>:</span></span><br><span class="line">        <span class="comment"># 初始化 </span></span><br><span class="line">	    <span class="comment"># 构建 NN，</span></span><br><span class="line">       </span><br><span class="line">        <span class="keyword">with</span> tf.variable_scope(<span class="string">"td_square_error"</span>): <span class="comment"># Regression problem </span></span><br><span class="line">            <span class="comment"># 这里我们同样加入了 discount factor</span></span><br><span class="line">            self.td_error = self.r + gamma * self.v_ - self.v</span><br><span class="line">            <span class="comment"># 用 square 作为 loss function</span></span><br><span class="line">            self.loss = tf.square(self.td_error)</span><br><span class="line">        <span class="comment"># 设置 Optimizer </span></span><br><span class="line">        <span class="keyword">with</span> tf.variable_scope(<span class="string">"train"</span>):</span><br><span class="line">            self.train_op = tf.train.AdamOptimizer(lr).minimize(self.loss)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">learn_state</span><span class="params">(self, s, r, s_)</span>:</span></span><br><span class="line">        <span class="comment"># advantage function A = r + V_t+1 - V_t</span></span><br><span class="line">        s, s_ = s[np.newaxis, :], s_[np.newaxis, :]</span><br><span class="line">        v_ = self.sess.run(self.v, &#123;self.s: s_&#125;) <span class="comment"># v_ : V_t+1</span></span><br><span class="line">        <span class="comment"># 根据 training data 更新 Critic</span></span><br><span class="line">        td_error, _ = self.sess.run(</span><br><span class="line">            [self.td_error, self.train_op],</span><br><span class="line">            &#123;self.s: s,self.r: r,self.v_: v_&#125;)</span><br><span class="line">        <span class="keyword">return</span> td_error</span><br></pre></td></tr></table></figure>
-<p>训练部分，和 Policy Gradient 大同小异：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">sess = tf.Session()</span><br><span class="line"><span class="comment"># 创建 Actor Critic 实例</span></span><br><span class="line">actor = Actor(sess, n_features=N_F, n_actions=N_A, lr=LR_A)</span><br><span class="line">critic = Critic(sess, n_features=N_F, gamma=GAMMA)</span><br><span class="line"></span><br><span class="line">sess.run(tf.global_variables_initializer())</span><br><span class="line"><span class="comment"># 训练 MAX_EPISODE </span></span><br><span class="line"><span class="keyword">for</span> i_episode <span class="keyword">in</span> range(MAX_EPISODE):</span><br><span class="line">    s = env.reset()</span><br><span class="line">    t = <span class="number">0</span></span><br><span class="line">    track_r = list()</span><br><span class="line">    <span class="keyword">while</span> <span class="keyword">True</span>:</span><br><span class="line">        <span class="keyword">if</span> RENDER: env.render()</span><br><span class="line">        a = actor.choose_action(s)</span><br><span class="line">        s_, r, done, info = env.step(a)</span><br><span class="line">        <span class="keyword">if</span> done:</span><br><span class="line">            r = <span class="number">-20</span></span><br><span class="line">        track_r.append(r)</span><br><span class="line">        <span class="comment"># critic learn td_error</span></span><br><span class="line">        td_error = critic.learn_state(s, r, s_)</span><br><span class="line">        <span class="comment"># actor update behave based on the td_error</span></span><br><span class="line">        actor.learn(s, a, td_error)</span><br><span class="line"></span><br><span class="line">        s = s_ <span class="comment"># update state</span></span><br><span class="line">        t += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> done:</span><br><span class="line">            <span class="comment"># if done or t &gt;= MAX_EP_STEPS:</span></span><br><span class="line">            ep_rs_sum = sum(track_r)</span><br><span class="line">            <span class="keyword">if</span> <span class="string">"running_reward"</span> <span class="keyword">not</span> <span class="keyword">in</span> globals():</span><br><span class="line">                running_reward = ep_rs_sum</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                running_reward = running_reward * <span class="number">0.95</span> + ep_rs_sum*<span class="number">0.05</span></span><br><span class="line">            <span class="keyword">if</span> running_reward &gt; DISPLAY_REWARD_THRESHOLD: <span class="comment"># render the game</span></span><br><span class="line">                RENDER = <span class="keyword">True</span></span><br><span class="line">            print(<span class="string">"episode :"</span>, i_episode, <span class="string">" reward: "</span>, int(running_reward))</span><br><span class="line">            <span class="keyword">break</span></span><br></pre></td></tr></table></figure>
-<p>最后，我们来看一下结果：</p>
-<p><img src="/img/ret.gif" alt="Result"></p>
-<p>一个很有趣的现象就是，第一次玩出界了，第二次能够在快出界的时候纠偏回来，性能确实比简单的 Policy Gradient 好很多。不过，这个训练似乎并不收敛，跑了 200 epoch 之后又会因为一次错误的尝试而导致后面一系列的错误… 果不其然是玄学啊。</p>
-<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><p><a href="https://zhuanlan.zhihu.com/p/29486661" target="_blank" rel="noopener">知乎- Actor-Critic 算法小结</a></p>
-<p><a href="https://www.youtube.com/watch?v=tWNpiNzWuO8&amp;index=4&amp;list=PLkFD6_40KJIznC9CDbVTjAF2oyt8_VAe3" target="_blank" rel="noopener">CS294-112 9/6/17</a></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Deep Learning</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Reinforcement Learning</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-
-      
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/03/09/Actor-Critic/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/4/">Next &raquo;</a>
@@ -1361,11 +1376,15 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1377,19 +1396,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">NLP</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Machine Learning</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1397,15 +1404,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">栈</a>
+                <a href="javascript:void(0)" class="js-tag color4">NLP</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1417,11 +1416,27 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">GAN</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">栈</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1441,11 +1456,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">SeqGAN</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Java</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">SeqGAN</a>
+                <a href="javascript:void(0)" class="js-tag color3">自定义View</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1465,6 +1484,10 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">ML</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">JVM</a>
               </li>
              
@@ -1473,23 +1496,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">ML</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">自定义View</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">爬虫</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Paper Notes</a>
+                <a href="javascript:void(0)" class="js-tag color4">Retrofit</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Retrofit</a>
+                <a href="javascript:void(0)" class="js-tag color2">Paper Notes</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1513,11 +1528,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Graph Neural Networks</a>
+                <a href="javascript:void(0)" class="js-tag color5">LSTM</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">LSTM</a>
+                <a href="javascript:void(0)" class="js-tag color2">Graph Neural Networks</a>
               </li>
              
               <li class="article-tag-list-item">
