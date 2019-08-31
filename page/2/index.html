@@ -179,6 +179,132 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-customized-RNN-cell" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/11/02/customized-RNN-cell/">定制 RNN Cell</a>
+    </h1>
+  
+
+        
+        <a href="/2018/11/02/customized-RNN-cell/" class="archive-article-date">
+  	<time datetime="2018-11-02T13:31:31.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-11-02</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>之前写过一篇 IndRNN 的文章，第一次照着开源代码实现了自己定制 RNN，其实也很简单，就是把 RNN 实现里的 <code>__call__</code> 函数进行修改，每一个时间步的全连接 <code>matmul</code> 改成 element-wise 的 <code>*</code> 即可，IndRNN 的<a href="https://github.com/batzner/indrnn" target="_blank" rel="noopener">GitHub</a>，是一个很不错的练手参考。最近做文本生成的时候遇到两个经典模型，在复现的时候同样是需要对 RNN 的结构进行改动，这篇文章就记录实现的一些细节。两个模型可以分成两类：在时间步的输入上进行操作和修改 Cell 内部结构。</p>
+<h2 id="Add-Extra-Input"><a href="#Add-Extra-Input" class="headerlink" title="Add Extra Input"></a>Add Extra Input</h2><p>第一个模型是 <a href="http://ir.hit.edu.cn/~xcfeng/xiaocheng%20Feng&#39;s%20Homepage_files/final-topic-essay-generation.pdf" target="_blank" rel="noopener">MTA-LSTM</a>，IJCAI 2018 的一篇关于主题写作的文章，也有开源<a href="https://github.com/hit-computer/MTA-LSTM" target="_blank" rel="noopener">实现</a>，但是因为其代码版本比较老，并且 inference 阶段的代码比较难并行无法和现有的 <code>seq2seq</code> 的接口结合使用。So，需求就是实现其代码并且尽可能地需要和<code>seq2seq</code> 接口符合以便于后续的使用。模型的结构如下：</p>
+<p><img src="/img/MTA-LSTM.png" alt="MTA-LSTM"></p>
+<p>论文的核心思想如下：</p>
+<ol>
+<li>根据主题词进行文章写作，利用 LSTM 作为生成器</li>
+<li>在每个时间步，将 Topic Word Embedding 和 Inputs 拼接在一起交给 LSTM 进行生成</li>
+<li>为了控制主题信息的流动，会维持一个 Coverage Vector，来表明哪些主题已经使用过哪些尚未被表达出来，从未让写出的文章主题信息更加明确</li>
+</ol>
+<p>我的实现版本代码已经放在了 <a href="https://github.com/TobiasLee/MTA-LSTM-TensorFlow" target="_blank" rel="noopener">GitHub</a>，下面主要记录一下实现的思路。</p>
+<p>首先明确一点，为了和现有的 <code>seq2seq</code> 接口匹配，必然是无法去修改 LSTM Cell 的 <code>__call__</code> 函数的，因为目前的 <code>dynamic_decode</code> 函数对其中的 <code>cell</code> 每一个时间步都会调用 <code>cell(inputs, state)</code> ，也即我们无法在函数参数列表中增加我们想要的额外的参数。怎么做呢？利用 <strong>Wrapper</strong>！类似装饰者模式，我们在 LSTM Cell 外面包上一层，通过这一层来对 LSTM 的输入进行操作。下面是代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MTAWrapper</span><span class="params">(RNNCell)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, cell, topic, v, uf, query_layer, memory_layer, mask=None, max_len=<span class="number">100</span>, attention_size=<span class="number">128</span>, state_is_tuple=True</span></span></span><br><span class="line"><span class="function"><span class="params">                 )</span>:</span></span><br><span class="line">		<span class="comment"># 实际的 LSTM 由 cell 完成</span></span><br><span class="line">        self._cell = cell</span><br><span class="line">        self.topic = topuc <span class="comment"># topic embedding</span></span><br><span class="line">        <span class="comment"># initilize coverage vector</span></span><br><span class="line">        self.coverage_vector = array_ops.ones([self.batch_size, self.num_keywords])</span><br><span class="line">        <span class="comment"># get some weight variables from params</span></span><br><span class="line">        <span class="comment"># compute res </span></span><br><span class="line">        res1 = tf.sigmoid(</span><br><span class="line">            tf.matmul(tf.reshape(self.topic, [self.batch_size, <span class="number">-1</span>]), self.u_f))  <span class="comment"># batch_size x num_keyword</span></span><br><span class="line">        self.phi_res = self.seq_len * res1  <span class="comment"># batch_size x num_keywords</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__call__</span><span class="params">(self, inputs, state, scope=None)</span>:</span></span><br><span class="line">        c_t, h_t = state  <span class="comment"># h_t batch_size x hidden_size</span></span><br><span class="line">        <span class="keyword">with</span> vs.variable_scope(<span class="string">"topic_attention"</span>):</span><br><span class="line">            <span class="comment"># Attention mechanism based on coverage vector to compute mt </span></span><br><span class="line">            <span class="comment"># update coverage vector</span></span><br><span class="line">            self.coverage_vector = self.coverage_vector - score / self.phi_res</span><br><span class="line">        <span class="keyword">return</span> self._cell(tf.concat([inputs, mt], axis=<span class="number">1</span>), state)</span><br></pre></td></tr></table></figure>
+<p>为了节约篇幅，省去一些代码，主要看两个部分：</p>
+<ol>
+<li><p><code>__init__</code> 函数：我们在这里传入了大量参数，其中包括了:</p>
+<ol>
+<li>cell：实际 RNN 的操作是由这个 LSTM cell 完成的，我们的 wrapper 只是夹在中间进行一些<strong>小小的修改</strong>。</li>
+<li>主题词的 embedding：这是每一步计算需要用到的信息，并且是固定。</li>
+<li>一些要使用到的 variable：为什么 variable 从外部传入而不是定义在 <code>__call__</code> 函数之内呢？<strong>因为  training 和 inference 阶段，我们会重新 wrap 一下我们的 cell</strong>，至于为什么，先按下不表。如果在内部定义的话，则 training 阶段学到的权重无法在 inference 阶段使用（其 name scope 是不一样的），inference 使用的依旧是初始化得到的权重，等于白学。</li>
+</ol>
+</li>
+<li><p><code>__call__</code> 函数：在这里我们进行每个时间步的 <code>mt</code> 的计算，并且将其和 inputs 进行拼接作为额外的信息，其中计算的细节就是对照公式进行实现的。这里有个坑需要谈一下：<strong>TensorFlow 不支持一个 Tensor 出现在多个 Loop 中</strong>。而如果我们之前不对 inference 阶段的 cell 重新进行包装的话，则 coverage vector 将会出现在 training 和 inference 的循环中，无法构建计算图。为此，我们才需要对 cell 进行重新 wrap：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">training_cell = MTAWrapper(self.decoder_cell, topic_embedded,  self.v, self.uf, self.query_layer, self.memory_layer, mask=masks)</span><br><span class="line">decoder_pt = tf.contrib.seq2seq.BasicDecoder( cell=training_cell, helper=helper_pt, initial_state=self.initial_state, output_layer=self.output_layer)</span><br><span class="line"><span class="comment"># 重新 wrap，并且把之前习得的 weight variable 通过构造函数传入</span></span><br><span class="line">infer_cell = MTAWrapper(self.decoder_cell, topic_embedded, self.v, self.uf, self.query_layer, self.memory_layer, mask=masks)</span><br><span class="line">decoder_i = tf.contrib.seq2seq.BasicDecoder( cell=infer_cell, helper=helper_i, initial_state=self.initial_state, output_layer=self.output_layer)</span><br></pre></td></tr></table></figure>
+<p>所以我们才会需要重新传入 weight variables。最后，计算完 <code>mt</code> 之后，直接拼接交给 <code>cell</code> 去调用每一时间步就 ok。</p>
+</li>
+</ol>
+<h2 id="Add-Extra-Gate"><a href="#Add-Extra-Gate" class="headerlink" title="Add Extra Gate"></a>Add Extra Gate</h2><p>对 LSTM 的结构进行修改，听着很有挑战性吧，这次不仅是要增加一个额外的输入，并且还需要添加一个额外的门来控制额外输入信息的流动。<a href="http://www.emnlp2015.org/proceedings/EMNLP/pdf/EMNLP199.pdf" target="_blank" rel="noopener">SC-LSTM</a> 是一篇发表在 EMNLP 2015 上的文章，也是做类似的主题生成问题，模型图如下：</p>
+<p><img src="/img/SC-LSTM.png" alt="SC-LSTM"></p>
+<p>这里的额外输入就是 action vector，一个 one-hot 的向量来表明主题信息，额外的 gate 就是图中的 $r_t$，其对输入的 action vector 根据当前的输入以及之前的 hidden state 计算一个值，控制 topic 信息的流动，最后这一信息经过 gate 之后会参与的新的 hidden state 的计算之中。这次，我们必须对 <code>__call__</code> 函数的进行修改了，因为不再是简单的输入拼接，<strong>而 LSTM 内部的 hidden state 的计算过程也需要依赖这个 action vector</strong>。先来看代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SCLSTM</span><span class="params">(BasicLSTMCell)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, kwd_voc_size, *args, **kwargs)</span>:</span></span><br><span class="line">        BasicLSTMCell.__init__(self, *args, **kwargs)</span><br><span class="line">        self.key_words_voc_size = kwd_voc_size</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__call__</span><span class="params">(self, inputs, state, d_act)</span>:</span></span><br><span class="line">        sigmoid = math_ops.sigmoid</span><br><span class="line">        one = constant_op.constant(<span class="number">1</span>, dtype=dtypes.int32)</span><br><span class="line">		<span class="comment"># parameters for tanh function</span></span><br><span class="line">        w_d = vs.get_variable(<span class="string">'w_d'</span>, [self.key_words_voc_size, self._num_units])</span><br><span class="line">        <span class="comment"># Parameters of gates are concatenated into one multiply for efficiency.</span></span><br><span class="line">        <span class="keyword">if</span> self._state_is_tuple:</span><br><span class="line">            c, h = state</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            c, h = array_ops.split(value=state, num_or_size_splits=<span class="number">2</span>, axis=one)</span><br><span class="line">        gate_inputs = math_ops.matmul(</span><br><span class="line">            array_ops.concat([inputs, h], <span class="number">1</span>), self._kernel)</span><br><span class="line">        gate_inputs = nn_ops.bias_add(gate_inputs, self._bias)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># i = input_gate, j = new_input, f = forget_gate, o = output_gate</span></span><br><span class="line">        i, j, f, o = array_ops.split(</span><br><span class="line">            value=gate_inputs, num_or_size_splits=<span class="number">4</span>, axis=one)</span><br><span class="line"></span><br><span class="line">        forget_bias_tensor = constant_op.constant(self._forget_bias, dtype=f.dtype)</span><br><span class="line"></span><br><span class="line">        add = math_ops.add</span><br><span class="line">        multiply = math_ops.multiply</span><br><span class="line">        <span class="comment"># add extra topic information to candidate calculation </span></span><br><span class="line">        new_c = add(add(multiply(c, sigmoid(add(f, forget_bias_tensor))),</span><br><span class="line">                        multiply(sigmoid(i), self._activation(j))),</span><br><span class="line">                    math_ops.tanh(math_ops.matmul(d_act, w_d)))</span><br><span class="line">        new_h = multiply(self._activation(new_c), sigmoid(o))</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> self._state_is_tuple:</span><br><span class="line">            new_state = LSTMStateTuple(new_c, new_h)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            new_state = array_ops.concat([new_c, new_h], <span class="number">1</span>)</span><br><span class="line">        <span class="keyword">return</span> new_h, new_state</span><br></pre></td></tr></table></figure>
+<p>其中的核心就是我们申请了一个额外的变量 <code>w_d</code>，并且在 candidate 的计算之中加上了一项额外的 <code>tanh</code> 项，这是和文章的公式对应的：</p>
+<p><img src="/img/cd_com.png" alt="Candidate Computation"></p>
+<p>但是修改了 LSTM Cell 的 <code>__call__</code> 函数之后，就和 seq2seq 接口不匹配了，依旧是借助 Wrapper 来实现接口的匹配，并且额外的 gate 也在 wrapper 中进行实现：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ActionWrapper</span><span class="params">(RNNCell)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, cell, action_vec, wr, hr)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> isinstance(cell, SC_DropoutWrapper) <span class="keyword">and</span> <span class="keyword">not</span> isinstance(cell, SCLSTM):</span><br><span class="line">            <span class="keyword">raise</span> TypeError(<span class="string">"The wrapper is only designed for SCLSTM."</span>)</span><br><span class="line">        self._cell = cell</span><br><span class="line">        self.action_vec = action_vec  <span class="comment"># initial one-hot action vector</span></span><br><span class="line">        self.wr = wr  <span class="comment"># [word_embedding_size, topic_size ]</span></span><br><span class="line">        self.hr = hr  <span class="comment"># [hidden_size, topic_size]</span></span><br><span class="line"></span><br><span class="line">	<span class="comment"># note: params only inputs and state</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__call__</span><span class="params">(self, inputs, state, scope=None)</span>:</span></span><br><span class="line">        ct, ht = state</span><br><span class="line">        <span class="comment"># compute sigmoid and update action vec</span></span><br><span class="line">        <span class="comment"># r_t = sigmoid( W_wr x_t + W_hr h_&#123;t-1&#125;)  = sigmoid(e1 + e2)</span></span><br><span class="line">        e1 = math_ops.matmul(inputs, self.wr)  <span class="comment"># [batch_size, topic_size]</span></span><br><span class="line">        e2 = math_ops.matmul(ht, self.hr)</span><br><span class="line">        r_t = math_ops.sigmoid(math_ops.add(e1, e2))  <span class="comment"># [batch_size, topic_size]</span></span><br><span class="line">        <span class="comment"># update action vector</span></span><br><span class="line">        self.action_vec = r_t * self.action_vec</span><br><span class="line">        <span class="keyword">return</span> self._cell(inputs, state, self.action_vec)</span><br></pre></td></tr></table></figure>
+<p> 和之前一样，在构造函数之中我们传入了 one-hot 的 action vector，并且获取一些 variables，理由和之前一样，<strong>action vector 每步都要更新，但是不能出现在两个循环之中</strong>。<code>__call__</code> 函数的结构和原先的 LSTM 保持一致，这样就能够和 seq2seq 的接口配合着使用，而在内部，根据文章的公式设置了一个 <code>r_t</code> 作为 gate 来控制 topic information：</p>
+<p><img src="/img/rt_formula.png" alt="r_t"></p>
+<p>使用的时候，同样地，我们可以通过使用 <code>ActionWrapper(SCLSTMCell(hidden_state))</code> 来进行使用。</p>
+<h2 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h2><p>至此，我们已经展现了如何利用 TensorFlow 的 <code>Wrapper</code> 对象来 RNN cell 功能的修改，同时能够通过接口参数的设计来让自定义的 RNN cell 和其他的 API 一起协作起来。这个 <code>Wrapper</code> 类，实际上就是装饰者模式的一种应用，一层一层地包裹住来增加功能并且能够屏蔽接口的不同。踩到的坑也就是在文中提到的：</p>
+<ol>
+<li>同一个 Tensor 对象不能出现在不同 Loop 中</li>
+<li>使用  Wrapper 对象的时候注意内部定义的 variable，可能需要通过外部传入来使学到的参数进入到后续的使用中（training 和 inference）</li>
+</ol>
+<p>复现这两篇 Paper 的过程中主要参考了 RNN 的<a href="https://github.com/tensorflow/tensorflow/blob/r1.11/tensorflow/python/ops/rnn_cell_impl.py" target="_blank" rel="noopener">源码</a>（似乎新旧版本的 API 还有不一样？），虽然之前也有读过，但自己写一遍又是不一样体验。希望以后多写写这样的代码~</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">TensorFlow</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">RNN</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">LSTM</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+
+      
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/11/02/customized-RNN-cell/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-one-more-autumn" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1073,124 +1199,6 @@
 
 
   
-    <article id="post-RaGAN-Notes" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/05/RaGAN-Notes/">RaSGAN Notes</a>
-    </h1>
-  
-
-        
-        <a href="/2018/07/05/RaGAN-Notes/" class="archive-article-date">
-  	<time datetime="2018-07-05T02:27:13.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-05</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>在机器之心上看到说 Goodfellow 给一篇刚上 arXiv 的 <a href="https://arxiv.org/abs/1807.00734" target="_blank" rel="noopener">The relativistic discriminator: a key element missing from standard GAN</a> 文章点了赞，就去看了眼，发现确实很有意思。</p>
-<h2 id="Intuition"><a href="#Intuition" class="headerlink" title="Intuition"></a>Intuition</h2><p>文章说标准的 GAN（SGAN） 在 Generator（下文用 G 代替） 生成的样本越来越逼真的时候 Discriminator 缺了个东西。什么呢？<strong>相对</strong>的概念，先来看下面这张图片：</p>
-<p><img src="/img/corgi_and_bread.png" alt="Corgis and Bread"></p>
-<p>可以看到，我们的 real data 是面包，fake data 是柯基（好萌啊2333)，$ C(x) $ 越大则说明是面包的概率越大。图中列出了三种情况：</p>
-<ol>
-<li>真的面包，真的柯基：这种情况二者的区别很明显，因而 $ P(bread |\bar C) = 1 $</li>
-<li>真的面包，柯基屁股（很像面包）：这种情况区别就没有第一种那么明显了，因而 $ P $ 有所下降</li>
-<li>像狗的面包，真的柯基：和第二种情况类似，<strong>相对的区别度</strong>降低了， $ P $ 同样有所下降</li>
-</ol>
-<p>有了一个模糊的印象之后，我们展开说说这个相对究竟是什么。</p>
-<h2 id="Arguments-of-RaGAN"><a href="#Arguments-of-RaGAN" class="headerlink" title="Arguments of RaGAN"></a>Arguments of RaGAN</h2><p><strong>相对</strong>，一言以蔽之：Discriminator（下文中用 D 代替）衡量样本真实性的时候，应该要<strong>同时</strong>利用 real data 和 fake data，衡量的由绝对的真假变成<strong>相对的为真或为假</strong>的概率。 作者从三个方面论述了其观点：</p>
-<h3 id="Priori-Knowledge"><a href="#Priori-Knowledge" class="headerlink" title="Priori Knowledge"></a>Priori Knowledge</h3><p><strong>先验知识</strong>的利用，即每次我们喂给 Discriminator（下文中用 D 代替） 的样本中，基本上是一半 real data，一半 fake（Generator generated）。也就是说，<strong>不知道这个前提的话</strong>，那么如果 G 生成的样本（比如说图片）能够以假乱真的话，那么 D 会认为所有的样本都是 real 的，而如果知道这个前提，那么当 fake 比 real 更 real 的时候，discrinimator 应该给 real samples 打低分（认为他们是 fake） 而不是认为所有的 samples 都是 real。因为在看到了更 real 的 fake samples 之后，相对地，利用先验知识，我们会认为不那么 real 的 samples（比如狗面包）是 fake 的。而 SGAN 的训练中并没有利用到这一部分先验知识。</p>
-<h3 id="Divergence-Optimization"><a href="#Divergence-Optimization" class="headerlink" title="Divergence Optimization"></a>Divergence Optimization</h3><p>我们知道，SGAN 在训练 D 的时候事实上是在 minimize 生成器分布和真实数据分布的 JS-Divergence，而 JS-Divergence 在两个分布相同时达到最小值，其表现是 D 无法区分 real data 和 fake data，认为其为真的概率均为 0.5；JS-Divergence 在两个分布差异较大的时候较大，即 D 认为 real data 为真的概率为 1，而认为 fake data 为真的概率为 0。理想的训练过程是如下 (C) 图所示：</p>
-<p><img src="/img/divergence_argument.png" alt="Divergence Optimization Process"></p>
-<p>但事实上，我们在训练的时候<strong>一味地希望生成的图片足够逼真</strong>，即一直在将 <code>D(fake_data)</code> 向 <code>1</code> 推，而不管 <code>D(real_data)</code>。这有做是达不到最小值的，这样的 optimization 过程是存在问题的，WGAN 论文中似乎也有提到这一点。</p>
-<h3 id="Gradient"><a href="#Gradient" class="headerlink" title="Gradient"></a>Gradient</h3><p>WGAN 等一系列对 GAN 做了改进的 GAN 被称为 IPM-based GAN，作者将其梯度和标准的 GAN 进行了对比：</p>
-<p><img src="/img/gradient_sgan.png" alt="SGAN Gradient"></p>
-<p>下面是 IPM-based GAN 的梯度：</p>
-<p><img src="/img/gradient_ipm.png" alt="IPM-based GAN Gradient"></p>
-<p>当下面这些条件满足的时候，两式相等：</p>
-<ol>
-<li>在训练 D 的时候，$ D(x_r) = 0, D(x_f) = 1 $ </li>
-<li>训练 G 的时候，$ D(x_f) = 0 $</li>
-<li>$C(x) \in \mathit{F}$，其中 $F$ 是一类实值函数（这个一般都能满足）</li>
-</ol>
-<p>考虑到 IPM-based GAN 相对于 SGAN 具有更好的稳定性，可以推断，如果将 SGAN 推向 IPM-based GAN，能够提高其稳定性。怎么才能达到这个转变呢？如果我们认为 D 足够好，即能够在训练 G 时做到认为 $D(x_r) = 1 \ and \  D(x_f) = 0 ​$（这是一个比较强的假设，但是在训练一开始是能够满足的），而在训练 D 的时候 $D(x_r) = D(x_f) = 1 ​$，如开头图片的 (b) 所示那种情况，那么唯一缺少的条件就是 $D(x_r) = 0 ​$。但是在 SGAN 中，$D(x_r)​$ 只跟 real data 有关，也即是<strong>绝对的真假</strong>，如果 G 生成的样本能够影响 $D(x_r)​$，让它变得不那么真实，也即<strong>相对的真假</strong>。这个时候，$D(x_r)​$ 才可能变成 0。总结起来一句话就是，在 $D(x_f)​$ 提升的时候 $D(x_r)​$ 相应地减少（这是一种相对的变化），这样 GAN 的训练才能更加稳定。</p>
-<h2 id="Methods"><a href="#Methods" class="headerlink" title="Methods"></a>Methods</h2><h3 id="Relativistic-GAN"><a href="#Relativistic-GAN" class="headerlink" title="Relativistic GAN"></a>Relativistic GAN</h3><p>如何把这种相对为真和为假的概率考虑进去？很简单，只要把 logits 做一个简单相减，即：</p>
-<p><img src="/img/relative_gan.png" alt="Relative Loss"></p>
-<p>这里用 <code>sigmoid</code> 函数将 logits 转化成概率，然后再取对数；我们可以很容易地把这个式子进行泛化，即用更一般的函数（不一定是似然函数）来替换它。</p>
-<h3 id="Relativistic-average-GAN"><a href="#Relativistic-average-GAN" class="headerlink" title="Relativistic average GAN"></a>Relativistic average GAN</h3><p>不过这个时候，我们发现 GAN 中 D 的功能已经悄然发生的改变，由原来的：<strong>衡量输入数据为真的概率</strong>，变成了输入的数据与其对立类型随机的一个样本（如果输入为 real data，那么衡量其比 fake data 更像真的概率，反之亦然）相比<strong>更</strong>像真的的概率。那么，更一般地，我们利用对立类型的<strong>平均真实度</strong>来作为更可靠的参照对象。</p>
-<p><img src="/img/ragan.png" alt="Relativistic average GAN"></p>
-<p>所谓平均真实度，就是对整个（或者一个 mini-batch）  real data 和 fake data 求其 $D(x)$ 的数学期望，这样的估计能够更加整体的反映训练在这一时刻生成器生成的 fake data 的真实程度。同样，我们可以轻易地将其泛化到别的函数之上。最后整个算法流程如下：</p>
-<p><img src="/img/algorithm_ragan.png" alt="Algorithm of RaGAN"></p>
-<h2 id="Toy-Demo"><a href="#Toy-Demo" class="headerlink" title="Toy Demo"></a>Toy Demo</h2><p>原作给了很多例子来说明 RaGAN 的效果，并且也提供了相应的<a href="https://github.com/AlexiaJM/RelativisticGAN" target="_blank" rel="noopener">代码</a>。这里我就拿 MNIST 做一个小小的 Demo，在原版的 GAN 的 demo 上做了一个很小的改动，就是把 loss 计算中的 logits 进行对应的相减。</p>
-<h3 id="Generator"><a href="#Generator" class="headerlink" title="Generator"></a>Generator</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Generator Net</span></span><br><span class="line">Z = tf.placeholder(tf.float32, shape=[<span class="keyword">None</span>, <span class="number">100</span>])</span><br><span class="line"></span><br><span class="line">G_W1 = tf.Variable(xavier_init([<span class="number">100</span>, <span class="number">128</span>]), name=<span class="string">"G_W1"</span>)</span><br><span class="line">G_W2 = tf.Variable(xavier_init([<span class="number">128</span>, <span class="number">784</span>]), name=<span class="string">"G_W2"</span>)</span><br><span class="line"></span><br><span class="line">G_b1 = tf.Variable(tf.zeros([<span class="number">128</span>]), name=<span class="string">"G_b1"</span>)</span><br><span class="line">G_b2 = tf.Variable(tf.zeros([<span class="number">784</span>]), name=<span class="string">"G_21"</span>)</span><br><span class="line"></span><br><span class="line">theta_G = [G_W1, G_W2, G_b1, G_b2]</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">generator</span><span class="params">(z)</span>:</span></span><br><span class="line">    G_h1 = tf.nn.relu(tf.matmul(z, G_W1) + G_b1)</span><br><span class="line">    G_log_prob = tf.matmul(G_h1, G_W2) + G_b2</span><br><span class="line">    G_prob = tf.nn.sigmoid(G_log_prob)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> G_prob</span><br></pre></td></tr></table></figure>
-<h3 id="Discriminator"><a href="#Discriminator" class="headerlink" title="Discriminator"></a>Discriminator</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Discriminator Net</span></span><br><span class="line">D_W1 = tf.Variable(xavier_init([<span class="number">784</span>, <span class="number">128</span>]), name=<span class="string">"D_W1"</span>)</span><br><span class="line">D_b1 = tf.Variable(tf.zeros(shape=[<span class="number">128</span>]), name=<span class="string">"D_b1"</span>)</span><br><span class="line"></span><br><span class="line">D_W2 = tf.Variable(xavier_init([<span class="number">128</span>, <span class="number">1</span>]), name=<span class="string">"D_W2"</span>)</span><br><span class="line">D_b2 = tf.Variable(tf.zeros(shape=[<span class="number">1</span>]), name=<span class="string">"D_b2"</span>)</span><br><span class="line"></span><br><span class="line">theta_D = [D_W1, D_W2, D_b1, D_b2]</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">discriminator</span><span class="params">(x)</span>:</span></span><br><span class="line">    D_h1 = tf.nn.relu(tf.matmul(x, D_W1) + D_b1)</span><br><span class="line">    D_logit = tf.matmul(D_h1, D_W2) + D_b2</span><br><span class="line">    D_prob = tf.nn.sigmoid(D_logit)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> D_prob, D_logit</span><br></pre></td></tr></table></figure>
-<h3 id="RaGAN"><a href="#RaGAN" class="headerlink" title="RaGAN"></a>RaGAN</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Ra GAN  simple version </span></span><br><span class="line">mnist = input_data.read_data_sets(<span class="string">'MNIST_data'</span>, one_hot=<span class="keyword">True</span>)</span><br><span class="line">X = tf.placeholder(tf.float32, shape=[<span class="keyword">None</span>, <span class="number">784</span>], name=<span class="string">"X"</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">G_sample = generator(Z)</span><br><span class="line">D_real, D_logit_real = discriminator(X)</span><br><span class="line">D_fake, D_logit_fake = discriminator(G_sample)</span><br><span class="line"><span class="comment"># discriminator </span></span><br><span class="line"><span class="comment"># log( real_logits - fake_logits)</span></span><br><span class="line">D_loss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=D_logit_real - D_logit_fake, labels=tf.ones_like(D_logit_fake)))</span><br><span class="line"></span><br><span class="line"><span class="comment"># generator loss</span></span><br><span class="line"><span class="comment"># log(fake_logits - real_logits )</span></span><br><span class="line">G_loss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=D_logit_fake - D_logit_real, labels=tf.ones_like(D_logit_fake)))</span><br><span class="line"></span><br><span class="line"><span class="comment"># optimizer</span></span><br><span class="line">D_solver = tf.train.AdamOptimizer().minimize(D_loss, var_list=theta_D)</span><br><span class="line">G_solver = tf.train.AdamOptimizer().minimize(G_loss, var_list=theta_G)</span><br></pre></td></tr></table></figure>
-<h3 id="Train"><a href="#Train" class="headerlink" title="Train"></a>Train</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sample_Z</span><span class="params">(m, n)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> np.random.uniform(<span class="number">-1.</span>, <span class="number">1.</span>, size=[m, n])</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">steps = <span class="number">1000001</span></span><br><span class="line">mb_size = <span class="number">128</span></span><br><span class="line">Z_dim = <span class="number">100</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">plot</span><span class="params">(samples)</span>:</span></span><br><span class="line">    fig = plt.figure(figsize=(<span class="number">4</span>, <span class="number">4</span>))</span><br><span class="line">    gs = gridspec.GridSpec(<span class="number">4</span>, <span class="number">4</span>)</span><br><span class="line">    gs.update(wspace=<span class="number">0.05</span>, hspace=<span class="number">0.05</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> i, sample <span class="keyword">in</span> enumerate(samples):</span><br><span class="line">        ax = plt.subplot(gs[i])</span><br><span class="line">        plt.axis(<span class="string">'off'</span>)</span><br><span class="line">        ax.set_xticklabels([])</span><br><span class="line">        ax.set_yticklabels([])</span><br><span class="line">        ax.set_aspect(<span class="string">'equal'</span>)</span><br><span class="line">        plt.imshow(sample.reshape(<span class="number">28</span>, <span class="number">28</span>), cmap=<span class="string">'Greys_r'</span>)</span><br><span class="line"></span><br><span class="line">    plt.show(block=<span class="keyword">False</span>)</span><br><span class="line">    <span class="keyword">return</span> fig</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> tf.Session() <span class="keyword">as</span> sess:</span><br><span class="line">    sess.run(tf.global_variables_initializer())</span><br><span class="line">    num = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(steps):</span><br><span class="line">        X_mb, _ = mnist.train.next_batch(mb_size)</span><br><span class="line">        </span><br><span class="line">        _, D_loss_curr = sess.run([D_solver, D_loss], feed_dict=&#123;</span><br><span class="line">            X: X_mb,</span><br><span class="line">            Z: sample_Z(mb_size, Z_dim)</span><br><span class="line">        &#125;)</span><br><span class="line">        <span class="comment"># 注意，这里的 feed_dict 和原来不一样了</span></span><br><span class="line">        _, G_loss_curr = sess.run([G_solver, G_loss], feed_dict=&#123;</span><br><span class="line">            X: X_mb, Z: sample_Z(mb_size, Z_dim)</span><br><span class="line">        &#125;)</span><br><span class="line">        <span class="comment"># 下面的 vanilla GAN 的 loss</span></span><br><span class="line">        <span class="comment"># _, G_loss_curr = sess.run([G_solver, G_loss], feed_dict=&#123;Z: sample_Z(mb_size, Z_dim)&#125;)</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> i % <span class="number">100</span> == <span class="number">0</span>:</span><br><span class="line">            print(<span class="string">"Step %d"</span> % i)</span><br><span class="line">            print(<span class="string">"G loss: %f"</span> % G_loss_curr)</span><br><span class="line">            print(<span class="string">"D loss: %f"</span> % D_loss_curr)</span><br><span class="line">            print()</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> i % <span class="number">1000</span> == <span class="number">0</span>:</span><br><span class="line">            samples = sess.run(G_sample, feed_dict=&#123;Z: sample_Z(<span class="number">16</span>, Z_dim)&#125;)</span><br><span class="line">            fig = plot(samples)</span><br><span class="line">            fname = <span class="string">'&#123;&#125;.png'</span>.format(str(num).zfill(<span class="number">5</span>))</span><br><span class="line">            plt.savefig(fname, bbox_inches=<span class="string">'tight'</span>)</span><br><span class="line">            print(<span class="string">'saved image '</span> + fname)</span><br><span class="line">            num += <span class="number">1</span></span><br><span class="line">            <span class="comment"># plt.clf()</span></span><br><span class="line">            plt.close(fig)</span><br></pre></td></tr></table></figure>
-<h2 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h2><p>GAN 的难训练是<strong>臭名昭著</strong>了，作者通过考虑引入相对这个概念来使得训练过程变得更加稳定。这类见微知著的工作，还有前不久的 IndRNN 真的非常符合我的胃口了。</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Deep Learning</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">GAN</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-
-      
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/07/05/RaGAN-Notes/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
@@ -1374,10 +1382,6 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
               </li>
              
@@ -1387,6 +1391,10 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">C</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1406,15 +1414,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">MediaCodec</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">OpenGL</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1478,15 +1486,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">LSTM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Compile Principle</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Course Notes</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">LSTM</a>
               </li>
              
               <li class="article-tag-list-item">

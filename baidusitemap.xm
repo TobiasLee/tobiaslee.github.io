@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://yoursite.com/2019/08/31/TG-framework-notes/</loc>
+    <lastmod>2019-08-31T15:08:21.635Z</lastmod>
+  </url>  <url>
     <loc>http://yoursite.com/2019/07/14/A-Long-Way-To-Go/</loc>
-    <lastmod>2019-07-14T15:00:40.559Z</lastmod>
+    <lastmod>2019-07-15T02:35:24.325Z</lastmod>
   </url>  <url>
     <loc>http://yoursite.com/2019/05/07/PGM-Notes/</loc>
     <lastmod>2019-07-12T02:06:22.815Z</lastmod>
