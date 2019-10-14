@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://yoursite.com/2019/10/02/meta-learning-notes/</loc>
+    <lastmod>2019-10-14T14:06:34.927Z</lastmod>
+  </url>  <url>
     <loc>http://yoursite.com/2019/08/31/TG-framework-notes/</loc>
     <lastmod>2019-08-31T15:08:21.635Z</lastmod>
   </url>  <url>
