@@ -21,7 +21,7 @@
 <meta property="og:image" content="http://yoursite.com/img/reptile.png">
 <meta property="og:image" content="http://yoursite.com/img/maml-nmt.png">
 <meta property="og:image" content="http://yoursite.com/img/william-mlc.png">
-<meta property="og:updated_time" content="2019-10-14T14:06:34.927Z">
+<meta property="og:updated_time" content="2019-10-31T04:27:44.044Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Meta-Learning：Learning to Learn and Applications">
 <meta name="twitter:description" content="Meta-Learning 是一个最近非常 promising 的方向，背后的 Learning to Learn 的思想在解决一些 Low-Resource / Few-shot 场景下的问题是非常有帮助的。因此，这篇文章就是 Meta-Learning 的学习笔记，同时因为我个人的研究方向，会讨论一些在 NLP 问题上的应用。 Meta-Learning首先，在了解 Meta-Learning">
@@ -218,8 +218,8 @@
 <p>接下来就是 Meta-Learning 的具体算法，主流算法可以分成三大类：</p>
 <ul>
 <li>Black-box Adaption：核心的思想就是学习一个神经网络，来从过去的任务中学习模型的参数，新的任务则会根据之前学到的参数进行预测。因为要不断地 consuming tasks，所以一般这个学习模型参数的模型一般会采用 RNN-based Model。带来的一个问题就是：<strong>Outputing all neural net parameters does not seem scalable</strong>，要预测一个神经网络的所有参数，是不具备可拓展性的，特别是现在动辄几个 M 的参数的网络。一个直接的解决方案就是输出一个 low-dimension 的 vector 来代表之前 task 的 context，再过一个 NN 来习得模型的参数。</li>
-<li>Non-parametric methods：或者说是 Metric-based，通过学一个度量 examples 之间的 metric，来利用之前的任务的信息，比如判断两张图片中的物体是不是同一个类别，一个很常规的方法就是训练一个 Siamese Network，得到各自的表示之后过一个 Distantce NN 再判断是否是同类。测试的时候就是利用 test exmaple 和其对应的 metric 进行比对，得到一个预测结果。主要的问题就是：一般受限与分类问题，以及对于 K 的泛化能力不是很好（比对所有的训练集，那么就是和 K 的大小成 linear 复杂度的）</li>
-<li>Optimization-based inference：主要就是 Chelsea Finn 提出的 Model Agnostic Meta Learning （MAML），下一节就详细地讲一讲 MAML。</li>
+<li>Non-parametric methods：或者说是 Metric-based，通过学一个度量 examples 之间的 metric，来利用之前的任务的信息，比如判断两张图片中的物体是不是同一个类别，一个很常规的方法就是训练一个 Siamese Network，得到各自的表示之后过一个 Distance NN 再判断是否是同类。测试的时候就是利用 test example 和其对应的 metric 进行比对，得到一个预测结果。主要的问题就是：一般受限与分类问题，以及对于 K 的泛化能力不是很好（比对所有的训练集，那么就是和 K 的大小成 linear 复杂度的）</li>
+<li>Optimization-based inference：主要就是 Chelsea Finn 提出的 Model Agnostic Meta-Learning （MAML），下一节就详细地讲一讲 MAML。</li>
 </ul>
 <h2 id="MAML"><a href="#MAML" class="headerlink" title="MAML"></a>MAML</h2><p>之前已经讲了 MAML 提出的动机，就是希望 Model 能够具备<strong>快速学习</strong>的能力，甚至是在没有见过的样本类别、并且只有少数几个样例的情况下。Chelsea Finn 给出的解决方案就是：</p>
 <ul>
@@ -247,13 +247,13 @@
 <h3 id="Pre-train-amp-Multi-Task-Learning"><a href="#Pre-train-amp-Multi-Task-Learning" class="headerlink" title="Pre-train &amp; Multi-Task Learning"></a>Pre-train &amp; Multi-Task Learning</h3><p>在学习的 MAML 过程中，会发现它背后的 idea 和目前盛行的 pre-train 很接近，他们都是去学一个初始化的参数，然后在下游的任务上进行 fine-tune；和 multi-task learning 也有些类似，那么它们的区别在哪呢？</p>
 <ul>
 <li>和 pre-train 的一个最大的区别在于：MAML 对于新 task 的 fit 能力更强，几步 gradient update 就能够获取一个比较好的性能 适合 few-shot learning 这样的 task，因为在一开始选取参数的时候，pre-train model 侧重的是 model 的表达能力，能够很好的</li>
-<li>而 Multi-Task Learning 可以看做是一个 zero-shot meta learning problem，也就是说，经过 multi-task 的 pre-training 之后，不再会有 N-way k-shot 的训练数据给你去 fine-tune 了</li>
+<li>而 Multi-Task Learning 可以看做是一个 zero-shot meta-learning problem，也就是说，经过 multi-task 的 pre-training 之后，不再会有 N-way k-shot 的训练数据给你去 fine-tune 了</li>
 </ul>
 <h2 id="Applications-in-NLP"><a href="#Applications-in-NLP" class="headerlink" title="Applications in NLP"></a>Applications in NLP</h2><p>MAML 在 RL 中四处开花之后，很自然就会想到，把这个 framework 运用到 NLP 中，特别是那些天然存在 few-shot 设置的场景，接下来就介绍几篇 MAML 在具体的一些 NLP 任务上的应用文章（所有的文章都在<a href="#References">参考文献</a>里可以找到链接）。</p>
 <p><strong>Meta-Learning for Low-Resource Neural Machine Translation</strong>:  EMNLP 2018 的文章，是 Meta-Learning 在 NMT 上的一次尝试，思路也很直接，机器翻译任务中存在着大量的语言，他们的语料因为使用范围、人数等原因本身就少，规模不大。那么，<strong>能不能利用富语料 e.g. En-De / Ch-En 做预训练，从而快速地 fit 小语料的翻译任务呢</strong>？套用 MAML 的框架，如果我们把每一个语言对视作是一种 task，那么只有少量数据的语言对的翻译就是 MAML 对应的 k-shot learning 问题，文章也给出了一个很直观的示意图：</p>
 <p><img src="/img/maml-nmt.png" alt="MAML for NMT"></p>
 <p>实验的结果就是 MAML 能够在目标的四个语言对上打败 Multi-task Learning 和 Transfer Learning。作者在 training 的时候设计了一项正则项以及使用 ealy-stopping 来避免 meta-update 造成的偏移太大，并且提出了一种 fine-tune 只更新部分 Module 的思路，<strong>怀疑这个方法面临的一个主要问题就是在 Meta-Learning 阶段，模型参数容易产生比较大的偏移，从而倾向于某一种 source task</strong>，进而在下游任务取得比较差的表现。</p>
-<p><strong>Personalizing Dialogue Agents via Meta-Learning</strong>: EMNLP 19, 短文。在 PersonaChat(ConvAI2) 上做的 perosna-chat 的实验，这篇文章把 Persona 看做是不同的 task，<strong>旨在不使用 Persona 的信息</strong>，仅仅通过用 MAML 来根据 dialog history，学习生产 personalied 的对话。生成的实验结果很有意思，在 BLEU 和 PPL 都没能超过普通的 Seq2Seq 方法，但是在 persona 的一致性和 Human-Evaluation 上超过了 Baseline。persona 一致性是通过一个预训练的分类器，判断对话是否和 persona 对应训练出来的。有点奇怪的是，PPL 和人类对 fluency 的评估结果是相反的。</p>
+<p><strong>Personalizing Dialogue Agents via Meta-Learning</strong>: EMNLP 19, 短文。在 PersonaChat(ConvAI2) 上做的 persona-chat 的实验，这篇文章把 Persona 看做是不同的 task，<strong>旨在不使用 Persona 的信息</strong>，仅仅通过用 MAML 来根据 dialog history，学习生产 personalized 的对话。生成的实验结果很有意思，在 BLEU 和 PPL 都没能超过普通的 Seq2Seq 方法，但是在 persona 的一致性和 Human-Evaluation 上超过了 Baseline。persona 一致性是通过一个预训练的分类器，判断对话是否和 persona 对应训练出来的。有点奇怪的是，PPL 和人类对 fluency 的评估结果是相反的。</p>
 <p><strong>Investigating Meta-Learning Algorithms for Low-Resource Natural Language Understanding Tasks</strong>：EMNLP 19 的一篇短文，如标题所说，主要是探究 MAML 在 NLU 任务上的应用。直接套框架，主要贡献在于比较了 MAML、FOMAML 以及 REPTILE 三种 MAML 算法的效果，并且对采样任务的方法（uniform/根据 dataset size 采样）做了探究。</p>
 <p><strong>Learning to Learn and Predict: A Meta-Learning Approach for Multi-Label Classification</strong>：EMNLP 19， 长文，这篇文章利用 Meta-Learning 的方式不再是学习初始化，而是之前的方式一：输出模型的参数。具体来说，是输出一个多标签分类器的 threshold 以及各个标签类别对于 loss function 的权重，motivation 在于：</p>
 <ul>
@@ -261,7 +261,7 @@
 <li>用 Meta-Learning 的思路，我们可以学习一个 classifier，而全部输出参数的话不太现实，这篇文章采用了输出两个值：分类的 threshold 以及不同 label 对于 loss function 的贡献度（权重）</li>
 </ul>
 <p><img src="/img/william-mlc.png" alt="Meta-Learning Multi-Label Classifier"></p>
-<p>需要解决的一个不可微分的问题（threshold 这里有个对梯度的截断），所以文章提出用 Policy gradient 的方法来训练这个 classifier，设计了一个跟预测的 threhold 以及 prediction label prob 的相关的 reward，具体请参考文章中的公式，一句话说就是分类正确并且和预测的 label 概率值和 prob threhold 差距越大，则 reward 越高，反之则会收到惩罚。</p>
+<p>需要解决的一个不可微分的问题（threshold 这里有个对梯度的截断），所以文章提出用 Policy gradient 的方法来训练这个 classifier，设计了一个跟预测的 threshold 以及 prediction label prob 的相关的 reward，具体请参考文章中的公式，一句话说就是分类正确并且和预测的 label 概率值和 prob threshold 差距越大，则 reward 越高，反之则会收到惩罚。</p>
 <h2 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h2><p>总结一下：</p>
 <ul>
 <li>MAML 或者说 Meta-Learning 还是有很大的应用空间的，因为具体的问题存在着很多 few-shot 的场景，如果真的有这样的需求，那么可以尝试一下 MAML</li>
@@ -373,6 +373,15 @@
 
   
 <nav id="article-nav">
+  
+    <a href="/2019/11/13/understanding-layernorm/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          NeurIPS 19-Understanding and Improving Layer Normalization
+        
+      </div>
+    </a>
   
   
     <a href="/2019/08/31/TG-framework-notes/" id="article-nav-older" class="article-nav-link-wrap">
@@ -532,6 +541,10 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Deep Learning</a>
               </li>
              
@@ -544,10 +557,6 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Android</a>
               </li>
              
@@ -556,11 +565,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">NLP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Machine Learning</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">NLP</a>
+                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -568,15 +581,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">C</a>
+                <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -585,6 +594,10 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">栈</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">C</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -597,10 +610,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">ACM</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -628,15 +637,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">LaTeX</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Python</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">JVM</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">LaTeX</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -660,11 +669,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Attention</a>
+                <a href="javascript:void(0)" class="js-tag color3">Seq2Seq</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Seq2Seq</a>
+                <a href="javascript:void(0)" class="js-tag color5">Attention</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -672,11 +681,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">RL</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">DL</a>
+                <a href="javascript:void(0)" class="js-tag color5">LSTM</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -692,11 +697,23 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">LSTM</a>
+                <a href="javascript:void(0)" class="js-tag color3">RL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">DL</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">View</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Transformer</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Layer Normalization</a>
               </li>
             
             <div class="clearfix"></div>
