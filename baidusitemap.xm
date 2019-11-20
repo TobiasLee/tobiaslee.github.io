@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>http://yoursite.com/2019/11/13/understanding-layernorm/</loc>
-    <lastmod>2019-11-20T08:03:57.122Z</lastmod>
+    <loc>http://yoursite.com/2019/11/21/understanding-layernorm/</loc>
+    <lastmod>2019-11-20T08:10:01.490Z</lastmod>
   </url>  <url>
     <loc>http://yoursite.com/2019/10/02/meta-learning-notes/</loc>
     <lastmod>2019-10-31T04:27:44.044Z</lastmod>
