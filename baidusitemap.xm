@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://yoursite.com/2019/12/31/my-golden-years/</loc>
+    <lastmod>2019-12-31T15:30:45.358Z</lastmod>
+  </url>  <url>
     <loc>http://yoursite.com/2019/11/21/understanding-layernorm/</loc>
-    <lastmod>2019-11-20T08:10:01.490Z</lastmod>
+    <lastmod>2019-11-20T13:48:17.050Z</lastmod>
   </url>  <url>
     <loc>http://yoursite.com/2019/10/02/meta-learning-notes/</loc>
-    <lastmod>2019-10-31T04:27:44.044Z</lastmod>
+    <lastmod>2019-10-31T04:27:44.045Z</lastmod>
   </url>  <url>
     <loc>http://yoursite.com/2019/08/31/TG-framework-notes/</loc>
     <lastmod>2019-08-31T15:08:21.635Z</lastmod>
@@ -14,7 +17,7 @@
     <lastmod>2019-07-15T02:35:24.325Z</lastmod>
   </url>  <url>
     <loc>http://yoursite.com/2019/05/07/PGM-Notes/</loc>
-    <lastmod>2019-07-12T02:06:22.815Z</lastmod>
+    <lastmod>2019-07-12T02:06:22.816Z</lastmod>
   </url>  <url>
     <loc>http://yoursite.com/2019/07/08/evolution-and-application-of-BERT/</loc>
     <lastmod>2019-07-09T03:27:44.685Z</lastmod>
@@ -23,13 +26,13 @@
     <lastmod>2019-04-12T14:14:53.765Z</lastmod>
   </url>  <url>
     <loc>http://yoursite.com/2019/02/23/what-I-learned-from-intership/</loc>
-    <lastmod>2019-03-13T04:05:18.671Z</lastmod>
+    <lastmod>2019-03-13T04:05:18.672Z</lastmod>
   </url>  <url>
     <loc>http://yoursite.com/2019/03/09/knowledge-paper-notes/</loc>
-    <lastmod>2019-03-09T08:32:42.621Z</lastmod>
+    <lastmod>2019-03-09T08:32:42.622Z</lastmod>
   </url>  <url>
     <loc>http://yoursite.com/2018/03/09/Actor-Critic/</loc>
-    <lastmod>2019-03-09T02:15:22.232Z</lastmod>
+    <lastmod>2019-03-09T02:15:22.233Z</lastmod>
   </url>  <url>
     <loc>http://yoursite.com/2019/01/15/compile-priciple-notes/</loc>
     <lastmod>2019-01-15T12:53:42.975Z</lastmod>
@@ -38,37 +41,37 @@
     <lastmod>2018-12-31T02:09:41.678Z</lastmod>
   </url>  <url>
     <loc>http://yoursite.com/2018/12/13/Start-from-Transformer/</loc>
-    <lastmod>2018-12-21T02:56:09.921Z</lastmod>
+    <lastmod>2018-12-21T02:56:09.922Z</lastmod>
   </url>  <url>
     <loc>http://yoursite.com/2018/08/10/Controllable-Text-Generation-Notes/</loc>
-    <lastmod>2018-12-21T02:26:10.570Z</lastmod>
+    <lastmod>2018-12-21T02:26:10.571Z</lastmod>
   </url>  <url>
     <loc>http://yoursite.com/2018/11/02/customized-RNN-cell/</loc>
     <lastmod>2018-11-03T00:33:17.349Z</lastmod>
   </url>  <url>
     <loc>http://yoursite.com/2018/10/21/one-more-autumn/</loc>
-    <lastmod>2018-10-21T12:06:47.008Z</lastmod>
+    <lastmod>2018-10-21T12:06:47.009Z</lastmod>
   </url>  <url>
     <loc>http://yoursite.com/2018/10/14/OS-IPC-Notes/</loc>
-    <lastmod>2018-10-14T11:52:16.414Z</lastmod>
+    <lastmod>2018-10-14T11:52:16.415Z</lastmod>
   </url>  <url>
     <loc>http://yoursite.com/2018/09/30/Text-Generation-with-GAN/</loc>
     <lastmod>2018-10-01T08:39:27.826Z</lastmod>
   </url>  <url>
     <loc>http://yoursite.com/2018/09/14/TensorFlow-Seq2Seq-%E8%B8%A9%E5%9D%91%E8%AE%B0/</loc>
-    <lastmod>2018-09-14T07:29:40.518Z</lastmod>
+    <lastmod>2018-09-14T07:29:40.519Z</lastmod>
   </url>  <url>
     <loc>http://yoursite.com/2018/09/01/Recent-Paper-Notes/</loc>
-    <lastmod>2018-09-01T12:42:52.574Z</lastmod>
+    <lastmod>2018-09-01T12:42:52.575Z</lastmod>
   </url>  <url>
     <loc>http://yoursite.com/2018/08/23/Generate-hip-pop-lyrcis-using-GAN/</loc>
     <lastmod>2018-08-25T07:16:30.851Z</lastmod>
   </url>  <url>
     <loc>http://yoursite.com/2018/08/24/My-sophomore-year/</loc>
-    <lastmod>2018-08-25T02:51:34.345Z</lastmod>
+    <lastmod>2018-08-25T02:51:34.346Z</lastmod>
   </url>  <url>
     <loc>http://yoursite.com/2018/07/29/DeeCamp-1st-Week-Feeling/</loc>
-    <lastmod>2018-07-29T07:41:12.786Z</lastmod>
+    <lastmod>2018-07-29T07:41:12.787Z</lastmod>
   </url>  <url>
     <loc>http://yoursite.com/2017/11/17/Sentence-preprocessing-skills/</loc>
     <lastmod>2018-07-28T07:02:29.106Z</lastmod>
@@ -77,22 +80,22 @@
     <lastmod>2018-07-24T10:22:31.342Z</lastmod>
   </url>  <url>
     <loc>http://yoursite.com/2018/06/30/Pytorch-Tutorial-Walkthrough/</loc>
-    <lastmod>2018-06-30T17:30:56.365Z</lastmod>
+    <lastmod>2018-06-30T17:30:56.366Z</lastmod>
   </url>  <url>
     <loc>http://yoursite.com/2018/06/09/Brief-overview-of-text-generation/</loc>
     <lastmod>2018-06-11T14:34:45.176Z</lastmod>
   </url>  <url>
     <loc>http://yoursite.com/2018/06/09/New-Stage/</loc>
-    <lastmod>2018-06-09T08:00:48.194Z</lastmod>
+    <lastmod>2018-06-09T08:00:48.195Z</lastmod>
   </url>  <url>
     <loc>http://yoursite.com/2018/05/13/Attention-Notes/</loc>
     <lastmod>2018-05-13T08:34:28.575Z</lastmod>
   </url>  <url>
     <loc>http://yoursite.com/2018/04/28/BPTT-notes/</loc>
-    <lastmod>2018-04-28T11:56:46.318Z</lastmod>
+    <lastmod>2018-04-28T11:56:46.319Z</lastmod>
   </url>  <url>
     <loc>http://yoursite.com/2018/04/19/IndRNN-Notes/</loc>
-    <lastmod>2018-04-28T08:25:02.369Z</lastmod>
+    <lastmod>2018-04-28T08:25:02.370Z</lastmod>
   </url>  <url>
     <loc>http://yoursite.com/2018/04/22/GAN-in-NLP-Notes/</loc>
     <lastmod>2018-04-23T14:41:01.793Z</lastmod>
@@ -104,19 +107,19 @@
     <lastmod>2018-04-19T15:25:05.842Z</lastmod>
   </url>  <url>
     <loc>http://yoursite.com/2018/04/03/How-to-Write-a-Paper/</loc>
-    <lastmod>2018-04-03T12:24:09.467Z</lastmod>
+    <lastmod>2018-04-03T12:24:09.468Z</lastmod>
   </url>  <url>
     <loc>http://yoursite.com/2018/03/06/Reinforcement-Learning1/</loc>
     <lastmod>2018-03-07T13:59:56.026Z</lastmod>
   </url>  <url>
     <loc>http://yoursite.com/2018/02/18/Taste-of-Paper/</loc>
-    <lastmod>2018-02-20T11:07:13.304Z</lastmod>
+    <lastmod>2018-02-20T11:07:13.305Z</lastmod>
   </url>  <url>
     <loc>http://yoursite.com/2018/02/02/Dynamic-Programming-Learning/</loc>
     <lastmod>2018-02-15T13:43:28.136Z</lastmod>
   </url>  <url>
     <loc>http://yoursite.com/2018/01/22/Latex-Learning/</loc>
-    <lastmod>2018-02-01T07:20:05.233Z</lastmod>
+    <lastmod>2018-02-01T07:20:05.234Z</lastmod>
   </url>  <url>
     <loc>http://yoursite.com/2017/12/29/Goodbye-2017-Hello-2018/</loc>
     <lastmod>2017-12-30T00:59:57.000Z</lastmod>
