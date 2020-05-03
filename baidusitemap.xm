@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://yoursite.com/2020/05/03/thoughts-under-covoid19/</loc>
+    <lastmod>2020-05-03T06:37:24.199Z</lastmod>
+  </url>  <url>
     <loc>http://yoursite.com/2019/12/31/my-golden-years/</loc>
     <lastmod>2019-12-31T15:30:45.358Z</lastmod>
   </url>  <url>
