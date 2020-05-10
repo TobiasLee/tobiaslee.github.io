@@ -6,19 +6,22 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>PythonLearning-Iterator | Stay Hungry,Stay Foolish.</title>
+  <title>编译原理课程总结 | Stay Hungry,Stay Foolish.</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="​    迭代器和生成器应该算是Python的黑魔法，一开始学习的时候还是感觉相当的迷糊的，这篇文章就记录一下学习生成器和迭代器的过程。 Iterator 迭代器首先问一个问题：迭代器是什么？   迭代协议：实现__next__()  方法的对象会前进到下一个结果，而在到达一系列结果的末尾时，会引发 StopIteration 异常 任何遵循上述迭代协议的对象，都被认为是迭代器 任何可迭代对象都能">
-<meta name="keywords" content="Python">
+  <meta name="description" content="本学期学习了编译原理，轮子哥口中的三大浪漫之一，复习期间写这篇文章作为梳理，并且把大作业的 Code 放到了 GitHub 上，希望对学弟学妹有所帮助（逃。 基本概念编译说白了就是翻译，把高级语言代码翻译成的机器能够执行的机器代码，主流有两种形式：编译器和解释器。前者将源程序翻译成目标程序后再进行运行，后者则是一遍翻译一遍执行。前者典型如 C++，执行效率高，后者如 Python，灵活性好但是效率">
+<meta name="keywords" content="Compile Principle,Course Notes">
 <meta property="og:type" content="article">
-<meta property="og:title" content="PythonLearning-Iterator">
-<meta property="og:url" content="http://yoursite.com/2017/05/28/PythonLearning-Iterator/index.html">
+<meta property="og:title" content="编译原理课程总结">
+<meta property="og:url" content="http://yoursite.com/2019/01/15/compile-principle-notes/index.html">
 <meta property="og:site_name" content="Stay Hungry,Stay Foolish.">
-<meta property="og:description" content="​    迭代器和生成器应该算是Python的黑魔法，一开始学习的时候还是感觉相当的迷糊的，这篇文章就记录一下学习生成器和迭代器的过程。 Iterator 迭代器首先问一个问题：迭代器是什么？   迭代协议：实现__next__()  方法的对象会前进到下一个结果，而在到达一系列结果的末尾时，会引发 StopIteration 异常 任何遵循上述迭代协议的对象，都被认为是迭代器 任何可迭代对象都能">
-<meta property="og:updated_time" content="2017-08-15T14:57:38.000Z">
+<meta property="og:description" content="本学期学习了编译原理，轮子哥口中的三大浪漫之一，复习期间写这篇文章作为梳理，并且把大作业的 Code 放到了 GitHub 上，希望对学弟学妹有所帮助（逃。 基本概念编译说白了就是翻译，把高级语言代码翻译成的机器能够执行的机器代码，主流有两种形式：编译器和解释器。前者将源程序翻译成目标程序后再进行运行，后者则是一遍翻译一遍执行。前者典型如 C++，执行效率高，后者如 Python，灵活性好但是效率">
+<meta property="og:image" content="http://yoursite.com/img/cfg.png">
+<meta property="og:image" content="http://yoursite.com/img/fxs.png">
+<meta property="og:updated_time" content="2020-05-10T03:16:51.028Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="PythonLearning-Iterator">
-<meta name="twitter:description" content="​    迭代器和生成器应该算是Python的黑魔法，一开始学习的时候还是感觉相当的迷糊的，这篇文章就记录一下学习生成器和迭代器的过程。 Iterator 迭代器首先问一个问题：迭代器是什么？   迭代协议：实现__next__()  方法的对象会前进到下一个结果，而在到达一系列结果的末尾时，会引发 StopIteration 异常 任何遵循上述迭代协议的对象，都被认为是迭代器 任何可迭代对象都能">
+<meta name="twitter:title" content="编译原理课程总结">
+<meta name="twitter:description" content="本学期学习了编译原理，轮子哥口中的三大浪漫之一，复习期间写这篇文章作为梳理，并且把大作业的 Code 放到了 GitHub 上，希望对学弟学妹有所帮助（逃。 基本概念编译说白了就是翻译，把高级语言代码翻译成的机器能够执行的机器代码，主流有两种形式：编译器和解释器。前者将源程序翻译成目标程序后再进行运行，后者则是一遍翻译一遍执行。前者典型如 C++，执行效率高，后者如 Python，灵活性好但是效率">
+<meta name="twitter:image" content="http://yoursite.com/img/cfg.png">
   
     <link rel="alternative" href="/atom.xml" title="Stay Hungry,Stay Foolish." type="application/atom+xml">
   
@@ -179,115 +182,99 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-PythonLearning-Iterator" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-compile-principle-notes" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      PythonLearning-Iterator
+      编译原理课程总结
     </h1>
   
 
         
-        <a href="/2017/05/28/PythonLearning-Iterator/" class="archive-article-date">
-  	<time datetime="2017-05-28T02:41:28.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-05-28</time>
+        <a href="/2019/01/15/compile-principle-notes/" class="archive-article-date">
+  	<time datetime="2019-01-15T09:13:14.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-01-15</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>​    迭代器和生成器应该算是Python的黑魔法，一开始学习的时候还是感觉相当的迷糊的，这篇文章就记录一下学习生成器和迭代器的过程。</p>
-<h2 id="Iterator-迭代器"><a href="#Iterator-迭代器" class="headerlink" title="Iterator 迭代器"></a>Iterator 迭代器</h2><p>首先问一个问题：迭代器是什么？</p>
-<blockquote>
-<ul>
-<li>迭代协议：实现<code>__next__()</code>  方法的对象会前进到下一个结果，而在到达一系列结果的末尾时，会引发 StopIteration 异常</li>
-<li>任何遵循上述迭代协议的对象，都被认为是迭代器</li>
-<li>任何可迭代对象都能通过 for 循环或其它迭代工具遍历。实际上，所有迭代工具内部都是在每次迭代中调用迭代器的 <strong>next</strong>() 方法，并通过捕捉 StopIteration 异常来确定何时离开</li>
-</ul>
-</blockquote>
-<p>但是在这个定义之前，我们其实已经在无数场合用过它了: </p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">my_list = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>]</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> my_list:</span><br><span class="line">    print(i)</span><br></pre></td></tr></table></figure>
+        <p>本学期学习了编译原理，轮子哥口中的三大浪漫之一，复习期间写这篇文章作为梳理，并且把大作业的 Code 放到了 GitHub 上，希望对学弟学妹有所帮助（逃。</p>
+<h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p>编译说白了就是翻译，把高级语言代码翻译成的机器能够执行的机器代码，主流有两种形式：编译器和解释器。前者将源程序翻译成目标程序后再进行运行，后者则是一遍翻译一遍执行。前者典型如 C++，执行效率高，后者如 Python，灵活性好但是效率有所逊色。但实际上，现在的大趋势就是编译和解释的融合，例如 Java 就是编译成字节码后进行由 JVM 来解释执行，带来良好的跨平台性，同时也引入 JIT（just in time）技术在 JVM 执行时提高程序运行的效率。</p>
+<p>编译大致可以分成如下几个阶段：词法分析、语法分析、语义分析、中间代码生成、代码优化以及目标代码生成，符号表管理和出错处理贯穿整个过程。如果把中间代码以前的阶段称之为前端，而其后的成为后端，便是另外一种角度下的编译器（分析/综合模式），而课程所涉及的也主要是前端部分，后端部分的优化事实上对程序有着重要的作用，希望以后有机会能进一步的探索。接下来就以课程所学的各个阶段为主线来梳理一下内容。</p>
 <a id="more"></a>
-<p>这里的for语句中的my_list，实际上是通过调用了Python的build-in function<code>iter()</code>获取到的一个迭代器对象。</p>
-<p>随后通过for循环，对它不断地执行迭代协议。</p>
-<p>所以我们可以通过实现<code>__iter__()</code>和<code>next()/__next__()</code>方法来手搓一个简单的迭代器：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyListIter</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, list_data)</span>:</span></span><br><span class="line">        <span class="comment"># 其迭代的内容来自于list_data 用一个list来维护</span></span><br><span class="line">        self.list_data = list_data</span><br><span class="line">        self.index = <span class="number">0</span></span><br><span class="line">	</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__iter__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> self</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__next__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="comment"># 迭代的计算发生在__next__函数中</span></span><br><span class="line">        <span class="keyword">if</span> self.index &lt; len(self.list_data):</span><br><span class="line">            <span class="comment"># 这里是把列表中的值取出作为返回值</span></span><br><span class="line">            val = self.list_data[self.index]</span><br><span class="line">            <span class="comment"># 下标增加 指向后一个元素</span></span><br><span class="line">            self.index += <span class="number">1</span></span><br><span class="line">            <span class="keyword">return</span> val</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">raise</span> StopIteration()</span><br></pre></td></tr></table></figure>
-<p>这里我们定义了一个简单的MyListIter对象，<strong>其<code>__iter__()</code>函数返回它自身</strong>，那么后续的迭代协议就是在<strong>调用它自身的<code>__next__()</code>方法</strong>。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">my_list = MyListIter([<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>])</span><br><span class="line">it = iter(my_list) <span class="comment"># 获取一个iterator对象 其实现了__next__()方法 这里就是它自己</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> it <span class="comment"># 写成 for i in my_list 也完全可以</span></span><br><span class="line">	print(i) <span class="comment"># 1 2 3</span></span><br><span class="line">print(next(it)) <span class="comment"># StopIteration 停止迭代 index = 3迭代器已经用完了</span></span><br></pre></td></tr></table></figure>
-<p>需要注意的一点是，因为这里我们的<code>__next__()</code>方法的实现其实是通过其自身下标指针这一成员，不断自增，来实现取得下一个元素的。</p>
-<p>所以当我们在for循环中使用过it进行过一次完整的从头到尾的迭代之后，index的值已经变成了3，再次调用next()方法就会出现<code>StopIteration</code>这一Exception。</p>
-<p><strong>很多迭代器的实现都是通过其内部成员的变化来实现迭代，所以迭代器基本就只能用一次，用完就无法再进行迭代了!</strong></p>
-<h2 id="Generator-和-yield"><a href="#Generator-和-yield" class="headerlink" title="Generator 和 yield"></a>Generator 和 yield</h2><p>问题：求无数多个素数，怎么实现？</p>
-<p>因为不可能存的下无数个素数，自然会想到迭代协议，不断的next计算出下一个素数并且返回，就好了。</p>
-<p>有个形象的比喻：</p>
-<blockquote>
-<p>有个人很喜欢吃M&amp;M豆，一天他想吃很多很多的M&amp;M豆，怎么办?</p>
-<p>非生成器的实现，就是把所有的M&amp;M豆交给他，可能堆积如山，甚至出现放不下的情况。</p>
-<p>而生成器就给了他一台可以生产M&amp;M豆的机器，上面有一个按钮，按一下(调用next()方法)，出一颗M&amp;M豆。</p>
-<p>这样就可以获得无穷多的M&amp;M豆了！</p>
-</blockquote>
-<p>​    可是，如果按照上面的MyListIter的实现，我内部需要持有一个成员来保存当前计算的数，可能还要重写两个方法，太麻烦了不是吗？</p>
-<p>​    这样实现很大的一个原因是因为<strong>传统的函数只有一次返回的机会，无法多次返回</strong>,而迭代就意味着我们需要保存当前的上下文，从而根据上一次的结果计算得到下一次，因而这里就用类的成员来作为这个上下文的记录者。</p>
-<p>​    有没有简单的一点的方法呢？</p>
-<p>​    Yes! 那就是<code>yield</code>关键字</p>
-<h3 id="yield"><a href="#yield" class="headerlink" title="yield"></a>yield</h3><p>yield关键字,能够让函数变成一个生成器，那么什么是生成器呢？</p>
-<blockquote>
-<ul>
-<li><p>Generator functions create generator iterators.</p>
-<p>生成器函数产生一个生成器迭代器</p>
-</li>
-<li><p>Generator iterator are almost always referred to as “generators”. </p>
-<p>生成器迭代器一般就叫做生成器</p>
-</li>
-<li><p>Just remember that a generator is a special type of iterator.</p>
-<p>生活器就是一种特别的迭代器</p>
-</li>
-<li><p>To be considered an iterator, generators must define a few methods, one of which is <strong>next</strong>().</p>
-<p>作为一种迭代器，生成器必须实现几个方法，包括next()</p>
-</li>
-</ul>
-</blockquote>
-<p>说白了，就是生成器和迭代器类似，是可以不断地对他调用next()函数，</p>
-<p>也可以应用在<code>for i in generator:</code>这样的语句之中的一种对象。</p>
-<p>yield关键字的作用和return类似，它返回一个值。</p>
-<p>但是！！！<strong>这个值的当前状态会被保存，而不同于普通函数结束之后内存会被回收掉</strong></p>
-<p>这就是生成器的作用了。</p>
-<p>其最核心的特点就是<strong>惰性计算</strong>，优点就是<strong>节省空间</strong>。</p>
-<p>来看一个例子:</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fibonacci</span><span class="params">()</span>:</span></span><br><span class="line">    prev, curr = <span class="number">0</span>, <span class="number">1</span></span><br><span class="line">    <span class="keyword">while</span> <span class="keyword">True</span>:</span><br><span class="line">        <span class="keyword">yield</span> curr</span><br><span class="line">        prev, curr = curr, prev + curr</span><br><span class="line">f = fibonacci() <span class="comment"># 得到一个生成器</span></span><br><span class="line">next(f) <span class="comment"># 1</span></span><br><span class="line">next(f) <span class="comment"># 1</span></span><br><span class="line">next(f) <span class="comment"># 2</span></span><br><span class="line">next(f) <span class="comment"># 4</span></span><br><span class="line"><span class="comment"># ...</span></span><br></pre></td></tr></table></figure>
-<p>在这里我们定义了一个<code>fibonacci()</code>函数，来求斐波那契数列，理论上，它可以求无限多个斐波那契。</p>
-<p>为什么呢？因为我们每计算出一个curr（当前的斐波那契数) 就通过yield关键字将它返回。</p>
-<p>我们通过<code>f = fibonacci()</code> 获取了一个生成器</p>
-<p>而当我们调用next(f)时，程序会在初始化prev和curr后会进入循环体，并且在yield关键字处返回curr的值并保存当前上下文，再下一次调用时会根据上下文从yield关键字之后继续执行。</p>
-<p>所以我们看到在不断执行next(f)会获得一个又一个的斐波那契数。</p>
-<p>那么回到我们一开始的那个问题，求无限个素数：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">is_prime</span><span class="params">(number)</span>:</span></span><br><span class="line">    <span class="string">'''判断素数函数'''</span></span><br><span class="line">    <span class="keyword">if</span> number &gt; <span class="number">1</span>:</span><br><span class="line">        <span class="keyword">if</span> number == <span class="number">2</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">True</span></span><br><span class="line">        <span class="keyword">if</span> number % <span class="number">2</span> == <span class="number">0</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line">        <span class="keyword">for</span> current <span class="keyword">in</span> range(<span class="number">3</span>, int(mat.sqrt(number) + <span class="number">1</span>), <span class="number">2</span>):</span><br><span class="line">            <span class="keyword">if</span> number % current == <span class="number">0</span>:</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">True</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_prime</span><span class="params">()</span>:</span></span><br><span class="line">    cnt = <span class="number">2</span></span><br><span class="line">    <span class="keyword">while</span> <span class="keyword">True</span>:</span><br><span class="line">        <span class="keyword">if</span>(is_prime(cnt)):</span><br><span class="line">            <span class="keyword">yield</span> cnt <span class="comment"># return cnt 并且保存其当前的值</span></span><br><span class="line">        cnt += <span class="number">1</span></span><br></pre></td></tr></table></figure>
-<p>​    总结一下的话，<strong>generator就是函数版的iterator，其通过yield关键字来实现迭代状态的保存，更加简洁</strong>。</p>
-<h2 id="Java中的Iterator-和-Iterable-接口"><a href="#Java中的Iterator-和-Iterable-接口" class="headerlink" title="Java中的Iterator 和 Iterable 接口"></a>Java中的Iterator 和 Iterable 接口</h2><p>其实我看到迭代器的第一反应就Java里的Iterator和Iterable这两个接口。</p>
-<p>接口定义:</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Iterable</span>&lt;<span class="title">T</span>&gt; </span>&#123;</span><br><span class="line">  <span class="function">Iterator&lt;T&gt; <span class="title">iterator</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Iterator</span>&lt;<span class="title">E</span>&gt; </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">boolean</span> <span class="title">hasNext</span><span class="params">()</span></span>;</span><br><span class="line">  <span class="function">E <span class="title">next</span><span class="params">()</span></span>;</span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">remove</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>两个接口有什么区别呢？</p>
-<blockquote>
-<p>An <code>Iterable</code> is a simple representation of a series of elements that can be iterated over. It does not have any iteration state such as a “current element”. Instead, it has one method that produces an <code>Iterator</code>.</p>
-<p>An <code>Iterator</code> is the object with iteration state. It lets you check if it has more elements using <code>hasNext()</code> and move to the next element (if any) using <code>next()</code>.</p>
-<p>Typically, an <code>Iterable</code> should be able to produce any number of valid <code>Iterator</code>s.</p>
-<p>摘自StackOverFlow</p>
-</blockquote>
-<p>实际上Java的两个接口的设计和Python的实现非常类似，</p>
-<p>实现了Iterable接口返回一个迭代器，而不在乎迭代器的内部实现（也就是iteration state的保存），甚至可能根据需求返回不同iterator。</p>
-<p>而在Iterator内部则需要实现<code>hasNext()</code>和<code>next()</code>这两个方法，用的很多的场合就是 <code>for-each loop</code>里面。</p>
-<p>看个简单的例子：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyIterator</span> <span class="keyword">implements</span> <span class="title">Iterator</span>&lt;<span class="title">Integer</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>[] myList;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> index;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MyIterator</span><span class="params">(<span class="keyword">int</span>[] myList)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.myList = myList;</span><br><span class="line">        <span class="keyword">this</span>.index = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">hasNext</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> index &lt; myList.length;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Integer <span class="title">next</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> myList[index++];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span>[] list = &#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>&#125;;</span><br><span class="line">        MyIterator myIterator = <span class="keyword">new</span> MyIterator(list);</span><br><span class="line">        <span class="keyword">while</span>(myIterator.hasNext()) &#123;</span><br><span class="line">            System.out.println(myIterator.next());</span><br><span class="line">          	<span class="comment">// 1 2 3</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>和Python非常的类似，只不过Java没有yield这种黑科技，不再赘述了。（Java代码真的长…)</p>
-<h2 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h2><ol>
-<li><strong>迭代器就是符合迭代协议的对象</strong></li>
-<li><strong>生成器是通过yield关键字来产生迭代器的函数</strong></li>
-<li><strong>Java中类似的实现的Iterator和Iterable接口</strong></li>
-<li><strong>多多纵向对比语言的实现，可以帮助更好的理解</strong></li>
+<h2 id="词法分析"><a href="#词法分析" class="headerlink" title="词法分析"></a>词法分析</h2><p>词法分析要做的就是把文本序列转换为我们所规定的记号（token），因此其主要工作如下：</p>
+<ol>
+<li>处理与平台相关的输入</li>
+<li>过滤程序中无用的部分，比如注释</li>
+<li>识别输入序列中的记号</li>
+<li>调用符号表管理程序和出错管理程序进行相关处理</li>
 </ol>
+<p>核心是第三点，而要识别文本序列中的记号，首先我们要定义规则，什么是合法的记号，然后想办法来识别它，这也就是老师常说的立法和执法。</p>
+<h3 id="立法：记号的组成"><a href="#立法：记号的组成" class="headerlink" title="立法：记号的组成"></a>立法：记号的组成</h3><p>规则：因为记号的组成一般是字符的线性组合，因此可以使用正则表达式来进行描述，这里就不对正则表达式做过多的展开。而这种规则又可以称为模式（pattern）</p>
+<p>记号：按照某个模式识别出的元素，一般是指一类，一般我们需要识别出记号的类别和其属性，常见的类别包括关键字、标识符、字面量以及特殊符号（+, - 等）</p>
+<p>单词（lexeme）：识别出元素自身的值</p>
+<p>举个例子，对于 C++ 中的关键字 <code>const</code> ，我们就需要识别出他的类别是关键字，而对于某个变量名 <code>count</code> 则要识别出类别为 <code>id</code> 并且其 lexeme 为 <code>count</code> 以便后续的符号表登记操作。</p>
+<h3 id="执法：识别记号"><a href="#执法：识别记号" class="headerlink" title="执法：识别记号"></a>执法：识别记号</h3><p>我们使用有限自动机来识别记号，Why？先来看看自动机 M 的组成：$M = (S, \Sigma, move, s_0, F) $，这个五元组的组成：</p>
+<ol>
+<li>$S$：有限个状态的集合</li>
+<li>$\Sigma$：有限个输入字符的集合</li>
+<li>$move$：状态转移函数，表明某个状态在接收到某个字符会转向下一个状态</li>
+<li>$s_0$：唯一的初始状态</li>
+<li>$F$：终态集，代表了可以接受的状态的集合</li>
+</ol>
+<p>自动机是一种很好用的工具，根据状态转移来一步一步地建模问题。记号识别正好契合了这种方法，比如你要识别一个邮件的地址，你拿着对应的正则表达式，先识别一系列的字符组合，关键是其中的<code>@</code> 符号，最后再来形如 <code>qq.com</code> 的后缀完成识别。</p>
+<p>有限自动机根据其状态转移函数是否是一对多的，也即同在某个状态下，对于同一个输入字符是否有多个可能的下一状态，分成不确定的有限自动机（NFA）和确定的有限自动机（DFA）。而自动机的编程实现是很简单的，每次读一个字符进行，根据状态转移函数进行状态转移，循环往复执行到最后一个输入即可。而 NFA 因其的不确定性会带来大量的回溯，一般我们都会将其确定化后形成一个 DFA 来进行实现，确定化的方法不展开，核心就是一句话：<strong>把状态转移拓展为状态集转移，把状态集之间的转移作为 DFA</strong>。</p>
+<p>有了正则表达式和自动机，怎么把他们连起来做记号的识别呢？Thompson 可以完成正规式到 NFA 的转换，而再通过确定化 NFA 得到 DFA 即可完成记号的识别。</p>
+<h2 id="语法分析"><a href="#语法分析" class="headerlink" title="语法分析"></a>语法分析</h2><p>有了词法分析的记号流之后，我们便要从记号流之中提取程序的语言结构，而一般会通过一颗树来表示语言的结构（在 NLP 中一般也是这么干的），这棵树我们称之为语法树；除了提供语法树给下一阶段语义分析以外，语法分析还需要检查一下语法错误，比如我们经常会漏的括号等。对于错误处理，这里对可能出现的错误简单做一下分类：</p>
+<ol>
+<li>词法错误：不符合构词规则，一般在词法分析阶段发现</li>
+<li>语法错误：语法结构出错，不成句，例如缺少括号等</li>
+<li>静态语义错误：类型不一致，参数不匹配等</li>
+<li>动态语义错误：死循环，除数为 0 是常见的动态语义错误</li>
+</ol>
+<p>从错误中恢复是比较困难的，因此这里不再展开，而实现的时候一般直接报错，并且指出哪里出错即可。回到语法分析，我们还是需要关注亮点：如何描述语言的结构（立法）和有了规则之后如何识别。</p>
+<h3 id="立法：上下文无关文法"><a href="#立法：上下文无关文法" class="headerlink" title="立法：上下文无关文法"></a>立法：上下文无关文法</h3><p>语言是非常复杂的结构，否则自然语言处理也不会被称为人工智能皇冠上的明珠了，其中包含很多的非线性结构，好在程序语言相对来说更加的精确，我们能够通过形式化的方式来描述它。常用的便是上下文无关文法（Context Free Grammar，CFG），它是一个四元组 $G = (S, N, T, P)$：</p>
+<ol>
+<li>S：开始符号，所有的句子都从这里开始（Start）</li>
+<li>N：非终结符的有限集合</li>
+<li>T：终结符的有限集合</li>
+<li>P：产生式的有限集合，其形式为 $A\rightarrow\alpha$，$A \in N$ 以及 $\alpha \in N \cup T \cup {\epsilon} $</li>
+</ol>
+<p>其中对于 N 和 T 我的理解是：T 是最终我们能在记号流中见到的所有记号的类别，而 N 是描述语言产生时的中间结构，比如常见的运算就可以表示成下面这张图：</p>
+<p><img src="/img/cfg.png" alt="CFG Example"></p>
+<p>有了 CFG 以后，语言是怎么产生的呢？推导，也即利用产生式的右部替换产生式的左部，最终将所有的 N 都换成了 T，得到一个<strong>句子</strong>，其中推导的时候如果每次都替换最左边的非终结符，就成为最左推导，同理有最右推导，也被称之为规范推导；推导各个步骤中的中间结果称为句型。To be honest，我觉得<strong>这些概念没什么记忆的必要，纯粹是为了应付考试，了解大概意思即可</strong>。</p>
+<p>推导中对于非终结符的替换的选择不是唯一的，因此同一个句子可能得到两颗不一样的语法树，这就是文法的二义性。<strong>其本质是文法对优先级和结合性缺少定义</strong>。如之前的 NFA 一样，我们不喜欢二义性，消除二义性的方法就是加入优先级和结合性的信息来改写文法。但消除二义性后的文化书写起来比较麻烦，并且因为引入了额外的信息，树的高度变高，也给后续的带来额外的负担。</p>
+<p>此外，再对文法做一些展开。和前面的正则表达式相比，CFG 的表达能力是更强的，也即能够描述更丰富的结构，比 CFG 更强的有 CSG（上下文有关文法），一个很明显的例子就是计数问题，正规表达式无法表示有两个相同数量的字母句子，而 CFG 可以，CSG 进一步地可以表示三个相同数量的字母的句子。</p>
+<h3 id="执法：识别语言结构"><a href="#执法：识别语言结构" class="headerlink" title="执法：识别语言结构"></a>执法：识别语言结构</h3><p>有了规则，下一步就是怎么做，方法大致分成两类：自上而下和自下而上。</p>
+<h4 id="自上而下"><a href="#自上而下" class="headerlink" title="自上而下"></a>自上而下</h4><p>自上而下分析的核心就是模拟推导的过程，对于任何一个输入序列 $\omega$，从开始符号 $S$  进行推导，试探着对 $\omega$ 进行匹配。在模拟这一过程之前，我们需要对文法做一些改动，主要包括：消除左递归和消除左因子，避免带来的递归调用爆栈以及回溯。</p>
+<p>修改好文法之后，我们就可以来编程了，利用简化的文法写出 DFA，来暴力实现。这种方法称之为递归下降子程序法，适合手动编写简单的语言解释器，我们的大作业便是采用这种方法，但不适合大型的项目和自动生成。因此我们还有另外一种方法：预测分析器。</p>
+<p>预测分析器使用一个下推自动机，就是带有数据栈的有限自动机来完成推导的过程。工作方式就是从初始的某个格局开始，经过一系列变化达到最终格局，如果是接收格局那么就 ok 否则报错。格局是一个三元组：（栈内容，当前剩余输入，改变格局的动作）。改变格局的动作分为三类：</p>
+<ol>
+<li>匹配终结符：从当前剩余输入中拿出一个终结符吃掉</li>
+<li>展开非终结符：模拟推导的过程</li>
+<li>成功接收 / 出错</li>
+</ol>
+<p>这里的核心是一张预测分析表，来指导下推自动机的工作。预测分析表说的就是：当你栈顶的非终结符看到一个终结符的时候你应该转向哪一个状态（或者说进行哪一步推导）。而如何确定，则是通过计算非终结符的 FIRST 和 FOLLOW 集合来完成这张表的填写，简单来说，FIRST 集合中是该非终结符推导出的所有句子的起始终结符，而 FOLLOW 集合中则是紧跟着该非终结符的终结符，具体的细节也不再赘述。</p>
+<h4 id="自下而上"><a href="#自下而上" class="headerlink" title="自下而上"></a>自下而上</h4><p>自上而下的思路是模拟推导，从开始符号开始，把非终结符展开，最终得到一个完整的句子；那么反过来，从句子出发，不断地进行推导的逆过程——归约（将终结符变为非终结符），最终得到一个开始符号，也是一种可行的方法。因此，移进-归约分析应运而生。</p>
+<p>还是借助一个下推自动机，运用格局和一张分析表来驱动语言结构的识别，关键就在于我怎么知道什么时候该进行归约？又该归约成什么非终结符？</p>
+<p><strong>归约</strong>（reduce）是推导的逆过程，而如果将某个句型（或则是句子）的分析树画出来，我们可以发现：</p>
+<p><img src="/img/fxs.png" alt="分析树"></p>
+<p>每次归约，就是把一个子树的叶子节点减掉，而为了规范，我们一般从最左边的最小子树（高度为2）的开始，这个操作就是<strong>剪句柄</strong>。想想一下最右推导，我们最后才会把最左边的非终结符展开成终结符，而剪句柄，则是每次都把句子的最左边归约成一个非终结符。<strong>最右推导和最左归约互为逆过程，也正好是自上而下和自下而上的体现</strong>。</p>
+<p>回到归约的下推自动机，其格局类似之前的预测分析器，只不过改变格局的动作由匹配终结符和展开非终结符换成对应的移进和归约。但是还是那两个问题，我怎么知道我现在该移进还是规约？这张分析表的构造的核心在于<strong>识别活前缀</strong>，即某个句型的开头序列是什么。而要识别活前缀，还是要需要我们的老朋友 DFA 以及项目（<strong>带有已经见到部分标记的产生式</strong>）来完成。这里不再展开，因为我觉得这个属于技术细节，核心的东西在于前面的思想，搞清楚了思想剩下的就是模拟机器执行的过程，没必要过于纠结。</p>
+<h2 id="语义分析"><a href="#语义分析" class="headerlink" title="语义分析"></a>语义分析</h2><p>拿到了语法分析产生的语法树，到了语义分析阶段我们就可以<del>为所欲为</del>做一些跟最终结果相关的工作了。而对于一个解释器来说，在拿到语法树之后，就可以执行相应的语义动作了，这也是我们在最终大作业<strong><a href="https://github.com/TobiasLee/Draw-Language-Interpreter" target="_blank" rel="noopener">一个简单绘图语言的解释器</a></strong>中所采用的做法，就是把对应的图给画出来。</p>
+<p>一般的编译器在语义分析阶段需要完成的工作是：检测表达的语义是否合法以及执行相应的语义动作——生成中间代码。</p>
+<p>中间代码，前面也提到了，是连接前端和后端的桥梁。主要的形式有树、后缀式以及三地址码。树和后缀式之前在数据结构都有接触过，而三地址码则是形如 <code>a := 1</code> 这样形式的代码，和汇编非常的接近，一般可以用一个四元组 <code>(op, arg1, arg2, result)</code> 来表示，拿 <code>a = 1 + 2</code> 来说，就会生成 <code>(+, 1, 2, T1)</code> 以及 <code>(:=, , T1, T2)</code>  这样两条代码。同样的还有三元组，把存放结果的第四个 <code>result</code> 参数省略而通过三元式的位置来确定存储位置，毫无疑问，这样做会给后面的代码优化带来很大的麻烦，因此多用四元式。</p>
+<p>执行语义动作除了生成中间代码以外，一般还会在对应的文法符号（比如非终结符上）记录一些信息，称作属性。属性可以分为继承属性和综合属性，前者需要父结构的信息，而后者需要子结构的信息。属性的计算方案根据抽象程度不同可以分为<strong>语法制导定义</strong>和<strong>翻译方案</strong>，这二者就类似算法和具体的代码，前者是一个框架流程，后者则是关系到具体的平台和语言实现。</p>
+<p>总的来说，语义分析做的事情就是拿着语法树执行动作，而还有一些内容比较零散，我就挑一些我觉得比较重要的来说。</p>
+<h3 id="嵌套"><a href="#嵌套" class="headerlink" title="嵌套"></a>嵌套</h3><p>变量或者过程嵌套的原则：静态作用域原则和就近嵌套原则。这两个原则其实我们已经很习惯了，但单独拿出来说是想说明一下实现的思路。<strong>栈</strong>，后进先出，和这个嵌套的关系刚好契合，每次我们遇到一个作用域和其中的变量（过程同理），就可以把它压栈，查找的时候沿着栈顶向里查找即可。</p>
+<h3 id="过程调用方式"><a href="#过程调用方式" class="headerlink" title="过程调用方式"></a>过程调用方式</h3><p>这就是我们之前经常遇到的 C 语言中的 <code>swap</code> 函数遇到的问题：值传递还是引用传递。在编译原理中，我们强调了<strong>左值</strong>和<strong>右值</strong>的区别，左值是一个有存储空间的变量，是一个容器，而右值则是内容，比如常见的字面量 1、123。值传递是右值的传递（将实参的内容交给形参），引用传递则是左值（将实参的地址填到形参的地址中），所以后者在函数/过程内部修改形参也会对实参产生影响。此外复写-调用方式是二者的一个结合，在函数体内部是值传递，而在函数返回的时候会把形参的值传回的实参。</p>
+<h3 id="拉链-回填技术"><a href="#拉链-回填技术" class="headerlink" title="拉链-回填技术"></a>拉链-回填技术</h3><p>在翻译一些控制语句的时候，例如 if / while 等，我们需要考虑的一个核心问题就是：下一条在哪里？例如，对于 <code>if x &gt; 0 then x := a + 1 else x := 2</code> 这样一条语句，在一遍自上而下的扫描的过程中，我们看到当前的语句 <code>if x &gt; 0</code> 能确定的是条件为真时要转向 <code>then x:= a + 1</code>  （可以认为是紧接着的下一条指令），但是为假的出口并不能马上确定，因为<strong>then 语句中可能做很多操作，不是简单的下一条</strong>，必须要到我们看到 <code>else</code> 的时候才能确定。而延迟这种条件转向语句的填写的技术就是拉链回填技术。说白了，就是我现在不知道，先记着，到了合适的时候再回过头来的填之前的漏。而<strong>如何设计回填的时机</strong>是比较 tricky 的，比如前面的看到 <code>else</code> 我们就知道这里可能需要回填一波之前的条件为假的出口，设计的时候需要仔细的考虑。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>一开始学编译原理，觉得是非常高大上的一门课，而随着抽丝剥茧把前端各个阶段分开来，一点一点学起来，还是非常有趣的。并且亲手写了一个简单的解释器，成就感还是爆棚的。此外，也切实感受到软件工程的重要性，如果不能够把任务分解成可实现的小块，而是一上来丢给你一个<strong>写一个解释器</strong>的大目标，是很难有信心完成它的。</p>
+<p>另外，明天就考试了，祝自己好运！</p>
 
       
 
@@ -301,7 +288,11 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Python</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Compile Principle</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Course Notes</a>
         		</li>
       		
 		</ul>
@@ -359,7 +350,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2017/05/28/PythonLearning-Iterator/" alt="微信分享二维码">
+      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2019/01/15/compile-principle-notes/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -373,18 +364,18 @@
   
 <nav id="article-nav">
   
-    <a href="/2017/06/05/Android-Scroll学习笔记/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2019/02/23/what-I-learned-from-intership/" id="article-nav-newer" class="article-nav-link-wrap">
       <i class="icon-circle-left"></i>
       <div class="article-nav-title">
         
-          Android Scroll学习笔记
+          革命尚未成功，同志仍需努力
         
       </div>
     </a>
   
   
-    <a href="/2017/05/21/Python爬虫学习-1/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">Python爬虫学习-1</div>
+    <a href="/2018/12/31/2018-summary/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Goodbye 2018，Hello 2019</div>
       <i class="icon-circle-right"></i>
     </a>
   

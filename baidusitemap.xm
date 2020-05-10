@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://yoursite.com/2019/01/15/compile-principle-notes/</loc>
+    <lastmod>2020-05-10T03:16:51.028Z</lastmod>
+  </url>  <url>
     <loc>http://yoursite.com/2020/05/03/thoughts-under-covoid19/</loc>
     <lastmod>2020-05-03T06:37:24.199Z</lastmod>
   </url>  <url>
@@ -36,9 +39,6 @@
   </url>  <url>
     <loc>http://yoursite.com/2018/03/09/Actor-Critic/</loc>
     <lastmod>2019-03-09T02:15:22.233Z</lastmod>
-  </url>  <url>
-    <loc>http://yoursite.com/2019/01/15/compile-priciple-notes/</loc>
-    <lastmod>2019-01-15T12:53:42.975Z</lastmod>
   </url>  <url>
     <loc>http://yoursite.com/2018/12/31/2018-summary/</loc>
     <lastmod>2018-12-31T02:09:41.678Z</lastmod>
