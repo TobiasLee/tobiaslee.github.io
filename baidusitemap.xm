@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://yoursite.com/2020/05/18/contrastive-learning-notes/</loc>
+    <lastmod>2020-05-18T03:33:44.773Z</lastmod>
+  </url>  <url>
     <loc>http://yoursite.com/2019/01/15/compile-principle-notes/</loc>
     <lastmod>2020-05-10T03:16:51.028Z</lastmod>
   </url>  <url>

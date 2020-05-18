@@ -179,6 +179,96 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-contrastive-learning-notes" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/05/18/contrastive-learning-notes/">Contrastive Learning 学习笔记</a>
+    </h1>
+  
+
+        
+        <a href="/2020/05/18/contrastive-learning-notes/" class="archive-article-date">
+  	<time datetime="2020-05-18T13:47:29.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-05-18</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>最近深度学习两巨头 Bengio 和  LeCun 在 ICLR 2020 上点名 Self-Supervised Learning（SSL，自监督学习） 是 AI 的未来，而其的代表的 Framework 便是 Contrastive Learning（CL，对比学习）。 另一巨头 Hinton 和 Kaiming 两尊大神也在这问题上隔空过招，MoCo、SimCLR、MoCo V2 打得火热，这和 BERT 之后，各大公司出 XL-Net、RoBerta 刷榜的场景何其相似。本篇文章，将会从对比学习的背后的直觉原理出发，介绍其框架，并且对目前的一些相关的工作进行简要介绍，希望能够为感兴趣的同学提供一些帮助。</p>
+<h2 id="Motivation-amp-Framework"><a href="#Motivation-amp-Framework" class="headerlink" title="Motivation &amp; Framework"></a>Motivation &amp; Framework</h2><p>很多研究者认为，深度学习的本质就是做两件事情：Representation Learning（表示学习） 和 Inductive Bias Learning（归纳偏好学习）。目前的一个趋势就是，学好了样本的表示，在一些不涉及逻辑、推理等的问题上，例如判断句子的情感极性、识别图像中有哪些东西，AI 系统都可以完成非常不错；而涉及到更高层的语义、组合逻辑，则需要设计一些过程来辅助 AI 系统去分解复杂的任务，<a href="http://arxiv.org/abs/1904.12584" target="_blank" rel="noopener">ICLR 19</a> 的一篇 oral 就是做的类似的事情。因为归纳偏好的设计更多的是 任务相关的，复杂的过程需要非常精心的设计，所以很多工作都开始关注到表示学习上，NLP 最近大火的预训练模型，例如 BERT，就是利用大规模的语料预训练得到文本的好的表示。那么，CV 领域的 BERT 是什么呢？答案已经呼之欲出，就是对比学习。</p>
+<h3 id="Illustrative-Example"><a href="#Illustrative-Example" class="headerlink" title="Illustrative Example"></a>Illustrative Example</h3><p><img src="/img/dollar.png" alt="Illustration Example"></p>
+<p><em>当你被要求画一张美元，左边是没有钞票在你面前，右边是面前摆着一张钞票画出来的结果</em></p>
+<p>上面这个例子来自于 <a href="https://ankeshanand.com/blog/2020/01/26/contrative-self-supervised-learning.html" target="_blank" rel="noopener">Contrastive Self-supervised Learning</a> 这篇 Blog，表达的一个核心思想就是：尽管我们已经见过很多次钞票长什么样子，但我们很少能一模一样的画出钞票；虽然我们画不出栩栩如生的钞票，但我们依旧可以轻易地辨别出钞票。基于此，也就意味着<strong>表示学习算法并不一定要关注到样本的每一个细节，只要学到的特征能够使其和其他样本区别开来就行</strong>，这就是对比学习和对抗生成网络（GAN）的一个主要不同所在。</p>
+        
+          <a class="article-more-a" href="/2020/05/18/contrastive-learning-notes/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Deep Learning</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">NLP</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Machine Learning</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+
+      
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/05/18/contrastive-learning-notes/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-thoughts-under-covoid19" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1018,147 +1108,6 @@
 
 
   
-    <article id="post-knowledge-paper-notes" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/03/09/knowledge-paper-notes/">Knowledge in Neural Language Models</a>
-    </h1>
-  
-
-        
-        <a href="/2019/03/09/knowledge-paper-notes/" class="archive-article-date">
-  	<time datetime="2019-03-09T08:29:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-03-09</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>先验知识和当前盛行的 Neural NLP Model 的结合是一条必由之路，最近接触到 <a href="#Reference">Yejin Choi</a> 的一系列工作，并且看了她的一些 Talk（PS：真的是又有才又好看！），觉得非常有意思，将一些内容和 Paper 的阅读感悟整理如下。</p>
-<h2 id="The-Missing-Component-in-NLM-Models"><a href="#The-Missing-Component-in-NLM-Models" class="headerlink" title="The Missing Component in NLM Models"></a>The Missing Component in NLM Models</h2><p>这几年来 NLP 的进展很快，包括在机器翻译、阅读理解等领域的 SOTA 都是能够达到甚至是超过人类水平的，绝大多数的 Model 都是基于 Seq2Seq 的 Framework，即使是说把传统的 RNN 替换成 Transformer，也依旧是在 Seq2Seq 这样一个框架之下，而对于像机器翻译这样的问题，我们喂给 Transformer 大量的数据之后，是能够习得一个非常出色的翻译模型的。但是，在 Neural Language Model 领域，典型如 Data-to-Text 任务， 目前的模型性能还是<strong>差强人意</strong>。例如根据一系列的 Keyword 来生成篇章级别的作文这个问题，模型产出的文章别说人类水平了，就连基本的逻辑、连贯性都很难达到合格的水平。即使是 GPT-2 这样 Huge Amount Data 喂出来的模型，前后文的关联性依旧是一个严重的问题，拿独角兽那个例子来说，后面一句就说这个物种有四个角，这是一个明显的逻辑错误。为什么这些生成任务和之前的 NMT 和 QA 差距如何之大？ Yejin Choi 提到有两个主要的问题：</p>
-<ol>
-<li><p>Information Gap：拿 NMT 来说，我们可以认为 source 和 target 两端文本所携带的信息是大致相当的，对于 Summarization 来说，则可以认为 target 所携带的信息是要少于 source 的，在这两个任务上，source 的信息是足够的；而对于像主题词写作这样的任务来说，几个 keywords 所包含的信息寥寥无几，和 target 端所需要携带的信息相比，是远远不足的。这就是 Information Gap，<strong>target 端所携带的信息大于甚至是远远大于 source 端</strong>。而如何填补这个 Gap 呢？思考一下我们在写命题作文中的时候，都是要从脑海中疯狂搜刮库存，才能写出像样的文章，那么 Neural Model 是不是也需要这样的一个知识的库存？</p>
-</li>
-<li><p>Alignment Between Input and Output：这个其实是 Information Gap 的另外一个视角，依旧拿 NMT 的中英翻译来说来说，”香蕉是绿的“ 对应的英文翻译是 ”Bananas are green”，这种 Alignment（对应关系）往往会通过 Attention Mechanism 来建模，所以这也是 Attention 在 NLP 中盛行的一个原因。而如果是一个 Dialogue 任务，对于同样的输入“香蕉是绿的“，那么正常的人类回答可能会是“不，香蕉是黄的”或者“它还没熟吧”。这个时候输入和输出就不存在这样一种强烈的对应关系，并且背后隐含着的是 Commonsense：“香蕉一般来说是黄的”。这种非对应，和欠缺知识，为我们构建输入和输出的 mapping 带来了困难。</p>
-<p>进一步地，我们可以将问题分成两类：</p>
-</li>
-</ol>
-<ul>
-<li>Shallow NLU，主要就是指的是类似 NMT 这些有着强 Alignment，Mainly Focus on Surface Pattern；</li>
-<li>Deep NLU：类似 Data-to-Text 问题，弱对应关系，并且需要额外的知识的补充才能更好地解决这个问题</li>
-</ul>
-<p>所以，为了更好地解决 Deep NLU 问题，我们需要在现有的 Model（主要是 Language Model） 中加入 Knowledge，来缩小 Information Gap。然而，这就又有很多问题摆在眼前，知识从哪来？如何表示知识？如何建模利用知识的过程？</p>
-<h2 id="How-to-Obtain-Knowledge"><a href="#How-to-Obtain-Knowledge" class="headerlink" title="How to Obtain Knowledge"></a>How to Obtain Knowledge</h2><p>首先，先来大致给知识分个类：</p>
-<ol>
-<li>Encyclopedic Knowledge：百科式的知识，当我们询问美国的总统是谁的时候，维基百科显示一个词条就是一个例子。</li>
-<li>Commonsense Knowledge：常识，这些知识是隐含在我们的日常对话之中的；另外还有像社会规约等等的知识在其中。</li>
-</ol>
-<p>对于第一种百科式的知识，有很多工作通过人工构建知识库来获取这一部分的知识，WordNet 也是一个很好的例子，其中包含了很多语言的知识；而对于第二种知识，也有类似的知识库，比如 ConceptNet，是通过搜集网络上人们的看法来对某些概念做一些常识性的推断。但是，人工搜集构建的方式总归是比较麻烦的，而<strong>常识信息隐含在对话之中</strong>：例如，我们会说“我把石头扔出去了”而不会说“我把大象扔出去了”，这里就包含着着石头比我轻，以及大象比我重这样的物理知识在里面。能不能从语言中抽取出类似这样的物理知识？<a href="#Reference">Verb Physics</a> 就做了这样一个工作。</p>
-<p><img src="/img/verb_physics.png" alt="Verb Physics"></p>
-<p>文章主要关注动词以及其相关词组所隐含的物理信息，包括大小(size）、速度(speed)、硬度(rigidness)等，这样我们就可以把这个任务视作是一个分类任务，根据给定的 <code>(x, y, verb)</code> 这样一个三元组，来选择在某个物理属性上 <code>x</code> 和 <code>y</code> 的关系（大于、小于或者约等于）。</p>
-<p>另外有两点值得一提，</p>
-<ul>
-<li>数据集的构建：包括了动词的选取，动词词组（frame）的构建以及跨知识源的知识收集（主要是人类知识作为辅助）</li>
-<li>Model：文章对三种 node 进行建模 frame / verb / object，而其中又因各个 node 之间的联系存在很多的转移边，模型整体比较复杂，建议可以阅读原文来深入地了解。另外，很多的信息他的数据对是比较稀疏的，因此也就需要借助类似的 Pair 来辅助传递，所以还需要考虑到各个 node 之间的联系（相似度）</li>
-</ul>
-<p>虽然看起来文章只是在动词所包含的物理信息上做了一些探索，但毫无疑问，如何从非结构化的自然语言中获取知识，并且用于辅助接下来的推理、分析是非常有趣也很有意义的一个方向。</p>
-<h2 id="Representation-of-Knowledge"><a href="#Representation-of-Knowledge" class="headerlink" title="Representation of Knowledge"></a>Representation of Knowledge</h2><p>在有了外部的知识之后，如何来表示这些知识，又是一个值得思考的问题。外部的知识往往可以表示为知识图谱中 <code>(head, relation, tail)</code> 这样的三元组，表明 <code>head 和 tail 之间有着 relation</code> 这样的一条信息，有些时候我们可以忽略掉 <code>relation</code>，比如说某些词的近义词，就可以构成一个 Bag-of-Words 的词袋模型。针对这两种（后一种可以视作是三元组的退化），我所了解到的表示方式有以下几种。</p>
-<p><strong>针对 Bag-of-Words</strong></p>
-<p>拿着一堆词，我们能够做的事情其实并不多，离散的 word index 并不能携带什么信息，常用的方法有</p>
-<ul>
-<li>Embedding：借鉴 word embedding，我们可以把这些辅助的信息映射到某个低维空间，让 model 自己习得其中的语义关系。之前在一篇 aspect-level review generation 中，作者就尝试将 aspect 信息 map 到一个 embedding 空间，从而让生成评论是关于某个商品的某个层面。<strong>这种方法最大的优点就是简单</strong>，但是我个人实验的过程中会出现<strong>输出的评论欠缺多样性的</strong>问题，还有待深入研究。</li>
-<li>Transformation：常用的将词语转换成隐表示的手段在前几年是 RNN，特别是对有时序关系的一组词，丢进 RNN 里把每个 time-step 的 hidden state 作为词语的表示即可，后续再使用 attention mechanism 来利用这些信息。而最近很火热的 Transformer 也完全能够起到这样的作用，如果词之间没有明显的时序关系，也许利用 Self-Attention 能更好地捕获词之间的关联信息，从而得到一个更好的表示。</li>
-<li>Memory Network：记忆网络也是</li>
-</ul>
-<p><strong>针对知识图谱</strong></p>
-<p>之前提到很多知识库都是基于图来进行表示的，但是直接把知识图谱给塞进神经网络还是比较困难的。我目前接触到的主要手段就是 Graph Convoluctional Network (GCN，图卷积网络)，在知识图谱上做卷积操作，得到其表示，从而辅助接下来的任务。Actually，这块我并不是很了解，国内知识图谱以及其表示工作做的比较出色的就是<a href="http://nlp.csai.tsinghua.edu.cn/~lzy/" target="_blank" rel="noopener">刘知远</a>老师了，感兴趣的读者可以到他的主页了解更多的相关工作。</p>
-<h2 id="Integrating-Knowledge-Into-Neural-Models"><a href="#Integrating-Knowledge-Into-Neural-Models" class="headerlink" title="Integrating Knowledge Into Neural Models"></a>Integrating Knowledge Into Neural Models</h2><p>终于，历经千辛万难之后，我们到了最后一个阶段，如何把抽取得到并且有着较好表达能力的知识表示整合进神经网络模型。这里还是围绕 Choi 的两篇工作讨论，而这有两篇工作又都是围绕着菜谱。Choi 在一个 Talk 上表示她非常希望以后早上起床有机器人能给她做早饭，可能她不怎么会做菜吧哈哈哈。</p>
-<p>第一篇文章 <a href="#Reference">Checklist Models</a> 说的是菜谱生成，给定原料列表和目标，比如我们要做一道 <code>西红柿炒蛋</code>，原料列表就是 <code>西红柿、鸡蛋</code> 等，生成的菜谱可能就是下面这种：</p>
-<blockquote>
-<p>1、将<strong>西红柿</strong>洗净后用沸水烫一下，去皮、去蒂，切片待用。</p>
-<p> 2、将<strong>鸡蛋</strong>打入碗中，加盐，用筷子充分搅打均匀待用。 </p>
-<p>3、<strong>炒</strong>锅放油3汤匙烧热，将<strong>鸡蛋</strong>放入锅中<strong>炒</strong>熟盛出待用。 </p>
-<p>4、将剩余的油烧热，下<strong>西红柿</strong>片煸<strong>炒</strong>，放盐、糖<strong>炒</strong>片刻，倒入<strong>鸡蛋</strong>翻<strong>炒</strong>几下出锅即成。</p>
-</blockquote>
-<p>主要的难点在于前后文的连贯性，我们要把西红柿和番茄都得说到，并且可能要重复说，重复说的时候就要考虑到之前对番茄已经处理过了，它的位置都可能发生了变化。模型利用了和类似 <a href="#Reference">MTA-LSTM</a>  中 Coverage 机制，维护一个为使用的原料列表和使用过的原料列表，每次生成菜谱的词的时候会根据当前的 hidden state 来生成一个概率分布，是要利用原料中的词，还是使用过的词还是直接生成词：</p>
-<p><img src="/img/ot_cl.png" alt="Output at T"></p>
-<p>模型示意图如下：</p>
-<p><img src="/img/checklist.png" alt="Check List"></p>
-<p>总体来说模型不复杂，核心就是一个 Checklist，这种融合方式是<strong>启发式</strong>的，模拟人类写作的过程，而这个 Checklist 估计也是从此而来。</p>
-<p>另外一篇文章则更多地是围绕着推理，我们在看菜谱的时候，实际上是<strong>理解一种过程语言</strong>，而过程语言的难点就是会有一些省略的指代，以及实体状态的变化。比如我们不能把鸡蛋直接搅拌，而是要打碎得到蛋液之后才能进行这样的操作。为了模拟阅读菜谱的过程，Choi 等人提出了 <a href="#Reference">Neural Process Model(NPM)</a>，模型示意图如下：</p>
-<p><img src="/img/npm.png" alt="Neural Process Model"></p>
-<p>菜谱的两个核心要素是 action（动作）以及 entity（原料实体），那么理解菜谱就可以认为是根据动作来对实体的状态进行改变的一个过程。基于这样一个想法，NPM 从菜谱的每一句中选择需要执行的动作，以及对应的 entity，然后交给一个 applicator 在 entity 上执行操作，从而带来相应的 state embeddings 改变。而这里的实体的状态，作者选取了一些具有代表性的比如：温度（加热之后温度会上升）、位置（把鸡蛋打碎后鸡蛋应该在碗里）。</p>
-<p>这几步中最困难的就是选取正确的实体，而仅仅通过 sentence encoding + attention 机制是不够，因为有些时候我们会选择上一句甚至更之前出现的实体，因此，文章借鉴了之前菜谱生成的思路，每次在 hidden state 上做一个三类的分布， 分别是当前的 attention weight / 上一步的 attention weight / 以及不采用，从而将历史的 attention 信息考虑进来：</p>
-<p><img src="/img/npm.png" alt="NPM Recurrent Attention"></p>
-<p>模型其他的细节就请读者参考原文。文章利用在实体选择上的 F1/ ACC以及状态改变上的 F1/ACC 指标对 model 做了评估，结果也都能超过 baseline。但这篇文章的亮点并不在于取得了 SOTA 的效果，而是在于<strong>一种尝试，对于理解过程式语言的一种探索</strong>。事实上，现在 NLP Community 的关注点已经逐渐从诸如 NMT 的几个点的 BLEU 值转向让 NLP 系统更加智能的方向。这是一个好事，也许未来不久的某一天，我们就能吃上机器人做的菜了！</p>
-<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><ol>
-<li><a href="https://homes.cs.washington.edu/~yejin/" target="_blank" rel="noopener">Homepage of Yejin Choi</a></li>
-<li><a href="https://www.dropbox.com/s/it1e4ndrcuevl04/Repl4NLP.pdf?dl=0" target="_blank" rel="noopener">The Missing Representation in Neural (Language) Models-Yejin Chor</a></li>
-<li><a href="https://arxiv.org/abs/1706.03799" target="_blank" rel="noopener">VERB PHYSICS: Relative Physical Knowledge of Actions and Objects</a></li>
-<li><a href="https://homes.cs.washington.edu/~yejin/Papers/emnlp16_neuralchecklist.pdf" target="_blank" rel="noopener">Neural Checklist Models</a></li>
-<li><a href="https://arxiv.org/abs/1711.05313" target="_blank" rel="noopener">Simulating Action Dynamics With Neural Process Model</a></li>
-<li><a href="https://github.com/TobiasLee/MTA-LSTM-TensorFlow" target="_blank" rel="noopener">MTA-LSTM</a></li>
-<li><a href="http://nlp.csai.tsinghua.edu.cn/~lzy/" target="_blank" rel="noopener">Homepage of Zhiyuan Liu</a></li>
-</ol>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">NLP</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-
-      
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/03/09/knowledge-paper-notes/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
@@ -1302,15 +1251,19 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Deep Learning</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Reinforcement Learning</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1322,10 +1275,6 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Android</a>
               </li>
              
@@ -1334,15 +1283,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Machine Learning</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1350,19 +1295,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">C</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
+                <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1378,6 +1315,18 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">SeqGAN</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">MediaCodec</a>
               </li>
              
@@ -1386,11 +1335,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">SeqGAN</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Java</a>
+                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1406,11 +1351,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Python</a>
+                <a href="javascript:void(0)" class="js-tag color5">Java</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">OS</a>
+                <a href="javascript:void(0)" class="js-tag color2">Python</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1418,15 +1363,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">ML</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">爬虫</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Paper Notes</a>
+                <a href="javascript:void(0)" class="js-tag color3">ML</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">OS</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1434,7 +1379,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Attention</a>
+                <a href="javascript:void(0)" class="js-tag color2">Paper Notes</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1442,7 +1387,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">C++</a>
+                <a href="javascript:void(0)" class="js-tag color5">Attention</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1454,6 +1399,10 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">C++</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">LSTM</a>
               </li>
              
@@ -1462,19 +1411,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">RL</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">DL</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Transformer</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Layer Normalization</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">RL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">DL</a>
               </li>
              
               <li class="article-tag-list-item">
