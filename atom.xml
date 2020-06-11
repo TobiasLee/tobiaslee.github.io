@@ -518,9 +518,9 @@
     
       <category term="NLP" scheme="http://yoursite.com/tags/NLP/"/>
     
-      <category term="GAN" scheme="http://yoursite.com/tags/GAN/"/>
-    
       <category term="Text Generation" scheme="http://yoursite.com/tags/Text-Generation/"/>
+    
+      <category term="GAN" scheme="http://yoursite.com/tags/GAN/"/>
     
   </entry>
   
@@ -652,9 +652,9 @@
     
       <category term="Deep Learning" scheme="http://yoursite.com/tags/Deep-Learning/"/>
     
-      <category term="GAN" scheme="http://yoursite.com/tags/GAN/"/>
-    
       <category term="Text Generation" scheme="http://yoursite.com/tags/Text-Generation/"/>
+    
+      <category term="GAN" scheme="http://yoursite.com/tags/GAN/"/>
     
   </entry>
   
@@ -764,9 +764,9 @@
     
       <category term="NLP" scheme="http://yoursite.com/tags/NLP/"/>
     
-      <category term="GAN" scheme="http://yoursite.com/tags/GAN/"/>
-    
       <category term="Text Generation" scheme="http://yoursite.com/tags/Text-Generation/"/>
+    
+      <category term="GAN" scheme="http://yoursite.com/tags/GAN/"/>
     
   </entry>
   
