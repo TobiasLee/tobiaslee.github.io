@@ -5,25 +5,25 @@
   
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
-  <link rel="dns-prefetch" href="http://yoursite.com">
+  <link rel="dns-prefetch" href="https://tobiaslee.top">
   <title>BP算法推导 | Stay Hungry,Stay Foolish.</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="​    开始ML之旅，跟Coursera上Andrew Ng的ML课到了第五周，讲了神经网络中 Back Propagation（逆向误差传播，简称BP）算法。但视频没有给出推导的过程，并且和周志华《机器学习》上的推导有所出入，让人觉得无比玄学。但其实思想是非常精炼的一句话（个人理解）：从后向前不断计算每一层的误差，来调整对应layer的权重, 从而实现网络权重的学习和优化 ​    在参考了A">
 <meta name="keywords" content="Machine Learning,BP算法">
 <meta property="og:type" content="article">
 <meta property="og:title" content="BP算法推导">
-<meta property="og:url" content="http://yoursite.com/2017/06/19/BP算法推导/index.html">
+<meta property="og:url" content="https://tobiaslee.top/2017/06/19/BP算法推导/index.html">
 <meta property="og:site_name" content="Stay Hungry,Stay Foolish.">
 <meta property="og:description" content="​    开始ML之旅，跟Coursera上Andrew Ng的ML课到了第五周，讲了神经网络中 Back Propagation（逆向误差传播，简称BP）算法。但视频没有给出推导的过程，并且和周志华《机器学习》上的推导有所出入，让人觉得无比玄学。但其实思想是非常精炼的一句话（个人理解）：从后向前不断计算每一层的误差，来调整对应layer的权重, 从而实现网络权重的学习和优化 ​    在参考了A">
-<meta property="og:image" content="http://yoursite.com/img/mathNotation.png">
-<meta property="og:image" content="http://yoursite.com/img/BP1.png">
-<meta property="og:image" content="http://yoursite.com/img/BP2.png">
-<meta property="og:image" content="http://yoursite.com/img/BPtips.png">
+<meta property="og:image" content="https://tobiaslee.top/img/mathNotation.png">
+<meta property="og:image" content="https://tobiaslee.top/img/BP1.png">
+<meta property="og:image" content="https://tobiaslee.top/img/BP2.png">
+<meta property="og:image" content="https://tobiaslee.top/img/BPtips.png">
 <meta property="og:updated_time" content="2017-08-15T14:58:07.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="BP算法推导">
 <meta name="twitter:description" content="​    开始ML之旅，跟Coursera上Andrew Ng的ML课到了第五周，讲了神经网络中 Back Propagation（逆向误差传播，简称BP）算法。但视频没有给出推导的过程，并且和周志华《机器学习》上的推导有所出入，让人觉得无比玄学。但其实思想是非常精炼的一句话（个人理解）：从后向前不断计算每一层的误差，来调整对应layer的权重, 从而实现网络权重的学习和优化 ​    在参考了A">
-<meta name="twitter:image" content="http://yoursite.com/img/mathNotation.png">
+<meta name="twitter:image" content="https://tobiaslee.top/img/mathNotation.png">
   
     <link rel="alternative" href="/atom.xml" title="Stay Hungry,Stay Foolish." type="application/atom+xml">
   
@@ -293,7 +293,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2017/06/19/BP算法推导/" alt="微信分享二维码">
+      <img src="http://s.jiathis.com/qrcode.php?url=https://tobiaslee.top/2017/06/19/BP算法推导/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -478,6 +478,10 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Deep Learning</a>
               </li>
              
@@ -490,7 +494,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
+                <a href="javascript:void(0)" class="js-tag color2">Machine Learning</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">C</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -502,35 +518,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Machine Learning</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">C</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -542,7 +530,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
+                <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -554,7 +550,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">SeqGAN</a>
+                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -570,7 +566,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Python</a>
+                <a href="javascript:void(0)" class="js-tag color2">SeqGAN</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -578,7 +574,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">OS</a>
+                <a href="javascript:void(0)" class="js-tag color2">Python</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -594,6 +590,10 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">OS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Paper Notes</a>
               </li>
              
@@ -602,11 +602,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Attention</a>
+                <a href="javascript:void(0)" class="js-tag color3">Seq2Seq</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Seq2Seq</a>
+                <a href="javascript:void(0)" class="js-tag color5">Attention</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -630,19 +630,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">RL</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">DL</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Transformer</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Layer Normalization</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">RL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">DL</a>
               </li>
              
               <li class="article-tag-list-item">

@@ -5,25 +5,25 @@
   
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
-  <link rel="dns-prefetch" href="http://yoursite.com">
+  <link rel="dns-prefetch" href="https://tobiaslee.top">
   <title>别人家的 Attention | Stay Hungry,Stay Foolish.</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="Attention Is All You Need 前段时间火了一把，其提出完全用 Attention 替代传统的 CNN 和 RNN 架构来做特征的提取，也在 NMT 上也取得了 state-of-the-art。这两天读了一下这篇 Paper，并且在熟悉的 Text Classification 问题上用其模型做了一下尝试，这篇 Blog 就用来记录过程中的一些想法和感受。 What is A">
 <meta name="keywords" content="Deep Learning,NLP">
 <meta property="og:type" content="article">
 <meta property="og:title" content="别人家的 Attention">
-<meta property="og:url" content="http://yoursite.com/2018/05/13/Attention-Notes/index.html">
+<meta property="og:url" content="https://tobiaslee.top/2018/05/13/Attention-Notes/index.html">
 <meta property="og:site_name" content="Stay Hungry,Stay Foolish.">
 <meta property="og:description" content="Attention Is All You Need 前段时间火了一把，其提出完全用 Attention 替代传统的 CNN 和 RNN 架构来做特征的提取，也在 NMT 上也取得了 state-of-the-art。这两天读了一下这篇 Paper，并且在熟悉的 Text Classification 问题上用其模型做了一下尝试，这篇 Blog 就用来记录过程中的一些想法和感受。 What is A">
-<meta property="og:image" content="http://yoursite.com/img/joke.jpg">
-<meta property="og:image" content="http://yoursite.com/img/qkv.jpg">
-<meta property="og:image" content="http://yoursite.com/img/multi-head.png">
-<meta property="og:image" content="http://yoursite.com/img/pe.png">
+<meta property="og:image" content="https://tobiaslee.top/img/joke.jpg">
+<meta property="og:image" content="https://tobiaslee.top/img/qkv.jpg">
+<meta property="og:image" content="https://tobiaslee.top/img/multi-head.png">
+<meta property="og:image" content="https://tobiaslee.top/img/pe.png">
 <meta property="og:updated_time" content="2018-05-13T08:34:28.575Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="别人家的 Attention">
 <meta name="twitter:description" content="Attention Is All You Need 前段时间火了一把，其提出完全用 Attention 替代传统的 CNN 和 RNN 架构来做特征的提取，也在 NMT 上也取得了 state-of-the-art。这两天读了一下这篇 Paper，并且在熟悉的 Text Classification 问题上用其模型做了一下尝试，这篇 Blog 就用来记录过程中的一些想法和感受。 What is A">
-<meta name="twitter:image" content="http://yoursite.com/img/joke.jpg">
+<meta name="twitter:image" content="https://tobiaslee.top/img/joke.jpg">
   
     <link rel="alternative" href="/atom.xml" title="Stay Hungry,Stay Foolish." type="application/atom+xml">
   
@@ -326,7 +326,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2018/05/13/Attention-Notes/" alt="微信分享二维码">
+      <img src="http://s.jiathis.com/qrcode.php?url=https://tobiaslee.top/2018/05/13/Attention-Notes/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -511,6 +511,10 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Deep Learning</a>
               </li>
              
@@ -523,7 +527,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
+                <a href="javascript:void(0)" class="js-tag color2">Machine Learning</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">C</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -535,35 +551,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Machine Learning</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">C</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -575,7 +563,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
+                <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -587,7 +583,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">SeqGAN</a>
+                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -603,7 +599,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Python</a>
+                <a href="javascript:void(0)" class="js-tag color2">SeqGAN</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -611,7 +607,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">OS</a>
+                <a href="javascript:void(0)" class="js-tag color2">Python</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -627,6 +623,10 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">OS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Paper Notes</a>
               </li>
              
@@ -635,11 +635,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Attention</a>
+                <a href="javascript:void(0)" class="js-tag color3">Seq2Seq</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Seq2Seq</a>
+                <a href="javascript:void(0)" class="js-tag color5">Attention</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -663,19 +663,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">RL</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">DL</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Transformer</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Layer Normalization</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">RL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">DL</a>
               </li>
              
               <li class="article-tag-list-item">

@@ -5,25 +5,25 @@
   
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
-  <link rel="dns-prefetch" href="http://yoursite.com">
+  <link rel="dns-prefetch" href="https://tobiaslee.top">
   <title>MaskGAN 学习笔记 | Stay Hungry,Stay Foolish.</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="MaskGAN 是 Goodfellow 组的新作，已经被 ICLR 2018 接收，标题很是风骚，MaskGAN: Better Text Generation via Filling in the  ____，这个下划线的操作真是… astounding。代码也已开源。这篇文章依旧是熟悉的套路，从模型 + 代码来解读论文，走起！ SeqGAN To MaskGANSeqGAN 的缺点上一篇讲">
 <meta name="keywords" content="Deep Learning,NLP,GAN,论文笔记">
 <meta property="og:type" content="article">
 <meta property="og:title" content="MaskGAN 学习笔记">
-<meta property="og:url" content="http://yoursite.com/2018/04/01/MaskGAN-Notes/index.html">
+<meta property="og:url" content="https://tobiaslee.top/2018/04/01/MaskGAN-Notes/index.html">
 <meta property="og:site_name" content="Stay Hungry,Stay Foolish.">
 <meta property="og:description" content="MaskGAN 是 Goodfellow 组的新作，已经被 ICLR 2018 接收，标题很是风骚，MaskGAN: Better Text Generation via Filling in the  ____，这个下划线的操作真是… astounding。代码也已开源。这篇文章依旧是熟悉的套路，从模型 + 代码来解读论文，走起！ SeqGAN To MaskGANSeqGAN 的缺点上一篇讲">
-<meta property="og:image" content="http://yoursite.com/img/maskgan_model.png">
-<meta property="og:image" content="http://yoursite.com/img/mask_gen.png">
-<meta property="og:image" content="http://yoursite.com/img/mask_dis.png">
-<meta property="og:image" content="http://yoursite.com/img/ac_gradient.png">
+<meta property="og:image" content="https://tobiaslee.top/img/maskgan_model.png">
+<meta property="og:image" content="https://tobiaslee.top/img/mask_gen.png">
+<meta property="og:image" content="https://tobiaslee.top/img/mask_dis.png">
+<meta property="og:image" content="https://tobiaslee.top/img/ac_gradient.png">
 <meta property="og:updated_time" content="2018-04-23T12:40:07.584Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="MaskGAN 学习笔记">
 <meta name="twitter:description" content="MaskGAN 是 Goodfellow 组的新作，已经被 ICLR 2018 接收，标题很是风骚，MaskGAN: Better Text Generation via Filling in the  ____，这个下划线的操作真是… astounding。代码也已开源。这篇文章依旧是熟悉的套路，从模型 + 代码来解读论文，走起！ SeqGAN To MaskGANSeqGAN 的缺点上一篇讲">
-<meta name="twitter:image" content="http://yoursite.com/img/maskgan_model.png">
+<meta name="twitter:image" content="https://tobiaslee.top/img/maskgan_model.png">
   
     <link rel="alternative" href="/atom.xml" title="Stay Hungry,Stay Foolish." type="application/atom+xml">
   
@@ -360,7 +360,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2018/04/01/MaskGAN-Notes/" alt="微信分享二维码">
+      <img src="http://s.jiathis.com/qrcode.php?url=https://tobiaslee.top/2018/04/01/MaskGAN-Notes/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -545,6 +545,10 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Deep Learning</a>
               </li>
              
@@ -557,7 +561,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
+                <a href="javascript:void(0)" class="js-tag color2">Machine Learning</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">C</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -569,35 +585,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Machine Learning</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">C</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -609,7 +597,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
+                <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -621,7 +617,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">SeqGAN</a>
+                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -637,7 +633,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Python</a>
+                <a href="javascript:void(0)" class="js-tag color2">SeqGAN</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -645,7 +641,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">OS</a>
+                <a href="javascript:void(0)" class="js-tag color2">Python</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -661,6 +657,10 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">OS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Paper Notes</a>
               </li>
              
@@ -669,11 +669,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Attention</a>
+                <a href="javascript:void(0)" class="js-tag color3">Seq2Seq</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Seq2Seq</a>
+                <a href="javascript:void(0)" class="js-tag color5">Attention</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -697,19 +697,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">RL</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">DL</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Transformer</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Layer Normalization</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">RL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">DL</a>
               </li>
              
               <li class="article-tag-list-item">

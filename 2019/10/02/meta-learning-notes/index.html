@@ -5,27 +5,27 @@
   
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
-  <link rel="dns-prefetch" href="http://yoursite.com">
+  <link rel="dns-prefetch" href="https://tobiaslee.top">
   <title>Meta-Learning：Learning to Learn and Applications | Stay Hungry,Stay Foolish.</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="Meta-Learning 是一个最近非常 promising 的方向，背后的 Learning to Learn 的思想在解决一些 Low-Resource / Few-shot 场景下的问题是非常有帮助的。因此，这篇文章就是 Meta-Learning 的学习笔记，同时因为我个人的研究方向，会讨论一些在 NLP 问题上的应用。 Meta-Learning首先，在了解 Meta-Learning">
 <meta name="keywords" content="NLP,ML,RL,DL">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Meta-Learning：Learning to Learn and Applications">
-<meta property="og:url" content="http://yoursite.com/2019/10/02/meta-learning-notes/index.html">
+<meta property="og:url" content="https://tobiaslee.top/2019/10/02/meta-learning-notes/index.html">
 <meta property="og:site_name" content="Stay Hungry,Stay Foolish.">
 <meta property="og:description" content="Meta-Learning 是一个最近非常 promising 的方向，背后的 Learning to Learn 的思想在解决一些 Low-Resource / Few-shot 场景下的问题是非常有帮助的。因此，这篇文章就是 Meta-Learning 的学习笔记，同时因为我个人的研究方向，会讨论一些在 NLP 问题上的应用。 Meta-Learning首先，在了解 Meta-Learning">
-<meta property="og:image" content="http://yoursite.com/img/human_test.png">
-<meta property="og:image" content="http://yoursite.com/img/maml.png">
-<meta property="og:image" content="http://yoursite.com/img/maml-algorithm.png">
-<meta property="og:image" content="http://yoursite.com/img/reptile.png">
-<meta property="og:image" content="http://yoursite.com/img/maml-nmt.png">
-<meta property="og:image" content="http://yoursite.com/img/william-mlc.png">
+<meta property="og:image" content="https://tobiaslee.top/img/human_test.png">
+<meta property="og:image" content="https://tobiaslee.top/img/maml.png">
+<meta property="og:image" content="https://tobiaslee.top/img/maml-algorithm.png">
+<meta property="og:image" content="https://tobiaslee.top/img/reptile.png">
+<meta property="og:image" content="https://tobiaslee.top/img/maml-nmt.png">
+<meta property="og:image" content="https://tobiaslee.top/img/william-mlc.png">
 <meta property="og:updated_time" content="2019-10-31T04:27:44.045Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Meta-Learning：Learning to Learn and Applications">
 <meta name="twitter:description" content="Meta-Learning 是一个最近非常 promising 的方向，背后的 Learning to Learn 的思想在解决一些 Low-Resource / Few-shot 场景下的问题是非常有帮助的。因此，这篇文章就是 Meta-Learning 的学习笔记，同时因为我个人的研究方向，会讨论一些在 NLP 问题上的应用。 Meta-Learning首先，在了解 Meta-Learning">
-<meta name="twitter:image" content="http://yoursite.com/img/human_test.png">
+<meta name="twitter:image" content="https://tobiaslee.top/img/human_test.png">
   
     <link rel="alternative" href="/atom.xml" title="Stay Hungry,Stay Foolish." type="application/atom+xml">
   
@@ -360,7 +360,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2019/10/02/meta-learning-notes/" alt="微信分享二维码">
+      <img src="http://s.jiathis.com/qrcode.php?url=https://tobiaslee.top/2019/10/02/meta-learning-notes/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -545,6 +545,10 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Deep Learning</a>
               </li>
              
@@ -557,7 +561,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
+                <a href="javascript:void(0)" class="js-tag color2">Machine Learning</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">C</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -569,35 +585,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Machine Learning</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">C</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -609,7 +597,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
+                <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -621,7 +617,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">SeqGAN</a>
+                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -637,7 +633,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Python</a>
+                <a href="javascript:void(0)" class="js-tag color2">SeqGAN</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -645,7 +641,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">OS</a>
+                <a href="javascript:void(0)" class="js-tag color2">Python</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -661,6 +657,10 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">OS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Paper Notes</a>
               </li>
              
@@ -669,11 +669,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Attention</a>
+                <a href="javascript:void(0)" class="js-tag color3">Seq2Seq</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Seq2Seq</a>
+                <a href="javascript:void(0)" class="js-tag color5">Attention</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -697,19 +697,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">RL</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">DL</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Transformer</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Layer Normalization</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">RL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">DL</a>
               </li>
              
               <li class="article-tag-list-item">

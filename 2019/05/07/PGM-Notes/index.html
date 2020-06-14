@@ -5,30 +5,30 @@
   
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
-  <link rel="dns-prefetch" href="http://yoursite.com">
+  <link rel="dns-prefetch" href="https://tobiaslee.top">
   <title>概率图模型学习笔记 | Stay Hungry,Stay Foolish.</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="概率图模型（PGM）是很重要的一类模型，听闻很久以前的”概率图模型加边”和现在的”神经网络加层”是同样的地位，但随着 DL 的发展，PGM 已经有一些不吃香了。但我依旧觉得这个一个很重要的知识点，对于 NLP 而言，还有很多序列标注的问题的 sota 还是基于 CRF（条件随机场，概率图模型的一种）取得的，所以还是很有必要学习一下，并且和之前的一些知识给串起来看，会有更多的收获。这篇文章就我记录《">
 <meta name="keywords" content="NLP,ML">
 <meta property="og:type" content="article">
 <meta property="og:title" content="概率图模型学习笔记">
-<meta property="og:url" content="http://yoursite.com/2019/05/07/PGM-Notes/index.html">
+<meta property="og:url" content="https://tobiaslee.top/2019/05/07/PGM-Notes/index.html">
 <meta property="og:site_name" content="Stay Hungry,Stay Foolish.">
 <meta property="og:description" content="概率图模型（PGM）是很重要的一类模型，听闻很久以前的”概率图模型加边”和现在的”神经网络加层”是同样的地位，但随着 DL 的发展，PGM 已经有一些不吃香了。但我依旧觉得这个一个很重要的知识点，对于 NLP 而言，还有很多序列标注的问题的 sota 还是基于 CRF（条件随机场，概率图模型的一种）取得的，所以还是很有必要学习一下，并且和之前的一些知识给串起来看，会有更多的收获。这篇文章就我记录《">
-<meta property="og:image" content="http://yoursite.com/img/pgm-evolve.png">
-<meta property="og:image" content="http://yoursite.com/img/forward-algorithm.png">
-<meta property="og:image" content="http://yoursite.com/img/backward-algorithm.png">
-<meta property="og:image" content="http://yoursite.com/img/hmm-mle.png">
-<meta property="og:image" content="http://yoursite.com/img/bw-al.png">
-<meta property="og:image" content="http://yoursite.com/img/bw-al2.png">
-<meta property="og:image" content="http://yoursite.com/img/crf.png">
-<meta property="og:image" content="http://yoursite.com/img/lstm-pos.png">
-<meta property="og:image" content="http://yoursite.com/img/lstm-crf.png">
+<meta property="og:image" content="https://tobiaslee.top/img/pgm-evolve.png">
+<meta property="og:image" content="https://tobiaslee.top/img/forward-algorithm.png">
+<meta property="og:image" content="https://tobiaslee.top/img/backward-algorithm.png">
+<meta property="og:image" content="https://tobiaslee.top/img/hmm-mle.png">
+<meta property="og:image" content="https://tobiaslee.top/img/bw-al.png">
+<meta property="og:image" content="https://tobiaslee.top/img/bw-al2.png">
+<meta property="og:image" content="https://tobiaslee.top/img/crf.png">
+<meta property="og:image" content="https://tobiaslee.top/img/lstm-pos.png">
+<meta property="og:image" content="https://tobiaslee.top/img/lstm-crf.png">
 <meta property="og:updated_time" content="2019-07-12T02:06:22.816Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="概率图模型学习笔记">
 <meta name="twitter:description" content="概率图模型（PGM）是很重要的一类模型，听闻很久以前的”概率图模型加边”和现在的”神经网络加层”是同样的地位，但随着 DL 的发展，PGM 已经有一些不吃香了。但我依旧觉得这个一个很重要的知识点，对于 NLP 而言，还有很多序列标注的问题的 sota 还是基于 CRF（条件随机场，概率图模型的一种）取得的，所以还是很有必要学习一下，并且和之前的一些知识给串起来看，会有更多的收获。这篇文章就我记录《">
-<meta name="twitter:image" content="http://yoursite.com/img/pgm-evolve.png">
+<meta name="twitter:image" content="https://tobiaslee.top/img/pgm-evolve.png">
   
     <link rel="alternative" href="/atom.xml" title="Stay Hungry,Stay Foolish." type="application/atom+xml">
   
@@ -381,7 +381,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2019/05/07/PGM-Notes/" alt="微信分享二维码">
+      <img src="http://s.jiathis.com/qrcode.php?url=https://tobiaslee.top/2019/05/07/PGM-Notes/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -566,6 +566,10 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Deep Learning</a>
               </li>
              
@@ -578,7 +582,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
+                <a href="javascript:void(0)" class="js-tag color2">Machine Learning</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">C</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -590,35 +606,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Machine Learning</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">C</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -630,7 +618,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
+                <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -642,7 +638,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">SeqGAN</a>
+                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -658,7 +654,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Python</a>
+                <a href="javascript:void(0)" class="js-tag color2">SeqGAN</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -666,7 +662,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">OS</a>
+                <a href="javascript:void(0)" class="js-tag color2">Python</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -682,6 +678,10 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">OS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Paper Notes</a>
               </li>
              
@@ -690,11 +690,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Attention</a>
+                <a href="javascript:void(0)" class="js-tag color3">Seq2Seq</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Seq2Seq</a>
+                <a href="javascript:void(0)" class="js-tag color5">Attention</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -718,19 +718,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">RL</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">DL</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Transformer</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Layer Normalization</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">RL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">DL</a>
               </li>
              
               <li class="article-tag-list-item">

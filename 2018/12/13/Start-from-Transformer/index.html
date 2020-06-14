@@ -5,33 +5,33 @@
   
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
-  <link rel="dns-prefetch" href="http://yoursite.com">
+  <link rel="dns-prefetch" href="https://tobiaslee.top">
   <title>从 Transformer 说起 | Stay Hungry,Stay Foolish.</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="从我开始学习 NLP 以来，带有轰动效应的 Paper 大概就是 Transformer 和 BERT，前者是在机器翻译领域全面超过原先的 Seq2Seq，而后者则是继 Word Embedding 作为 representation 之后的又一突破。而实际上 BERT 的提出也是建立在 Transformer 的基础上。这篇文章就是围绕这两篇 Paper 的笔记以及一些思考。就从 Transfo">
 <meta name="keywords" content="NLP,Attention">
 <meta property="og:type" content="article">
 <meta property="og:title" content="从 Transformer 说起">
-<meta property="og:url" content="http://yoursite.com/2018/12/13/Start-from-Transformer/index.html">
+<meta property="og:url" content="https://tobiaslee.top/2018/12/13/Start-from-Transformer/index.html">
 <meta property="og:site_name" content="Stay Hungry,Stay Foolish.">
 <meta property="og:description" content="从我开始学习 NLP 以来，带有轰动效应的 Paper 大概就是 Transformer 和 BERT，前者是在机器翻译领域全面超过原先的 Seq2Seq，而后者则是继 Word Embedding 作为 representation 之后的又一突破。而实际上 BERT 的提出也是建立在 Transformer 的基础上。这篇文章就是围绕这两篇 Paper 的笔记以及一些思考。就从 Transfo">
-<meta property="og:image" content="http://yoursite.com/img/mh-attn.png">
-<meta property="og:image" content="http://yoursite.com/img/mh-attn2.png">
-<meta property="og:image" content="http://yoursite.com/img/comparison_transformer.png">
-<meta property="og:image" content="http://yoursite.com/img/comparison2.png">
-<meta property="og:image" content="http://yoursite.com/img/fan_rnn.png">
-<meta property="og:image" content="http://yoursite.com/img/elmo.png">
-<meta property="og:image" content="http://yoursite.com/img/elmo_formula.png">
-<meta property="og:image" content="http://yoursite.com/img/elmo_impv.png">
-<meta property="og:image" content="http://yoursite.com/img/elmo_poly.png">
-<meta property="og:image" content="http://yoursite.com/img/bert_repr.png">
-<meta property="og:image" content="http://yoursite.com/img/bert_downstream.png">
-<meta property="og:image" content="http://yoursite.com/img/bert_model.png">
+<meta property="og:image" content="https://tobiaslee.top/img/mh-attn.png">
+<meta property="og:image" content="https://tobiaslee.top/img/mh-attn2.png">
+<meta property="og:image" content="https://tobiaslee.top/img/comparison_transformer.png">
+<meta property="og:image" content="https://tobiaslee.top/img/comparison2.png">
+<meta property="og:image" content="https://tobiaslee.top/img/fan_rnn.png">
+<meta property="og:image" content="https://tobiaslee.top/img/elmo.png">
+<meta property="og:image" content="https://tobiaslee.top/img/elmo_formula.png">
+<meta property="og:image" content="https://tobiaslee.top/img/elmo_impv.png">
+<meta property="og:image" content="https://tobiaslee.top/img/elmo_poly.png">
+<meta property="og:image" content="https://tobiaslee.top/img/bert_repr.png">
+<meta property="og:image" content="https://tobiaslee.top/img/bert_downstream.png">
+<meta property="og:image" content="https://tobiaslee.top/img/bert_model.png">
 <meta property="og:updated_time" content="2018-12-21T02:56:09.922Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="从 Transformer 说起">
 <meta name="twitter:description" content="从我开始学习 NLP 以来，带有轰动效应的 Paper 大概就是 Transformer 和 BERT，前者是在机器翻译领域全面超过原先的 Seq2Seq，而后者则是继 Word Embedding 作为 representation 之后的又一突破。而实际上 BERT 的提出也是建立在 Transformer 的基础上。这篇文章就是围绕这两篇 Paper 的笔记以及一些思考。就从 Transfo">
-<meta name="twitter:image" content="http://yoursite.com/img/mh-attn.png">
+<meta name="twitter:image" content="https://tobiaslee.top/img/mh-attn.png">
   
     <link rel="alternative" href="/atom.xml" title="Stay Hungry,Stay Foolish." type="application/atom+xml">
   
@@ -391,7 +391,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2018/12/13/Start-from-Transformer/" alt="微信分享二维码">
+      <img src="http://s.jiathis.com/qrcode.php?url=https://tobiaslee.top/2018/12/13/Start-from-Transformer/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -576,6 +576,10 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Deep Learning</a>
               </li>
              
@@ -588,7 +592,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
+                <a href="javascript:void(0)" class="js-tag color2">Machine Learning</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">C</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -600,35 +616,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Machine Learning</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">C</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -640,7 +628,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
+                <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -652,7 +648,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">SeqGAN</a>
+                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -668,7 +664,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Python</a>
+                <a href="javascript:void(0)" class="js-tag color2">SeqGAN</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -676,7 +672,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">OS</a>
+                <a href="javascript:void(0)" class="js-tag color2">Python</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -692,6 +688,10 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">OS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Paper Notes</a>
               </li>
              
@@ -700,11 +700,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Attention</a>
+                <a href="javascript:void(0)" class="js-tag color3">Seq2Seq</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Seq2Seq</a>
+                <a href="javascript:void(0)" class="js-tag color5">Attention</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -728,19 +728,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">RL</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">DL</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Transformer</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Layer Normalization</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">RL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">DL</a>
               </li>
              
               <li class="article-tag-list-item">

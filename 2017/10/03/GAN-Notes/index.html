@@ -5,31 +5,31 @@
   
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
-  <link rel="dns-prefetch" href="http://yoursite.com">
+  <link rel="dns-prefetch" href="https://tobiaslee.top">
   <title>GAN 学习笔记 | Stay Hungry,Stay Foolish.</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="Generative Adversarial Networks，简称 GAN，中文叫做生成式对抗网络，是现在非常火热的神经网络模型。网上关于 GAN 的 Demo 很多，讲解也很多，但都只是在 Intuition 层面的理解，很少涉及其中的数学细节，而我在阅读 Goodfellow 的论文时对其中的公式感到一头雾水，好在最终找到了国立台湾大学的李宏毅老师的公开课视频，这篇文章就是他深度学习课程 G">
 <meta name="keywords" content="Deep Learning,GAN">
 <meta property="og:type" content="article">
 <meta property="og:title" content="GAN 学习笔记">
-<meta property="og:url" content="http://yoursite.com/2017/10/03/GAN-Notes/index.html">
+<meta property="og:url" content="https://tobiaslee.top/2017/10/03/GAN-Notes/index.html">
 <meta property="og:site_name" content="Stay Hungry,Stay Foolish.">
 <meta property="og:description" content="Generative Adversarial Networks，简称 GAN，中文叫做生成式对抗网络，是现在非常火热的神经网络模型。网上关于 GAN 的 Demo 很多，讲解也很多，但都只是在 Intuition 层面的理解，很少涉及其中的数学细节，而我在阅读 Goodfellow 的论文时对其中的公式感到一头雾水，好在最终找到了国立台湾大学的李宏毅老师的公开课视频，这篇文章就是他深度学习课程 G">
-<meta property="og:image" content="http://yoursite.com/img/mle.png">
-<meta property="og:image" content="http://yoursite.com/img/theta.png">
-<meta property="og:image" content="http://yoursite.com/img/pgnn.png">
-<meta property="og:image" content="http://yoursite.com/img/VGD.png">
-<meta property="og:image" content="http://yoursite.com/img/maxVGD.png">
-<meta property="og:image" content="http://yoursite.com/img/JSD.png">
-<meta property="og:image" content="http://yoursite.com/img/algorithm.png">
-<meta property="og:image" content="http://yoursite.com/img/practice.png">
-<meta property="og:image" content="http://yoursite.com/img/real_algorithm.png">
-<meta property="og:image" content="http://yoursite.com/img/mode_collapse.png">
+<meta property="og:image" content="https://tobiaslee.top/img/mle.png">
+<meta property="og:image" content="https://tobiaslee.top/img/theta.png">
+<meta property="og:image" content="https://tobiaslee.top/img/pgnn.png">
+<meta property="og:image" content="https://tobiaslee.top/img/VGD.png">
+<meta property="og:image" content="https://tobiaslee.top/img/maxVGD.png">
+<meta property="og:image" content="https://tobiaslee.top/img/JSD.png">
+<meta property="og:image" content="https://tobiaslee.top/img/algorithm.png">
+<meta property="og:image" content="https://tobiaslee.top/img/practice.png">
+<meta property="og:image" content="https://tobiaslee.top/img/real_algorithm.png">
+<meta property="og:image" content="https://tobiaslee.top/img/mode_collapse.png">
 <meta property="og:updated_time" content="2017-10-19T09:26:52.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="GAN 学习笔记">
 <meta name="twitter:description" content="Generative Adversarial Networks，简称 GAN，中文叫做生成式对抗网络，是现在非常火热的神经网络模型。网上关于 GAN 的 Demo 很多，讲解也很多，但都只是在 Intuition 层面的理解，很少涉及其中的数学细节，而我在阅读 Goodfellow 的论文时对其中的公式感到一头雾水，好在最终找到了国立台湾大学的李宏毅老师的公开课视频，这篇文章就是他深度学习课程 G">
-<meta name="twitter:image" content="http://yoursite.com/img/mle.png">
+<meta name="twitter:image" content="https://tobiaslee.top/img/mle.png">
   
     <link rel="alternative" href="/atom.xml" title="Stay Hungry,Stay Foolish." type="application/atom+xml">
   
@@ -334,7 +334,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2017/10/03/GAN-Notes/" alt="微信分享二维码">
+      <img src="http://s.jiathis.com/qrcode.php?url=https://tobiaslee.top/2017/10/03/GAN-Notes/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -519,6 +519,10 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Deep Learning</a>
               </li>
              
@@ -531,7 +535,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
+                <a href="javascript:void(0)" class="js-tag color2">Machine Learning</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">C</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -543,35 +559,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Machine Learning</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">C</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -583,7 +571,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
+                <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -595,7 +591,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">SeqGAN</a>
+                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -611,7 +607,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Python</a>
+                <a href="javascript:void(0)" class="js-tag color2">SeqGAN</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -619,7 +615,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">OS</a>
+                <a href="javascript:void(0)" class="js-tag color2">Python</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -635,6 +631,10 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">OS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Paper Notes</a>
               </li>
              
@@ -643,11 +643,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Attention</a>
+                <a href="javascript:void(0)" class="js-tag color3">Seq2Seq</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Seq2Seq</a>
+                <a href="javascript:void(0)" class="js-tag color5">Attention</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -671,19 +671,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">RL</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">DL</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Transformer</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Layer Normalization</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">RL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">DL</a>
               </li>
              
               <li class="article-tag-list-item">

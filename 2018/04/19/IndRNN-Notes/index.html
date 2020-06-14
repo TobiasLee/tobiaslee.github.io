@@ -5,30 +5,30 @@
   
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
-  <link rel="dns-prefetch" href="http://yoursite.com">
+  <link rel="dns-prefetch" href="https://tobiaslee.top">
   <title>从 IndRNN 来回顾 RNN 模型 | Stay Hungry,Stay Foolish.</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="IndRNN 是最近新提出的一种 RNN 架构，作者认为其能够更好地解决 gradient vanishing / exploding 以及具有更好的解释性。 从 RNN 到 IndRNN首先来复习一下 RNN t 时刻的 hidden state 的计算公式：  这个公式相信都是了然于心，如果画成图的话，就是下面这个样子：  图片引用自 colah’blog 但是，请问一下自己，这个 A 里面是">
 <meta name="keywords" content="Deep Learning,NLP,RNN,论文笔记">
 <meta property="og:type" content="article">
 <meta property="og:title" content="从 IndRNN 来回顾 RNN 模型">
-<meta property="og:url" content="http://yoursite.com/2018/04/19/IndRNN-Notes/index.html">
+<meta property="og:url" content="https://tobiaslee.top/2018/04/19/IndRNN-Notes/index.html">
 <meta property="og:site_name" content="Stay Hungry,Stay Foolish.">
 <meta property="og:description" content="IndRNN 是最近新提出的一种 RNN 架构，作者认为其能够更好地解决 gradient vanishing / exploding 以及具有更好的解释性。 从 RNN 到 IndRNN首先来复习一下 RNN t 时刻的 hidden state 的计算公式：  这个公式相信都是了然于心，如果画成图的话，就是下面这个样子：  图片引用自 colah’blog 但是，请问一下自己，这个 A 里面是">
-<meta property="og:image" content="http://yoursite.com/img/vanilla_rnn_formula.png">
-<meta property="og:image" content="http://yoursite.com/img/RNN-rolled.png">
-<meta property="og:image" content="http://yoursite.com/img/vanilla_rnn.png">
-<meta property="og:image" content="http://yoursite.com/img/ind_rnn_formula.png">
-<meta property="og:image" content="http://yoursite.com/img/ind_rnn.jpg">
-<meta property="og:image" content="http://yoursite.com/img/compare.png">
-<meta property="og:image" content="http://yoursite.com/img/gru.png">
-<meta property="og:image" content="http://yoursite.com/img/grad_ind.png">
-<meta property="og:image" content="http://yoursite.com/img/deep_rnn.png">
+<meta property="og:image" content="https://tobiaslee.top/img/vanilla_rnn_formula.png">
+<meta property="og:image" content="https://tobiaslee.top/img/RNN-rolled.png">
+<meta property="og:image" content="https://tobiaslee.top/img/vanilla_rnn.png">
+<meta property="og:image" content="https://tobiaslee.top/img/ind_rnn_formula.png">
+<meta property="og:image" content="https://tobiaslee.top/img/ind_rnn.jpg">
+<meta property="og:image" content="https://tobiaslee.top/img/compare.png">
+<meta property="og:image" content="https://tobiaslee.top/img/gru.png">
+<meta property="og:image" content="https://tobiaslee.top/img/grad_ind.png">
+<meta property="og:image" content="https://tobiaslee.top/img/deep_rnn.png">
 <meta property="og:updated_time" content="2018-04-28T08:25:02.370Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="从 IndRNN 来回顾 RNN 模型">
 <meta name="twitter:description" content="IndRNN 是最近新提出的一种 RNN 架构，作者认为其能够更好地解决 gradient vanishing / exploding 以及具有更好的解释性。 从 RNN 到 IndRNN首先来复习一下 RNN t 时刻的 hidden state 的计算公式：  这个公式相信都是了然于心，如果画成图的话，就是下面这个样子：  图片引用自 colah’blog 但是，请问一下自己，这个 A 里面是">
-<meta name="twitter:image" content="http://yoursite.com/img/vanilla_rnn_formula.png">
+<meta name="twitter:image" content="https://tobiaslee.top/img/vanilla_rnn_formula.png">
   
     <link rel="alternative" href="/atom.xml" title="Stay Hungry,Stay Foolish." type="application/atom+xml">
   
@@ -352,7 +352,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2018/04/19/IndRNN-Notes/" alt="微信分享二维码">
+      <img src="http://s.jiathis.com/qrcode.php?url=https://tobiaslee.top/2018/04/19/IndRNN-Notes/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -537,6 +537,10 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Deep Learning</a>
               </li>
              
@@ -549,7 +553,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
+                <a href="javascript:void(0)" class="js-tag color2">Machine Learning</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">C</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -561,35 +577,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Machine Learning</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">C</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -601,7 +589,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
+                <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -613,7 +609,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">SeqGAN</a>
+                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -629,7 +625,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Python</a>
+                <a href="javascript:void(0)" class="js-tag color2">SeqGAN</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -637,7 +633,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">OS</a>
+                <a href="javascript:void(0)" class="js-tag color2">Python</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -653,6 +649,10 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">OS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Paper Notes</a>
               </li>
              
@@ -661,11 +661,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Attention</a>
+                <a href="javascript:void(0)" class="js-tag color3">Seq2Seq</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Seq2Seq</a>
+                <a href="javascript:void(0)" class="js-tag color5">Attention</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -689,19 +689,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">RL</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">DL</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Transformer</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Layer Normalization</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">RL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">DL</a>
               </li>
              
               <li class="article-tag-list-item">

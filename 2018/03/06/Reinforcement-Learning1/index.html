@@ -5,26 +5,26 @@
   
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
-  <link rel="dns-prefetch" href="http://yoursite.com">
+  <link rel="dns-prefetch" href="https://tobiaslee.top">
   <title>Policy Graident 从数学到实现 | Stay Hungry,Stay Foolish.</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="Text Generation 是我非常感兴趣的一个问题，传统的 Seq2Seq 能有不错的效果，但如前一篇 Blog 所说，我相信未来的文本生成必然是与 GAN 以及 Reinforcement Learning （RL）相结合的，上交的大佬 Lantao Yu 就有一篇很出色的 SeqGAN 的工作，以及最近的 MaskGAN。接下来的一段时间，尝试实现 SeqGAN 和 MaskGAN，根据">
 <meta name="keywords" content="Deep Learning,Reinforcement Learning">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Policy Graident 从数学到实现">
-<meta property="og:url" content="http://yoursite.com/2018/03/06/Reinforcement-Learning1/index.html">
+<meta property="og:url" content="https://tobiaslee.top/2018/03/06/Reinforcement-Learning1/index.html">
 <meta property="og:site_name" content="Stay Hungry,Stay Foolish.">
 <meta property="og:description" content="Text Generation 是我非常感兴趣的一个问题，传统的 Seq2Seq 能有不错的效果，但如前一篇 Blog 所说，我相信未来的文本生成必然是与 GAN 以及 Reinforcement Learning （RL）相结合的，上交的大佬 Lantao Yu 就有一篇很出色的 SeqGAN 的工作，以及最近的 MaskGAN。接下来的一段时间，尝试实现 SeqGAN 和 MaskGAN，根据">
-<meta property="og:image" content="http://yoursite.com/img/agent.png">
-<meta property="og:image" content="http://yoursite.com/img/dpg.png">
-<meta property="og:image" content="http://yoursite.com/img/pg.png">
-<meta property="og:image" content="http://yoursite.com/img/loss.png">
-<meta property="og:image" content="http://yoursite.com/img/game.gif">
+<meta property="og:image" content="https://tobiaslee.top/img/agent.png">
+<meta property="og:image" content="https://tobiaslee.top/img/dpg.png">
+<meta property="og:image" content="https://tobiaslee.top/img/pg.png">
+<meta property="og:image" content="https://tobiaslee.top/img/loss.png">
+<meta property="og:image" content="https://tobiaslee.top/img/game.gif">
 <meta property="og:updated_time" content="2018-03-07T13:59:56.026Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Policy Graident 从数学到实现">
 <meta name="twitter:description" content="Text Generation 是我非常感兴趣的一个问题，传统的 Seq2Seq 能有不错的效果，但如前一篇 Blog 所说，我相信未来的文本生成必然是与 GAN 以及 Reinforcement Learning （RL）相结合的，上交的大佬 Lantao Yu 就有一篇很出色的 SeqGAN 的工作，以及最近的 MaskGAN。接下来的一段时间，尝试实现 SeqGAN 和 MaskGAN，根据">
-<meta name="twitter:image" content="http://yoursite.com/img/agent.png">
+<meta name="twitter:image" content="https://tobiaslee.top/img/agent.png">
   
     <link rel="alternative" href="/atom.xml" title="Stay Hungry,Stay Foolish." type="application/atom+xml">
   
@@ -326,7 +326,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="http://s.jiathis.com/qrcode.php?url=http://yoursite.com/2018/03/06/Reinforcement-Learning1/" alt="微信分享二维码">
+      <img src="http://s.jiathis.com/qrcode.php?url=https://tobiaslee.top/2018/03/06/Reinforcement-Learning1/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -511,6 +511,10 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Deep Learning</a>
               </li>
              
@@ -523,7 +527,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
+                <a href="javascript:void(0)" class="js-tag color2">Machine Learning</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">C</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -535,35 +551,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Machine Learning</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">C</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -575,7 +563,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
+                <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -587,7 +583,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">SeqGAN</a>
+                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -603,7 +599,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Python</a>
+                <a href="javascript:void(0)" class="js-tag color2">SeqGAN</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -611,7 +607,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">OS</a>
+                <a href="javascript:void(0)" class="js-tag color2">Python</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -627,6 +623,10 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">OS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Paper Notes</a>
               </li>
              
@@ -635,11 +635,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Attention</a>
+                <a href="javascript:void(0)" class="js-tag color3">Seq2Seq</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Seq2Seq</a>
+                <a href="javascript:void(0)" class="js-tag color5">Attention</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -663,19 +663,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">RL</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">DL</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Transformer</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Layer Normalization</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">RL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">DL</a>
               </li>
              
               <li class="article-tag-list-item">
