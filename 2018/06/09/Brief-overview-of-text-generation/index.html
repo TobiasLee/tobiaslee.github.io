@@ -218,7 +218,7 @@
 <p>另外，除了 exposure bias，还有个比较 trival 的问题：逐字的 loss 是不是不太符合我们的习惯，一般都是以<strong>句子</strong>这个粒度来评估生成的质量，有个别错别字可能无伤大雅呢？有待以后再讨论。</p>
 <a id="more"></a>
 <h2 id="Seq2Seq-Architexture"><a href="#Seq2Seq-Architexture" class="headerlink" title="Seq2Seq Architexture"></a>Seq2Seq Architexture</h2><p>如果把机器翻译也看作是一种文本生成任务的话，那么 Seq2Seq 也是非常经典的生成架构。一般会用两个网络，一个用于编码（Encoder），将一些信息，比如待翻译的文本，经过编码之后形成一个 semantic representation 交给另一个解码网络（Decoder），解码网络根据编码网路结果进行目标文本的生成，比如生成对应的翻译文本。</p>
-<p>如果没记错的话 Seq2Seq 首先是在 Machine Translation 提出来，就是那篇 Attention 的大作<a href="https://arxiv.org/pdf/1409.0473.pdf" target="_blank" rel="noopener">《Neural Machine Translation By Jointly Learning To Align and Translate》</a>，之后被生成任务所采用。Attention 之所以会在机器翻译任务中提出来，也是很直觉的：<strong>经过编码之后的语义表示向量并不足够支撑较长文本的翻译</strong>，并且和人类翻译的过程中类似，我们在翻译的某句话的个别词汇的时候，会<strong>特别</strong>关注其周围的一些词，来辅助我们的翻译，这种关注也就是一种注意力机制，更多的可以参考我之前的一篇 <a href="http://tobiaslee.top/2018/05/13/Attention-Notes/" target="_blank" rel="noopener">Blog</a>。</p>
+<p>如果没记错的话 Seq2Seq 首先是在 Machine Translation 提出来，就是那篇 Attention 的大作<a href="https://arxiv.org/pdf/1409.0473.pdf" target="_blank" rel="noopener">《Neural Machine Translation By Jointly Learning To Align and Translate》</a>，之后被生成任务所采用。Attention 之所以会在机器翻译任务中提出来，也是很直觉的：<strong>经过编码之后的语义表示向量并不足够支撑较长文本的翻译</strong>，并且和人类翻译的过程中类似，我们在翻译的某句话的个别词汇的时候，会<strong>特别</strong>关注其周围的一些词，来辅助我们的翻译，这种关注也就是一种注意力机制，更多的可以参考我之前的一篇 <a href="http://tobiaslee.top/2018/05/13/Attention-Notes/">Blog</a>。</p>
 <p>回到 Seq2Seq 对于文本生成任务，事实上可以把上面的语言模型少做修改，也即我们建模的是一个条件概率：$$ P(s | c)$$，这里的 $c$ 在机器翻译任务中可以视作是待翻译的文本，在 Image Caption 任务中就可以看做是 Image 所携带的信息。和单纯的 RNN 模型相比，我们可以把 Decoder 就看做是先前的 RNN，而 Encoder 则是 <strong>Seq2Seq 提供了的给 model 先验信息的窗口</strong>，从而能够在特定的任务上有很出色的表现。摘掉 Encoder，就退化成 RNN Generator，所以 Seq2Seq 并没有解决 RNN 模型遇到的问题。</p>
 <p>Seq2Seq 有很多基于模型架构微调的工作，但我看到基本都是类似在生成文本之后再进行修改的作品：</p>
 <ol>
@@ -493,14 +493,6 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Deep Learning</a>
               </li>
              
@@ -509,7 +501,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">NLP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -521,23 +521,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">C</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Android</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">自定义View</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -549,7 +537,23 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">C</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -558,22 +562,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">MediaCodec</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">OpenGL</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Java</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -586,6 +574,18 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">SeqGAN</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">MediaCodec</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">OpenGL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Java</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -605,7 +605,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">爬虫</a>
+                <a href="javascript:void(0)" class="js-tag color4">Retrofit</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -617,11 +617,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Retrofit</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Seq2Seq</a>
+                <a href="javascript:void(0)" class="js-tag color3">爬虫</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -629,7 +625,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Seq2Seq</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">C++</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">LSTM</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -638,10 +642,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Course Notes</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">LSTM</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -715,6 +715,10 @@ MathJax.Hub.Queue(function() {
     	<section class="tools-section tools-section-friends" q-show="friends">
   		
         <ul class="search-ul">
+          
+            <li class="search-li">
+              <a href="http://guangxiang.cc/" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>zgx</a>
+            </li>
           
             <li class="search-li">
               <a href="https://mainland.wang/" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>ddy</a>

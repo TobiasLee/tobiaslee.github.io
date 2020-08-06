@@ -204,7 +204,7 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>SeqGAN 是第一篇用 GAN 在 NLP 上做出一些成果的 model，<a href="http://lantaoyu.com/cv/" target="_blank" rel="noopener">Lantao Yu</a> 的 CV 看的我也是羡慕不已，想着同龄人已经有如此出色的成绩，不由得感觉自己还是太菜了。</p>
-<h2 id="GAN-for-NLP"><a href="#GAN-for-NLP" class="headerlink" title="GAN for NLP"></a>GAN for NLP</h2><p>先前写过一篇文章，<a href="http://tobiaslee.top/2017/12/10/Thoughts-about-adversarial-training-methods-in-NLP/" target="_blank" rel="noopener">关于 Adversarial Training 在 NLP 的一些思考</a>，Adversarial Training 算是 GAN 的源头，而 GAN 算是其在生成器领域的一大成就。但这个 GAN 在文本领域一直不怎么 work，先前我也做过用 GAN 中 Discriminator 作为 Classifier，希望对抗训练能够提升其分类准确度，然而并不成功。原因当时也总结了一下，记录在<a href="https://www.zhihu.com/question/68390841/answer/264504804" target="_blank" rel="noopener">这里</a>，一句话概括就是 Generator 太垃圾根本不能忽悠 Discriminator，反而 Discriminator 因为训练轮数少了（和 Generator 交替训练）被拖了后腿。那么问题又回到了 GAN 来生成文本的问题上了，图像和文本的核心区别在于<strong>图像的 Pixel 表示是连续的，而文本是由离散的 token 组成</strong>。因而，Goodfellow 也在 reddit 上说: </p>
+<h2 id="GAN-for-NLP"><a href="#GAN-for-NLP" class="headerlink" title="GAN for NLP"></a>GAN for NLP</h2><p>先前写过一篇文章，<a href="http://tobiaslee.top/2017/12/10/Thoughts-about-adversarial-training-methods-in-NLP/">关于 Adversarial Training 在 NLP 的一些思考</a>，Adversarial Training 算是 GAN 的源头，而 GAN 算是其在生成器领域的一大成就。但这个 GAN 在文本领域一直不怎么 work，先前我也做过用 GAN 中 Discriminator 作为 Classifier，希望对抗训练能够提升其分类准确度，然而并不成功。原因当时也总结了一下，记录在<a href="https://www.zhihu.com/question/68390841/answer/264504804" target="_blank" rel="noopener">这里</a>，一句话概括就是 Generator 太垃圾根本不能忽悠 Discriminator，反而 Discriminator 因为训练轮数少了（和 Generator 交替训练）被拖了后腿。那么问题又回到了 GAN 来生成文本的问题上了，图像和文本的核心区别在于<strong>图像的 Pixel 表示是连续的，而文本是由离散的 token 组成</strong>。因而，Goodfellow 也在 reddit 上说: </p>
 <blockquote>
 <p>You can make slight changes to the synthetic data only if it is based on continuous numbers. If it is based on discrete numbers, there is no way to make a slight change.</p>
 <p>If you output the word “penguin”, you can’t change that to “penguin + .001” on the next step, because there is no such word as “penguin + .001”. You have to go all the way from “penguin” to “ostrich”.</p>
@@ -534,14 +534,6 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Deep Learning</a>
               </li>
              
@@ -550,7 +542,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">NLP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -562,23 +562,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">C</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Android</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">自定义View</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -590,7 +578,23 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">C</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -599,22 +603,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">MediaCodec</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">OpenGL</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Java</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -627,6 +615,18 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">SeqGAN</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">MediaCodec</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">OpenGL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Java</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -646,7 +646,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">爬虫</a>
+                <a href="javascript:void(0)" class="js-tag color4">Retrofit</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -658,11 +658,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Retrofit</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Seq2Seq</a>
+                <a href="javascript:void(0)" class="js-tag color3">爬虫</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -670,7 +666,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Seq2Seq</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">C++</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">LSTM</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -679,10 +683,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Course Notes</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">LSTM</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -756,6 +756,10 @@ MathJax.Hub.Queue(function() {
     	<section class="tools-section tools-section-friends" q-show="friends">
   		
         <ul class="search-ul">
+          
+            <li class="search-li">
+              <a href="http://guangxiang.cc/" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>zgx</a>
+            </li>
           
             <li class="search-li">
               <a href="https://mainland.wang/" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>ddy</a>

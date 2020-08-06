@@ -295,7 +295,7 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>最近在感兴趣的一个方向是文本生成，读了以 SeqGAN 为代表的一系列通过 RL 手段来做生成的文章，做一下简单的梳理。</p>
-<h2 id="SeqGAN"><a href="#SeqGAN" class="headerlink" title="SeqGAN"></a>SeqGAN</h2><p>算的上是开山之作，具体的解读可以看我之前的一篇文章 <a href="http://tobiaslee.top/2018/03/11/SeqGAN/" target="_blank" rel="noopener">SeqGAN – GAN + RL + NLP</a>，其通过引入强化学习中的 Policy Gradient 来解决因为离散 token 生成前采样动作造成的不可微。后面的文章也都是基于这个框架来进行深一步地探索。SeqGAN 在 Oracle 和古诗生成任务上做了测试，回过头来看，效果只能说一般。但其开创性的将文本生成看做序列决策问题， 并且将 RL 和 GAN 进行了有机的结合，令人佩服。</p>
+<h2 id="SeqGAN"><a href="#SeqGAN" class="headerlink" title="SeqGAN"></a>SeqGAN</h2><p>算的上是开山之作，具体的解读可以看我之前的一篇文章 <a href="http://tobiaslee.top/2018/03/11/SeqGAN/">SeqGAN – GAN + RL + NLP</a>，其通过引入强化学习中的 Policy Gradient 来解决因为离散 token 生成前采样动作造成的不可微。后面的文章也都是基于这个框架来进行深一步地探索。SeqGAN 在 Oracle 和古诗生成任务上做了测试，回过头来看，效果只能说一般。但其开创性的将文本生成看做序列决策问题， 并且将 RL 和 GAN 进行了有机的结合，令人佩服。</p>
 <h2 id="LeakGAN"><a href="#LeakGAN" class="headerlink" title="LeakGAN"></a>LeakGAN</h2><p>LeakGAN 是交大继 SeqGAN 之后的又一作品，其旨在解决 SeqGAN 中出现的一个问题：一方面，是 Discriminator 提供给 Generator 的 reward 需要等句子完成之后才能被计算（即使用 Monte Carlo 来计算，也只是一种近似的模拟），对于每一步的 token 生成不能得到及时的反馈；另一方面，是 Reward  本身只是一个 Scalar，并不能携带太多的信息。何况对于文本这种结构复杂，同样的意思不同的说法都是可以的，那么数值所包含的指导信号比较弱。这一点我在和学长的交流之中以及自身实验体会也有所感受，GAN 的训练很多时候 Discriminator 的作用不大， Generator 生成文本质量的提高更多是靠 Generator 自学。</p>
 <p>对于信息不足，就让 Discriminator 向 Generator “泄露”一些消息，也就是把作为 Discriminator 的 CNN 最后一层的 Feature Vector 交给 Generator，让这个 Feature Vector 携带大量的信息来指导 Generator 更好的生成。</p>
 <p>同时，语义结构的复杂也促使作者使用一个具有层次的生成器，因此在生成器端使用了 Manager 和 Worker 两个模块，分别用于解析 CNN 提供的 Feature Vector 和具体的 token 生成。</p>
@@ -307,7 +307,7 @@
 <p>Softmax 之后得到的依旧是一个类似概率的结果，但这一次不再是真/假的概率，而是衡量句子之间相似程度的概率。最终，和 Reference 中的每个句子的相似概率的数学期望则作为一个 Rank Score 得出，显然，Discriminator 希望真实的句子 Rank Score 越高越好，同时机器生成的 Rank Score 越低越好，因此我们将这个想法套进 GAN 的公式：</p>
 <p><img src="/img/rank_gan.png" alt="Formula"></p>
 <p>所以，RankGAN 的核心就是<strong>用一个 Ranker 来替代 Discriminator，以提供更好地生成句子的评估，进而生帮助 Generator 生成更为真实的句子</strong>。</p>
-<h2 id="MaskGAN"><a href="#MaskGAN" class="headerlink" title="MaskGAN"></a>MaskGAN</h2><p>MaskGAN 的思路则是从<strong>生成器端</strong>来为生成提供更多的信息，具体的内容也可以参考我的这篇 <a href="http://tobiaslee.top/2018/04/01/MaskGAN-Notes/" target="_blank" rel="noopener">MaskGAN 学习笔记</a>。Masked Token 给 GAN 提供了额外的信息窗口，通过使用 Seq2Seq 架构来将进行生成，将提供的信息整合进生成过程之中，获取更好的结果。另外一点，Mask GAN 采用了 Actor-Critic 来替换 Policy Gradient，相比 Monte Carlo，能够较好地对 reward function 做一个拟合。</p>
+<h2 id="MaskGAN"><a href="#MaskGAN" class="headerlink" title="MaskGAN"></a>MaskGAN</h2><p>MaskGAN 的思路则是从<strong>生成器端</strong>来为生成提供更多的信息，具体的内容也可以参考我的这篇 <a href="http://tobiaslee.top/2018/04/01/MaskGAN-Notes/">MaskGAN 学习笔记</a>。Masked Token 给 GAN 提供了额外的信息窗口，通过使用 Seq2Seq 架构来将进行生成，将提供的信息整合进生成过程之中，获取更好的结果。另外一点，Mask GAN 采用了 Actor-Critic 来替换 Policy Gradient，相比 Monte Carlo，能够较好地对 reward function 做一个拟合。</p>
 <h2 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h2><p>这四篇文章看下来，可以发现，SeqGAN 提出了这样一个框架之后，主要工作的方向有两个：</p>
 <ol>
 <li>提高生成文本的质量：我认为，将人类的语言学知识合理地整合进生成的过程，是提高文本生成质量的核心。现有的工作大致是从两个端入手，生成器端通过 Masked Token，比较粗暴地灌进 Generator，Discriminator 端利用句子地相似性，隐式地给判别器端输入语言的知识。<strong>二者如果能够做一个结合，可能是一个很有力的架构</strong>。</li>
@@ -726,7 +726,7 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>SeqGAN 是第一篇用 GAN 在 NLP 上做出一些成果的 model，<a href="http://lantaoyu.com/cv/" target="_blank" rel="noopener">Lantao Yu</a> 的 CV 看的我也是羡慕不已，想着同龄人已经有如此出色的成绩，不由得感觉自己还是太菜了。</p>
-<h2 id="GAN-for-NLP"><a href="#GAN-for-NLP" class="headerlink" title="GAN for NLP"></a>GAN for NLP</h2><p>先前写过一篇文章，<a href="http://tobiaslee.top/2017/12/10/Thoughts-about-adversarial-training-methods-in-NLP/" target="_blank" rel="noopener">关于 Adversarial Training 在 NLP 的一些思考</a>，Adversarial Training 算是 GAN 的源头，而 GAN 算是其在生成器领域的一大成就。但这个 GAN 在文本领域一直不怎么 work，先前我也做过用 GAN 中 Discriminator 作为 Classifier，希望对抗训练能够提升其分类准确度，然而并不成功。原因当时也总结了一下，记录在<a href="https://www.zhihu.com/question/68390841/answer/264504804" target="_blank" rel="noopener">这里</a>，一句话概括就是 Generator 太垃圾根本不能忽悠 Discriminator，反而 Discriminator 因为训练轮数少了（和 Generator 交替训练）被拖了后腿。那么问题又回到了 GAN 来生成文本的问题上了，图像和文本的核心区别在于<strong>图像的 Pixel 表示是连续的，而文本是由离散的 token 组成</strong>。因而，Goodfellow 也在 reddit 上说: </p>
+<h2 id="GAN-for-NLP"><a href="#GAN-for-NLP" class="headerlink" title="GAN for NLP"></a>GAN for NLP</h2><p>先前写过一篇文章，<a href="http://tobiaslee.top/2017/12/10/Thoughts-about-adversarial-training-methods-in-NLP/">关于 Adversarial Training 在 NLP 的一些思考</a>，Adversarial Training 算是 GAN 的源头，而 GAN 算是其在生成器领域的一大成就。但这个 GAN 在文本领域一直不怎么 work，先前我也做过用 GAN 中 Discriminator 作为 Classifier，希望对抗训练能够提升其分类准确度，然而并不成功。原因当时也总结了一下，记录在<a href="https://www.zhihu.com/question/68390841/answer/264504804" target="_blank" rel="noopener">这里</a>，一句话概括就是 Generator 太垃圾根本不能忽悠 Discriminator，反而 Discriminator 因为训练轮数少了（和 Generator 交替训练）被拖了后腿。那么问题又回到了 GAN 来生成文本的问题上了，图像和文本的核心区别在于<strong>图像的 Pixel 表示是连续的，而文本是由离散的 token 组成</strong>。因而，Goodfellow 也在 reddit 上说: </p>
 <blockquote>
 <p>You can make slight changes to the synthetic data only if it is based on continuous numbers. If it is based on discrete numbers, there is no way to make a slight change.</p>
 <p>If you output the word “penguin”, you can’t change that to “penguin + .001” on the next step, because there is no such word as “penguin + .001”. You have to go all the way from “penguin” to “ostrich”.</p>
@@ -1386,14 +1386,6 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Deep Learning</a>
               </li>
              
@@ -1402,7 +1394,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">NLP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1414,23 +1414,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">C</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Android</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">自定义View</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1442,7 +1430,23 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">C</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1451,22 +1455,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">MediaCodec</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">OpenGL</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Java</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1479,6 +1467,18 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">SeqGAN</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">MediaCodec</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">OpenGL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Java</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1498,7 +1498,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">爬虫</a>
+                <a href="javascript:void(0)" class="js-tag color4">Retrofit</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1510,11 +1510,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Retrofit</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Seq2Seq</a>
+                <a href="javascript:void(0)" class="js-tag color3">爬虫</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1522,7 +1518,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Seq2Seq</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">C++</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">LSTM</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1531,10 +1535,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Course Notes</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">LSTM</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1608,6 +1608,10 @@ MathJax.Hub.Queue(function() {
     	<section class="tools-section tools-section-friends" q-show="friends">
   		
         <ul class="search-ul">
+          
+            <li class="search-li">
+              <a href="http://guangxiang.cc/" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>zgx</a>
+            </li>
           
             <li class="search-li">
               <a href="https://mainland.wang/" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>ddy</a>

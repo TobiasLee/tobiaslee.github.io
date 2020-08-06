@@ -210,7 +210,7 @@
 <li>利用 Monte Carlo 来得到 reward，通过 Policy Gradient 指导 Generator 更新</li>
 </ol>
 <p>起初我也是为止着迷，认为这一框架非常 fancy，但是随着时间推移，跑了不少实验之后发现，adversarial training 在其中起到的作用实在是<strong>微不足道</strong>（对比之前的 MLE pretrain，adversarial training 并不会带来生成文本质量的显著提升），为什么呢？接下来谈一下 Adversarial Training 在 Text Generation 中的两个主要的问题。</p>
-<h2 id="Problem"><a href="#Problem" class="headerlink" title="Problem"></a>Problem</h2><h3 id="Sparse-reward"><a href="#Sparse-reward" class="headerlink" title="Sparse reward"></a>Sparse reward</h3><p>adversarial training 没起作用很大的一个原因就在于，discriminator 提供的 reward 具备的 guide signal 太少，Classifier-based Discriminator 提供的只是一个为真或者假的概率作为 reward，而这个 reward 在大部分情况下，是 0。这是因为对于 CNN 来说，分出 fake text 和 real text 是非常容易的，CNN 能在 Classification 任务上做到 99% 的 accuracy，而建模 Language Model 来进行生成，是非常困难的。除此以外，<strong>即使 generator 在这样的 reward 指导下有一些提升，此后的 reward 依旧很小</strong>。从这一点出发，现有不少工作一方法不再使用简单的 fake/true probability 作为 reward，我在之前的 <a href="https://tobiaslee.top/2018/04/22/GAN-in-NLP-Notes/" target="_blank" rel="noopener">GAN in NLP Notes</a> 中也提到了有 LeakyGAN（把 CNN 的 feature 泄露给 generator），RankGAN （用 IR 中的排序作为 reward）等工作来提供更加丰富的 reward；另一个解决的思路是使用 language model-based discriminator，以提供更多的区分度，北大孙栩老师组的 <a href="http://arxiv.org/abs/1802.01345" target="_blank" rel="noopener">DP-GAN</a> 在使用了 Languag model discrminator 之后，在 true data 和 fake data 中间架起了一座桥梁：</p>
+<h2 id="Problem"><a href="#Problem" class="headerlink" title="Problem"></a>Problem</h2><h3 id="Sparse-reward"><a href="#Sparse-reward" class="headerlink" title="Sparse reward"></a>Sparse reward</h3><p>adversarial training 没起作用很大的一个原因就在于，discriminator 提供的 reward 具备的 guide signal 太少，Classifier-based Discriminator 提供的只是一个为真或者假的概率作为 reward，而这个 reward 在大部分情况下，是 0。这是因为对于 CNN 来说，分出 fake text 和 real text 是非常容易的，CNN 能在 Classification 任务上做到 99% 的 accuracy，而建模 Language Model 来进行生成，是非常困难的。除此以外，<strong>即使 generator 在这样的 reward 指导下有一些提升，此后的 reward 依旧很小</strong>。从这一点出发，现有不少工作一方法不再使用简单的 fake/true probability 作为 reward，我在之前的 <a href="https://tobiaslee.top/2018/04/22/GAN-in-NLP-Notes/">GAN in NLP Notes</a> 中也提到了有 LeakyGAN（把 CNN 的 feature 泄露给 generator），RankGAN （用 IR 中的排序作为 reward）等工作来提供更加丰富的 reward；另一个解决的思路是使用 language model-based discriminator，以提供更多的区分度，北大孙栩老师组的 <a href="http://arxiv.org/abs/1802.01345" target="_blank" rel="noopener">DP-GAN</a> 在使用了 Languag model discrminator 之后，在 true data 和 fake data 中间架起了一座桥梁：</p>
 <p><img src="/img/dp-gan.png" alt="DP-GAN"></p>
 <p>从而 discriminator 不再是非 0 即 1。据其他同学的一些经验，DP-GAN 的实验效果也是非常不错的，这一点或许可以和之前的两个数据流型分布中间没有交集有关，使用了更 distinguishable 的 reward 之后，fake data 的分布和 true data 的分布加大了，GAN 的距离度量才有了变化。</p>
 <h3 id="Monte-Carlo-Search"><a href="#Monte-Carlo-Search" class="headerlink" title="Monte Carlo Search"></a>Monte Carlo Search</h3><p>在 SeqGAN 以及后续的很多工作之中，对于 Reward 的评估都是基于句级别的，也就是会先使用 Monte Carlo Search 的方法将句子进行补全再交给 Discriminator，但是这个采样方法的时间复杂度是 $O(n mL^2)$，其中 $n$ 是 batch size，$m$ 是采样的次数，$L$ 是句子的 max len。就 SeqGAN 的实验来说，$m = 16$ 并且 $L=20$  ，速度尚且可以接受，但是如果我们需要去生成一篇文章 $L=200$，那么每次计算 reward 就会来带很大的开销，我个人的体验是在 Tesla M40 上 $L$ 在 100 左右，$m = 16, n = 64$ 一个 batch 需要 230 s。对于常见的万级别的 corpus，一个 Epoch 的训练时间就到了一天，而最终对于性能的提升还不如 MLE 一个 epoch 来的显著，这也是我为什么不建议在工程上使用的很大程度的一个原因。 </p>
@@ -479,14 +479,6 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Deep Learning</a>
               </li>
              
@@ -495,7 +487,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">NLP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -507,23 +507,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">C</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Android</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">自定义View</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -535,7 +523,23 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">C</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -544,22 +548,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">MediaCodec</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">OpenGL</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Java</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -572,6 +560,18 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">SeqGAN</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">MediaCodec</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">OpenGL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Java</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -591,7 +591,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">爬虫</a>
+                <a href="javascript:void(0)" class="js-tag color4">Retrofit</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -603,11 +603,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Retrofit</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Seq2Seq</a>
+                <a href="javascript:void(0)" class="js-tag color3">爬虫</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -615,7 +611,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Seq2Seq</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">C++</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">LSTM</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -624,10 +628,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Course Notes</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">LSTM</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -701,6 +701,10 @@ MathJax.Hub.Queue(function() {
     	<section class="tools-section tools-section-friends" q-show="friends">
   		
         <ul class="search-ul">
+          
+            <li class="search-li">
+              <a href="http://guangxiang.cc/" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>zgx</a>
+            </li>
           
             <li class="search-li">
               <a href="https://mainland.wang/" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>ddy</a>
