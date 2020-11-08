@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://tobiaslee.top/"/>
-  <updated>2020-05-18T03:35:41.840Z</updated>
+  <updated>2020-11-08T15:48:26.315Z</updated>
   <id>https://tobiaslee.top/</id>
   
   <author>
@@ -15,6 +15,29 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>当我们面对卷的时候，我们该做些什么？</title>
+    <link href="https://tobiaslee.top/2020/11/08/inner-peace/"/>
+    <id>https://tobiaslee.top/2020/11/08/inner-peace/</id>
+    <published>2020-11-08T05:49:15.000Z</published>
+    <updated>2020-11-08T15:48:26.315Z</updated>
+    
+    <content type="html"><![CDATA[<p>燕园的叶子又黄了，落了，距离秃了约莫还有半个月的光景吧。去年这个时候的我，看着满地萧瑟的时候，充斥着的即将成为这里一份子的激动，因而反倒是并不觉得心情低落。今年的这个时候，已是园中人的自己，却因为一次又一次的实验失败，以及受到内卷气氛的影响，开始感到了焦虑。一般这种时候，我的疗法就是给自己猛灌鸡汤，再打打鸡血，写篇<em>战斗檄文</em>，第二天就又斗志昂扬了。今天就来故技重施，看看能不能提振一下士气。</p><h2 id="卷和躺平"><a href="#卷和躺平" class="headerlink" title="卷和躺平"></a>卷和躺平</h2><p>内卷这个词不知道是什么时候突然兴起的，指的就是大家都削减了脑袋学习、工作，以获得某些资源上的优势。带来的后果就是，你加班到 8 点，别人为了比你更勤奋就加班到 9 点，进入一个恶性的循环，最后，谁也别走了。老板自然是乐得见到自己的员工拼命加班，只是同为打工人，何必难为打工人？躺平则就是另外一个角度了，能摸鱼的时候就尽可能摸鱼，6 点下班绝对不 6 点 1 分走，完成交代的任务然后，顺其自然。</p><p>巴菲特说，人生像是滚雪球，找到湿的雪和和很长的坡道，雪球就会越滚越大。我觉得他漏了一点，就是初始的雪球的大小。总的来说，现在坡道上的雪已经不多，如果一开始的那个小雪球很小，那么，滚雪球前半段中的消耗是很有可能大于积累的，滚着滚着，雪球不但不会变大，反倒会变小。以我的经历来说，选择坡道，和专业、职业的选择是有一些对应的，例如，程序员这条坡道前段的雪还挺多，但是后段的雪就不那么多了；公务员则是国家负责给你的坡道上铺上一层不薄也不厚的雪，能不能滚的很大，初始资本的积累就显得尤为重要。</p><p>那么我是哪一派的人呢？我的理念是：<strong>该卷的时候，我努力卷；能不卷的时候，或者说，卷的意义不大的时候，就不卷</strong>。学校里的氛围，相对来说氛围其实是比较和谐的，没有那么多的乌七八糟，而在这个时候，卷的收益还是蛮大的，实际上你可以认为就是在搓一开始的那个小雪球，如果你能够在开始滚雪球的时候，半径比别人大上那么一小圈，那么你后面积累的速度也就会上去，并且如果在同一个坡道上的话，你会越滚越快，别人只能在你后面吃土，而你，赢家通吃。所以，在学校里，适当地卷一些，在我看来，收益是很大的。当然，我强烈建议已经不愁吃喝的朋友们，直接躺平，多去创造一些精神财富留给后代。卷的意义不大的时候是指，你加班到 9 点，实际上是从 6 点摸鱼到 9 点，可能抽了那么 15 min 做了点工作；或者是著名类似学堂路上边骑车边 Linux 这种，前者无效率，后者有可能造成巨大安全上的后果，我都是坚决反对的。</p><h2 id="挫商"><a href="#挫商" class="headerlink" title="挫商"></a>挫商</h2><p>之前谈到过一个观点，做科研的奖赏函数，是非常稀疏的，可能早些年会 dense 一些。我最近这个 6 个月，对此是深有体会，基本上没有收到什么正向的激励，很是有挫败感，开始逐渐怀疑自己。我觉得这个感觉其实有这几方面的原因：</p><ul><li>信息的传播速度变快了：经常看各大公众号推拳打脚踢，天才少年，被它们的这些文章带的很焦虑；同时，pyq 里面也有越来越多的从业者，我数了下，朋友圈里面大大小小 best paper 得主的数量两只手都快数不过来了，看他们发 paper accepted 的内容，更焦虑了；</li><li>Taste 更挑剔了，实验难度更大了：为什么实验不太成功呢？因为现在做的工作的难度相对于之前会更有挑战性，一方面这是大势所趋，简单的应用新方法到旧问题（A+B）模式的 paper 被接收的概率大大降低；另外一方面，也是做科研的 taste 逐渐提高了，可能有些想法依旧不是特别的成熟，但那些非常 straightforward 的 idea 大多过不了自己这关，因而也就不会有特别容易做的实验；</li><li>正式成为了研究生，肩上会有了研究任务以及一个明确的期限：有师兄师姐在研二上如果还没有发出 paper，就会特别焦虑，也是这么个原因，因为马上就要找工作所以随着秋招春招的迫近，紧迫感随之而来；而入学之后，也会有导师分配的项目，同样也有结题的压力的因素。</li></ul><p>综上，在正式开始研究生生涯不久，我就感觉到了精神上的疲惫；身体上倒还好，或许是得益于没事就去踢野球蹭友谊赛（PS：昨天友谊赛还制造了点球并且罚进了哈哈哈）以及还算合理的作息，头发啥的还没开始掉，有望保持到35岁。我能想到的解决这种焦虑的方法，其实也就是少和别人比较，多往前看看，<strong>做好每天的工作笔记</strong>，方便在点滴之间回顾一些小的结果；多和亲朋好友沟通，交流感情；以及，适当地进行一些放松，毕竟<strong>坡道很长</strong>，人生也很长；吃点好的，现在开始很认同一句话：<strong>垃圾食品是人类性后的救赎</strong>，偶尔放纵一下，感受可乐入口时的刺激与爽快，真的很解压。</p><h2 id="明天会更好"><a href="#明天会更好" class="headerlink" title="明天会更好"></a>明天会更好</h2><p>我觉得不单单是我，也许有很多同学朋友也都会面临这样的烦恼，希望这些不成体系的废话能够博君一笑，若是有所帮助，那自然是再好不过了。</p><p>衷心希望，每个研究生都能永葆头发，科研顺利，明天又是新的一天！</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;燕园的叶子又黄了，落了，距离秃了约莫还有半个月的光景吧。去年这个时候的我，看着满地萧瑟的时候，充斥着的即将成为这里一份子的激动，因而反倒是并不觉得心情低落。今年的这个时候，已是园中人的自己，却因为一次又一次的实验失败，以及受到内卷气氛的影响，开始感到了焦虑。一般这种时候，我
+      
+    
+    </summary>
+    
+    
+      <category term="随笔" scheme="https://tobiaslee.top/tags/%E9%9A%8F%E7%AC%94/"/>
+    
+  </entry>
   
   <entry>
     <title>Contrastive Learning 学习笔记</title>
@@ -518,9 +541,9 @@
     
       <category term="NLP" scheme="https://tobiaslee.top/tags/NLP/"/>
     
-      <category term="GAN" scheme="https://tobiaslee.top/tags/GAN/"/>
-    
       <category term="Text Generation" scheme="https://tobiaslee.top/tags/Text-Generation/"/>
+    
+      <category term="GAN" scheme="https://tobiaslee.top/tags/GAN/"/>
     
   </entry>
   
@@ -652,9 +675,9 @@
     
       <category term="Deep Learning" scheme="https://tobiaslee.top/tags/Deep-Learning/"/>
     
-      <category term="GAN" scheme="https://tobiaslee.top/tags/GAN/"/>
-    
       <category term="Text Generation" scheme="https://tobiaslee.top/tags/Text-Generation/"/>
+    
+      <category term="GAN" scheme="https://tobiaslee.top/tags/GAN/"/>
     
   </entry>
   
@@ -764,9 +787,9 @@
     
       <category term="NLP" scheme="https://tobiaslee.top/tags/NLP/"/>
     
-      <category term="GAN" scheme="https://tobiaslee.top/tags/GAN/"/>
-    
       <category term="Text Generation" scheme="https://tobiaslee.top/tags/Text-Generation/"/>
+    
+      <category term="GAN" scheme="https://tobiaslee.top/tags/GAN/"/>
     
   </entry>
   
