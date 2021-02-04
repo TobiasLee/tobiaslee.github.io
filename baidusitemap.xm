@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://tobiaslee.top/2021/02/04/Goodbye-2020/</loc>
+    <lastmod>2021-02-04T09:10:07.569Z</lastmod>
+  </url>  <url>
     <loc>https://tobiaslee.top/2020/11/08/inner-peace/</loc>
     <lastmod>2020-11-08T15:48:26.315Z</lastmod>
   </url>  <url>

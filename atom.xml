@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://tobiaslee.top/"/>
-  <updated>2020-11-08T15:48:26.315Z</updated>
+  <updated>2021-02-04T09:10:07.569Z</updated>
   <id>https://tobiaslee.top/</id>
   
   <author>
@@ -15,6 +15,30 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Goodbye，2020！</title>
+    <link href="https://tobiaslee.top/2021/02/04/Goodbye-2020/"/>
+    <id>https://tobiaslee.top/2021/02/04/Goodbye-2020/</id>
+    <published>2021-02-04T15:47:17.000Z</published>
+    <updated>2021-02-04T09:10:07.569Z</updated>
+    
+    <content type="html"><![CDATA[<p>前一直没写年度总结很重要的一个原因也是因为觉得，手头的文章没投出去，还是不能算是一个完整的年度。经历了 softconf 爆炸 ACL 的 ddl 延期一天之后，终于，ACL 结束了，也算是给2020年画上一个句号。收拾收拾心情，准备写今年的年度总结。</p><h2 id="PKU"><a href="#PKU" class="headerlink" title="PKU"></a>PKU</h2><p>在 P 大度过了第一个学期，一开始还是蛮新鲜的，老老实实地选课上课，后来就开始油起来，开始选择性上课。第一学期选的课不多，总体上的压力不大，最后也都顺利摸过去了。当初选课的时候 Dr. Xiang 就说<strong>对于研究生来说，选课不是为了去学习这门课的内容，而是为了拿到对应的学分</strong>，真正的功夫还是在课堂以外的，自己去看 paper 和 coding，一学期下来我觉得还是很有道理的。不过这学期选的计算语言学课我觉得还是蛮不错的，第一次 Pre 大家展示的东西让我有一种我在某个会议 Workshop 的错觉，看别人做的东西有些还是蛮有 insight 的，果然 dalao 们都是不鸣则已一鸣惊人的。下学期的选课应该会延续这个思路，<del>能划则划</del>天天向上。</p><p>除了上课，我大部分的时间都还是在所里，过着早上九点班车——鸡蛋饼永远滴神——所里打卡的生活。在所里打交道最多的除了师兄师姐们以外，就是同一级的 daolao 们，介绍如下：</p><p><strong>Andy </strong>：不和没发过 ACL 的人做朋友——信科被取消晚会<del>主持人</del>倒霉蛋——中午必回寝室午睡的男人；</p><p><strong>Juicy</strong>：知名<del>开合跳</del>千手观音表演艺术家，后踢腿踢不到自己屁股的 Keep 达人，鸡蛋饼永远滴神教拥趸；</p><p><strong>Keven</strong>：Backdoor Attack 专家，数学证明达人，乒乓x篮球双修选手，九点班车忠实爱好者；</p><p><strong>GRD</strong>：“处在崩溃边缘”作者；</p><p><strong>Peter</strong>：运动健将，出现的地点包括但不限于邱德拔游泳馆篮球场健身房以及，最大概率在所里；</p><p><strong>William</strong>：可能是语言所歌王（x</p><p><strong>Windy</strong>：目前所里我们唯一的，非常勤奋的师妹。</p><p>我想，研究生的日子呆在一起最多的就是这些可爱的朋友们了，希望大家新的一年都能够身体健康，Paper 多多，快快乐乐地度过或三年或五年的时光。</p><h2 id="Research"><a href="#Research" class="headerlink" title="Research"></a>Research</h2><p>去年这个时候，我虽然大致知道研究生做研究大致是什么样的，但是对于具体要做什么，以及怎么做，还是没有一个比较清楚的认知的。也一度因此，陷入比较焦虑的状态。和本科的时候在师兄的指导下去做一些尝试不一样，研究生阶段，可以认为每个人都是自己的 paper/project 的 leader，要考虑到很多事情，这学期也在这方面不断的探索，总结如下：</p><ul><li><strong>选题</strong>：对于接触不多的同学来说，这个可能反倒会轻松一些，可以挑选组里有沉淀的方向以及和高年级师兄师姐们一起开始去挖坑填坑都是不错的选择；之前做过一些生成的工作，起初我也沿着生成去调研了一部分觉得可能蛮有意思的问题，但总的来说觉得生成方向的坑有一些自娱自乐的感觉，而一些 long standing problem 也没有比较好的解决思路，遂决定转战别处。学期初和老板讨论的时候他指出要做一些和时代大趋势挂钩的研究，那么显然就是预训练模型，但是直接拿来做应用似乎也比较 superficial。最后兜兜转转，敲定决定在压缩、加速等方面做一些研究，一方面在随着模型越来越大的同时大家开始关注其效率的问题，我对于让预训练模型在尽可能小、推理速度尽可能快的情况下，保持性能这一目标还是很有兴趣的；另外这个对于实际落地也可能也能够带来一定的帮助，对于之后可能很快就会进入就业市场的我也有一定帮助。总之，选题方面要结合个人的兴趣以及多和老板师兄师姐们沟通，尽可能<strong>找到个人趣味、实验室沉淀以及落地价值之间比较好的平衡点</strong>。</li><li><strong>实验</strong>：这块可能是整个 paper 里面看起来最重要但是又不那么重要的一环。但是有一些做好一些小细节有利于加快迭代速度：<ul><li>选一个好的框架，例如 transformers / fairseq 之类的框架提供了非常好的支持，深入理解框架并且能够灵活定制有助于实验的快速推进；</li><li>快速验证：这个是这学期吃的一个亏让我意识到，实验不是一开始就越fancy越好，有一些验证idea的实验一定要尽早做，这样就可以省下之后很多走弯路的功夫；</li><li>调试：Log 很重要，以及对于关键语句是否执行的判断在 debug 初期也是很重要的，剩下的就是看 Google 的熟练运用程度了；</li></ul></li><li><strong>写作</strong>：多看多写，写作前翻阅刘洋老师的论文写作技巧；自己多读几遍，再找各种同学来读，接受他们的建议；时刻牢记 reader 和 writer 之间的 gap，be humble；</li><li><strong>合作</strong>：现在的 paper 很少有单枪匹马完成的，大多是团队合作的成果。不过我觉得在合作过程之中作为 leader 还是要有着一个主人翁的精神，尽可能地把合作者当成一个判别器，而不是视作生成器依赖他们来<em>生成</em>解决方案，那对合作者的要求会很高。例如，在和高年级师兄师姐合作的时候，他们也有着很多的任务，不应该依赖于他们来直接给出解决方案，遇到问题之后可以一起分析，分析完了自己尝试想想有没有可能的 solution，再和师兄师姐们去讨论，借助他们的经验来判断可行性。</li><li><strong>心态</strong>：可能前面一些方面的感想都能够比较直接地体现出来，但是心态上，我觉得真的做研究，急不来。之前也讨论过卷的问题，我觉得一个比较好的境界是<strong>外卷内松</strong>，即外在来看，保证工作时间到位，思考的时间充足，迭代的实验充足；内心则对于结果不加过强的预设，能够平静看待最后的产出。用比较 fashion 的话说的话，就是<strong>因上努力，果上随缘</strong>。我这学期一开始的时候就非常焦虑，迫切想要产出文章。但是越着急，并不能带来正面的结果，反倒是会在一些无谓的事情耗费精力。我干过的蠢事就是用两天写了一个的短文准备投 NAACL，首先是 idea 方面并没有任何的 novelty，以及写作因为是 rush 的 paper 也存在很大的问题。最后在摇了一个号之后我还是 withdraw 了这个 paper，因为最终还是没能过我自己那关。对于投出去的 paper，还是希望过了心中的 bar 再投，不然只是为  community 徒增审稿负担罢辽。</li></ul><p>最后，要感谢这一学期一来给了我很多帮助的 lurker、deli、guangxiang、yankai、yige、zhenghua 等师兄师姐们，希望师兄师姐们最终都能够有满意的去处。</p><h2 id="Misc"><a href="#Misc" class="headerlink" title="Misc"></a>Misc</h2><p>下面是一些不成体系的胡言乱语：</p><ul><li>杂七杂八地读了不少书，估摸着应该达到预期的阅读量；</li><li><p>美股取得正收益，获得了翻两倍的股票若干，另外基金收益也不错，不过新的一年应该降低期望；</p></li><li><p>拿到院队队服，希望明年能在北大杯上和信科一起冲击冠军；</p></li><li>体重保持恒定，在一个能接受的范围内波动，新年的 flag 还是要控制体重；</li><li>Blog 的文章产出没有达到预期，学术风的 blog 似乎有点走偏了，寒假期间应该会努力产出一些有趣的 paper 解读文章；</li><li>组建奶茶群，也不知道拿了多少次奶茶（去拿奶茶的路上消耗热量所以喝奶茶就没热量了！）</li></ul><p>新的一年，保持好奇，内心平静，慢慢成长~</p><p>提前祝大家新年快乐！！</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;前一直没写年度总结很重要的一个原因也是因为觉得，手头的文章没投出去，还是不能算是一个完整的年度。经历了 softconf 爆炸 ACL 的 ddl 延期一天之后，终于，ACL 结束了，也算是给2020年画上一个句号。收拾收拾心情，准备写今年的年度总结。&lt;/p&gt;
+&lt;h2 id
+      
+    
+    </summary>
+    
+    
+      <category term="随笔" scheme="https://tobiaslee.top/tags/%E9%9A%8F%E7%AC%94/"/>
+    
+  </entry>
   
   <entry>
     <title>当我们面对卷的时候，我们该做些什么？</title>
@@ -61,9 +85,9 @@
     
       <category term="Deep Learning" scheme="https://tobiaslee.top/tags/Deep-Learning/"/>
     
-      <category term="NLP" scheme="https://tobiaslee.top/tags/NLP/"/>
-    
       <category term="Machine Learning" scheme="https://tobiaslee.top/tags/Machine-Learning/"/>
+    
+      <category term="NLP" scheme="https://tobiaslee.top/tags/NLP/"/>
     
   </entry>
   
@@ -1504,9 +1528,9 @@
     </summary>
     
     
-      <category term="NLP" scheme="https://tobiaslee.top/tags/NLP/"/>
-    
       <category term="Machine Learning" scheme="https://tobiaslee.top/tags/Machine-Learning/"/>
+    
+      <category term="NLP" scheme="https://tobiaslee.top/tags/NLP/"/>
     
       <category term="TensorFlow" scheme="https://tobiaslee.top/tags/TensorFlow/"/>
     
@@ -1558,9 +1582,9 @@
     </summary>
     
     
-      <category term="NLP" scheme="https://tobiaslee.top/tags/NLP/"/>
-    
       <category term="Machine Learning" scheme="https://tobiaslee.top/tags/Machine-Learning/"/>
+    
+      <category term="NLP" scheme="https://tobiaslee.top/tags/NLP/"/>
     
       <category term="TensorFlow" scheme="https://tobiaslee.top/tags/TensorFlow/"/>
     
