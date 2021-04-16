@@ -179,6 +179,136 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-Improving-Training-Efficiency-of-TinyBERT" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2021/04/16/Improving-Training-Efficiency-of-TinyBERT/">TinyBERT 蒸馏速度实现加速小记</a>
+    </h1>
+  
+
+        
+        <a href="/2021/04/16/Improving-Training-Efficiency-of-TinyBERT/" class="archive-article-date">
+  	<time datetime="2021-04-16T06:08:51.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-04-16</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>最近做的一个 project 需要复现 EMNLP 2020 Findings 的 <a href="https://github.com/huawei-noah/Pretrained-Language-Model/tree/master/TinyBERT" target="_blank" rel="noopener">TinyBERT</a>，这篇文章就是在复现过程对踩到坑，以及对应的解决方案和实现加速的一个记录。</p>
+<h2 id="Overview-of-TinyBERT"><a href="#Overview-of-TinyBERT" class="headerlink" title="Overview of TinyBERT"></a>Overview of TinyBERT</h2><p>BERT 效果虽好，其较大内存消耗和较长的推理延时会对其上线部署造成一定挑战。内存消耗方面，一系列知识蒸馏的工作，例如 <a href="https://arxiv.org/abs/1910.01108" target="_blank" rel="noopener">DistilBERT</a>、<a href="https://arxiv.org/abs/1908.09355" target="_blank" rel="noopener">BERT-PKD</a> 和 <a href="https://github.com/huawei-noah/Pretrained-Language-Model/tree/master/TinyBERT" target="_blank" rel="noopener">TinyBERT</a> 被提出来来降低模型的参数（主要是层数）以及相应地减少时间；推理加速方面，也有例如 <a href="https://arxiv.org/abs/2004.12993" target="_blank" rel="noopener">DeeBERT</a>、<a href="https://arxiv.org/abs/2004.02178" target="_blank" rel="noopener">FastBERT</a> 以及 <a href="https://arxiv.org/abs/2012.14682" target="_blank" rel="noopener">CascadeBERT</a> 等方案来动态地根据样本难度进行模型的执行从而提升推理效率。其中比较具备代表性便是 TinyBERT，其核心框架如下：</p>
+<p><img src="/img/tinybert.png" alt="TinyBERT"></p>
+<p>分为两个阶段：</p>
+<ul>
+<li>General Distillation：在通用的语料，例如 BookCorpus， EnglishWiki 上进行知识蒸馏，目标函数包括  Transformer Layer Attention 矩阵以及 Layer Hidden States 的对齐；</li>
+<li>Task Distillation：在具体的任务数据集上进行蒸馏，又被进一步分成两个步骤：<ul>
+<li>Task Transformer Disitllation: 在任务数据集上对齐 Student 和已经 fine-tuned  Teacher model 的 attention map 和 hidden states；</li>
+<li>Task Prediction Distillation：在任务数据集上对 student model 和 teacher model 的 output distritbuion 利用 KL loss / MSE loss 进行对齐。</li>
+</ul>
+</li>
+</ul>
+<p>TinyBERT 提供了经过 General Distillation 阶段的 checkpoint，可以认为是一个小的 BERT，包括了 6L786H 版本以及 4L312H 版本。而我们后续的复现就是基于 4L312H v2 版本的。值得注意的是，TinyBERT 对任务数据集进行了数据增强操作，通过基于 Glove 的 Embedding Distance 的相近词替换以及 BERT MLM 预测替换，会将原本的数据集扩增到 20 倍。而我们遇到的第一个 bug 就是在数据增强阶段。</p>
+<h2 id="Bug-in-Data-Augmentation"><a href="#Bug-in-Data-Augmentation" class="headerlink" title="Bug in Data Augmentation"></a>Bug in Data Augmentation</h2><p>我们可以按照官方给出的代码对数据进行增强操作，但是在 QNLI 上会报错：</p>
+<blockquote>
+<p>Index Error: index 514 is out of dimension 1 with size 512</p>
+</blockquote>
+<p>造成数据增强到一半程序就崩溃了，为什么呢？</p>
+<p>很简单，因为数据增强代码 BERT MLM 换词模块对于超长（&gt; 512）的句子没有特殊处理，造成下标越界，具体可以参考 <a href="https://github.com/huawei-noah/Pretrained-Language-Model/issues/50" target="_blank" rel="noopener">#Issue50</a>。</p>
+<p>在对应的函数中进行边界的判断即可：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">_masked_language_model</span><span class="params">(self, sent, word_pieces, mask_id)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> mask_id &gt; <span class="number">511</span>: <span class="comment"># if mask id is longer than max length </span></span><br><span class="line">        <span class="keyword">return</span> [] </span><br><span class="line">    tokenized_text = self.tokenizer.tokenize(sent)</span><br><span class="line">    tokenized_text = [<span class="string">'[CLS]'</span>] + tokenized_text</span><br><span class="line">    tokenized_len = len(tokenized_text)</span><br><span class="line">    tokenized_text = word_pieces + [<span class="string">'[SEP]'</span>] + tokenized_text[<span class="number">1</span>:] + [<span class="string">'[SEP]'</span>]</span><br><span class="line">    segments_ids = [<span class="number">0</span>] * (tokenized_len + <span class="number">1</span>) + [<span class="number">1</span>] * (len(tokenized_text) - tokenized_len - <span class="number">1</span>)</span><br><span class="line">    <span class="keyword">if</span> len(tokenized_text) &gt; <span class="number">512</span>: <span class="comment">#  truncation </span></span><br><span class="line">        tokenized_text = tokenized_text[:<span class="number">512</span>]</span><br><span class="line">        segments_ids = segments_ids[:<span class="number">512</span>]  </span><br><span class="line">    token_ids = self.tokenizer.convert_tokens_to_ids(tokenized_text)</span><br><span class="line">    tokens_tensor = torch.tensor([token_ids]).to(device)</span><br><span class="line">    segments_tensor = torch.tensor([segments_ids]).to(device)</span><br><span class="line">    self.model.to(device)</span><br><span class="line">    predictions = self.model(tokens_tensor, segments_tensor)</span><br><span class="line">    word_candidates = torch.argsort(predictions[<span class="number">0</span>, mask_id], descending=<span class="keyword">True</span>)[:self.M].tolist()</span><br><span class="line">    word_candidates = self.tokenizer.convert_ids_to_tokens(word_candidates)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> list(filter(<span class="keyword">lambda</span> x: x.find(<span class="string">"##"</span>), word_candidates))</span><br></pre></td></tr></table></figure>
+<h2 id="Acceleration-of-Data-Parallel"><a href="#Acceleration-of-Data-Parallel" class="headerlink" title="Acceleration of Data Parallel"></a>Acceleration of Data Parallel</h2><p>当我们<del>费劲</del>愉快地完成数据增强之后，下一步就是要进行 Task Specific 蒸馏里的 Step 1，General Distillation 了。对于一些小数据集像 MRPC，增广 20 倍之后的数据量依旧是 80k 不到，因此训练速度还是很快的，20 轮单卡大概半天也能跑完。但是对于像 MNLI 这样 GLUE 中最大的数据集（390k），20 倍增广后的数据集（增广就花费了大约 2 天时间），如果用单卡训练个 10 轮那可能得跑上半个月了，到时候怕不是黄花菜都凉咯。遂打算用多卡训练，一看，官方的实现就通过 <code>nn.DataParallel</code> 支持了多卡。好嘛，直接 <code>CUDA_VISIBLE_DEVICES=&quot;0,1,2,3&quot;</code> 来上 4 块卡。不跑不知道，加载数据（tokenize, padding ）花费 1小时，好不容易跑起来了，一开 <code>nvidia-smi</code> 吓一跳，GPU 的利用率都在 50% 左右，再一看预估时间，大约 21h 一轮，10 epoch 那四舍五入就是一个半礼拜。好家伙，这我还做不做实验了？这时候就去翻看 PyTorch 文档，发现 PyTorch 现在都不再推荐使用 <code>nn.DataParallel</code> 了，为什么呢？主要原因在于 DataParallel 的实现是单进程的，每次都是有一块主卡读入数据再发给其他卡，这一部分不进带来了额外的计算开销，而且会造成主卡的 GPU 显存占用会显著高于其他卡，进而造成潜在的 batch size 限制；此外，这种模式下，其他 GPU 算完之后要传回主卡进行同步，这一步又会受限于 Python 的线程之间的 GIL（global interpreter lock），进一步降低了效率。此外，还有多机以及模型切片等 DataParallel 不支持，但是另一个 DistributedDataParallel 模块支持的功能。所以，废话少说，得把原先 TinyBERT DataParallel（DP）改成 DistributedDataParallel(DDP)。那么，请问，把 DP 改成 DDP 需要几步？答：大概，就那么多步吧，实现可以参考这个<a href="https://zhuanlan.zhihu.com/p/98535650" target="_blank" rel="noopener">知乎-当代研究生需要掌握的并行训练技巧</a>。核心的代码就是做一下初始化，以及用 DDP 替换掉 DP：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> torch.nn.parallel <span class="keyword">import</span> DistributedDataParallel <span class="keyword">as</span> DDP</span><br><span class="line"><span class="keyword">import</span> torch.distributed <span class="keyword">as</span> dist </span><br><span class="line"></span><br><span class="line"><span class="comment"># 给 parser 增加一个 local rank 参数来在启动的时候传入 rank </span></span><br><span class="line">parser.add_argument(<span class="string">'--local_rank'</span>,</span><br><span class="line">                        type=int,</span><br><span class="line">                        default=<span class="number">-1</span>)</span><br><span class="line"><span class="comment"># ...</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 初始化</span></span><br><span class="line">logger.info(<span class="string">"Initializing Distributed Environment"</span>)</span><br><span class="line">torch.cuda.set_device(args.local_rank)</span><br><span class="line">dist.init_process_group(backend=<span class="string">"nccl"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置 devicec</span></span><br><span class="line">local_rank = args.local_rank</span><br><span class="line">torch.cuda.set_device(local_rank)</span><br><span class="line"></span><br><span class="line"><span class="comment"># ...</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 初始化模型 并且 放到 device 上</span></span><br><span class="line">student_model = TinyBertForSequenceClassification.from_pretrained(args.student_model, num_labels=num_labels).to(device)    </span><br><span class="line">teacher_model = TinyBertForSequenceClassification.from_pretrained(args.teacher_model, num_labels=num_labels).to(device)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 用 DDP 包裹模型</span></span><br><span class="line">student_model = DDP(student_model, device_ids=[local_rank], output_device=local_rank)</span><br><span class="line">teacher_model = DDP(teacher_model, device_ids=[local_rank], output_device=local_rank)</span><br><span class="line"></span><br><span class="line"><span class="comment"># ..</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 用 DistributedSampler 替换原来的 Random Sampler</span></span><br><span class="line">train_sampler = torch.utils.data.DistributedSampler(train_data)</span><br></pre></td></tr></table></figure>
+<p>然后，大功告成，一键启动:</p>
+<blockquote>
+<p>GPU=”0,1,2,3”</p>
+<p>CUDA_VISIBLE_DEVICEES=$GPU python -m torch.distributed.launch  –n_proc_per_node 4 task_disti.py </p>
+</blockquote>
+<p>启动成功了吗？模型又开始处理数据….</p>
+<p>One hours later，机器突然卡住，程序的 log 也停了，打开 htop 一看，好家伙，256G 的内存都满了，程序都是 D 状态，咋回事？</p>
+<h2 id="Acceleration-of-Data-Loading"><a href="#Acceleration-of-Data-Loading" class="headerlink" title="Acceleration of Data Loading"></a>Acceleration of Data Loading</h2><p>我先试了少量数据，降采样到 10k，程序运行没问题， DDP 速度很快；我再尝试了单卡加载，虽然又 load 了一个小时，但是 ok，程序还是能跑起来，那么，问题是如何发生的呢？单卡的时候我看了一眼加载全量数据完毕之后的内存占用，大约在 60G 左右，考虑到 DDP 是多进程的，因此，每个进程都要独立地加载数据，4 块卡 4个进程，大约就是 250 G 的内存，因此内存爆炸，到后面数据的 io 就卡住了（没法从磁盘 load 到内存），所以造成了程序 D 状态。看了下组里的机器，最大的也就是 250 G 内存，也就是说，如果我只用 3 块卡，那么是能够跑的，但是万一有别的同学上来开程序吃了一部分内存，那么就很可能爆内存，然后就是大家的程序都同归于尽的局面，不太妙。一种不太优雅的解决方案就是，把数据切块，然后读完一小块训练完，再读下一块，再训练，再读。咨询了一下组里资深的师兄，还有一种办法就是实现一种<strong>把数据存在磁盘上，每次要用的时候才 load 到内存的</strong>数据读取方案，这样就能够避免爆内存的问题。行吧，那就干吧，但是总不能从头造轮子吧？脸折师兄提到 huggingface(yyds) 的 <a href="https://huggingface.co/datasets" target="_blank" rel="noopener">datasets</a> 能够支持这个功能，check 了一下文档，发现他是基于 pyarrow 的实现，以我的 huggingface transformers 的经验，似乎是能够实现这个功能的，所以摩拳擦掌，准备动手。</p>
+<p>首先，要把增广的数据 load 进来，datasets 提供的 <code>load_dataset</code> 函数最接近的就是 <code>load_dataset(&#39;csv&#39;, data_file)</code>，然后我们就可以逐个 column 的拿到数据并且进行预处理了。写了一会，发现总是报读取一部分数据后 columns 数目不对的错误，猜测可能原始 MNLI 数据集就不太能保证每个列都是在的，检查了一下 <code>MnliProcessor</code> 里处理的代码，发现其写死了 <code>line[8]</code> 和 <code>line[9]</code> 作为 sentence_a 和 sentence_b。无奈之下，只能采取最粗暴地方式，用 <code>text</code> mode 读进来，每一行是一个数据，再 split：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> datasets <span class="keyword">import</span> </span><br><span class="line"></span><br><span class="line">processor = processors[task_name]()</span><br><span class="line">output_mode = output_modes[task_name]</span><br><span class="line">label_list = processor.get_labels()</span><br><span class="line">num_labels = len(label_list)</span><br><span class="line"></span><br><span class="line">tokenizer = BertTokenizer.from_pretrained(args.student_model, do_lower_case=args.do_lower_case)</span><br><span class="line"><span class="comment"># 用 text</span></span><br><span class="line">mnli_datasets = load_dataset(<span class="string">"text"</span>, data_files=os.path.join(args.data_dir, <span class="string">"train_aug.tsv"</span>))</span><br><span class="line">label_classes = processor.get_labels()</span><br><span class="line">label_map = &#123;label: i <span class="keyword">for</span> i, label <span class="keyword">in</span> enumerate(label_classes)&#125;</span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">preprocess_func</span><span class="params">(examples, max_seq_length=args.max_seq_length)</span>:</span></span><br><span class="line">            splits = [e.split(<span class="string">'\t'</span>) <span class="keyword">for</span> e <span class="keyword">in</span> examples[<span class="string">'text'</span>]] <span class="comment"># split</span></span><br><span class="line">            <span class="comment"># tokenize for sent1 &amp; sent2</span></span><br><span class="line">            tokens_s1 = [tokenizer.tokenize(e[<span class="number">8</span>]) <span class="keyword">for</span> e <span class="keyword">in</span> splits] </span><br><span class="line">            tokens_s2 = [tokenizer.tokenize(e[<span class="number">9</span>]) <span class="keyword">for</span> e <span class="keyword">in</span> splits]</span><br><span class="line">            <span class="keyword">for</span> t1, t2 <span class="keyword">in</span> zip(tokens_s1, tokens_s2):</span><br><span class="line">                truncate_seq_pair(t1, t2, max_length=max_seq_length - <span class="number">3</span>)</span><br><span class="line">            input_ids_list = []</span><br><span class="line">            input_mask_list = []</span><br><span class="line">            segment_ids_list = []</span><br><span class="line">            seq_length_list = []</span><br><span class="line">            labels_list = []</span><br><span class="line">            labels = [e[<span class="number">-1</span>] <span class="keyword">for</span> e <span class="keyword">in</span> splits] <span class="comment"># last column is label column </span></span><br><span class="line">            <span class="keyword">for</span> token_a, token_b, l <span class="keyword">in</span> zip(tokens_s1, tokens_s2, labels):  <span class="comment"># zip(tokens_as, tokens_bs):</span></span><br><span class="line">                tokens = [<span class="string">"[CLS]"</span>] + token_a + [<span class="string">"[SEP]"</span>]</span><br><span class="line">                segment_ids = [<span class="number">0</span>] * len(tokens)</span><br><span class="line">                tokens += token_b + [<span class="string">"[SEP]"</span>]</span><br><span class="line">                segment_ids += [<span class="number">1</span>] * (len(token_b) + <span class="number">1</span>)</span><br><span class="line">                input_ids = tokenizer.convert_tokens_to_ids(tokens) <span class="comment"># tokenize to id </span></span><br><span class="line">                input_mask = [<span class="number">1</span>] * len(input_ids)</span><br><span class="line">                seq_length = len(input_ids)</span><br><span class="line">                padding = [<span class="number">0</span>] * (max_seq_length - len(input_ids))</span><br><span class="line">                input_ids += padding</span><br><span class="line">                input_mask += padding</span><br><span class="line">                segment_ids += padding</span><br><span class="line">                <span class="keyword">assert</span> len(input_ids) == max_seq_length</span><br><span class="line">                <span class="keyword">assert</span> len(input_mask) == max_seq_length</span><br><span class="line">                <span class="keyword">assert</span> len(segment_ids) == max_seq_length</span><br><span class="line">                input_ids_list.append(input_ids)</span><br><span class="line">                input_mask_list.append(input_mask)</span><br><span class="line">                segment_ids_list.append(segment_ids)</span><br><span class="line">                seq_length_list.append(seq_length)</span><br><span class="line">                labels_list.append(label_map[l])</span><br><span class="line"></span><br><span class="line">            results = &#123;<span class="string">"input_ids"</span>: input_ids_list,</span><br><span class="line">                       <span class="string">"input_mask"</span>: input_mask_list,</span><br><span class="line">                       <span class="string">"segment_ids"</span>: segment_ids_list,</span><br><span class="line">                       <span class="string">"seq_length"</span>: seq_length_list,</span><br><span class="line">                       <span class="string">"label_ids"</span>: labels_list&#125;</span><br><span class="line">            <span class="keyword">return</span> results</span><br><span class="line"><span class="comment"># map datasets</span></span><br><span class="line">mnli_datasets = mnli_datasets.map(preprocess_func, batched=<span class="keyword">True</span>)</span><br><span class="line"><span class="comment"># remove column</span></span><br><span class="line">train_data = mnli_datasets[<span class="string">'train'</span>].remove_columns(<span class="string">'text'</span>)</span><br></pre></td></tr></table></figure>
+<p>写完这个 <code>preprocess_func</code> ，我觉得胜利在望，但还有几个小坑需要解决s：</p>
+<ul>
+<li><p>map 完之后，返回的还是一个 DatasetDict，得手动取一下 <code>train</code> set；</p>
+</li>
+<li><p>对于原先存在的列，map 函数并不会去除掉，所以如果不用的列，需要手动 <code>.remove_columns()</code> </p>
+</li>
+<li><p>在配合 DDP 使用的时候，因为 DistributedSample 取数据的维度是在第一维取的，所以取到的数据可能是个 seq_len 长的列表，里面的 tensor 是 [bsz]  形状的，需要在交给 model 之前 stack 一下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">inputs = &#123;&#125;</span><br><span class="line"><span class="keyword">for</span> k, v <span class="keyword">in</span> batch.items():</span><br><span class="line">    <span class="keyword">if</span> isinstance(v, torch.Tensor):</span><br><span class="line">        inputs[k] = v.to(device)</span><br><span class="line">    <span class="keyword">elif</span> isinstance(v, List):</span><br><span class="line">        inputs[k] = torch.stack(v, dim=<span class="number">1</span>).to(device)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>至此，只要把之前代码的 train_data 都换成现在的版本即可。</p>
+<p>此外，为了进一步加速，我还把混合精度也整合了进来，现在 Pytorch 以及自带对混合精度的支持，代码量也很少，但是有个坑就是<strong>loss 的计算必须被 auto() 包裹住</strong>，同时，所有模型的输出都要参与到 loss 的计算，这对于只做 prediction 或者是 hidden state 对齐的 loss 很不友好，所以只能手动再额外计算一项为系数为 0 的 loss 项（这样他参与到训练但是不会影响梯度）。</p>
+<h2 id="Finally"><a href="#Finally" class="headerlink" title="Finally"></a>Finally</h2><p>最后，改版过的代码在我的 GitHub <a href="https://github.com/TobiasLee/Pretrained-Language-Model/blob/master/TinyBERT/fast_td.py" target="_blank" rel="noopener">fork</a> 版本中，我不要脸地起名为 <code>fast_td</code> 。实际上，改版后的有点有一下几个：</p>
+<ul>
+<li>数据加载方面，第一次加载/处理 780w 大约耗时 50m，但是不会多卡都消耗内存，实际占用不到 2G；同时，得益于 datasets 的支持，后续加载不会重复处理数据而是直接读取之前的 cache；</li>
+<li>模型训练方面，得益于 DDP 和 混合精度，在 MNLI 上训增强数据 10 轮，3 块卡花费的时间大约在 20h 左右，提速了 10 倍。</li>
+</ul>
+<p>这次修改代码大概花了 2 天时间来实现和 debug，不过感觉收益还是挺大的，此处需要感谢任大佬 &amp; 脸折师兄的建议，以及 andy 提供的知乎文章，撒花~</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">NLP</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">PyTorch</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+
+      
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2021/04/16/Improving-Training-Efficiency-of-TinyBERT/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Goodbye-2020" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1047,88 +1177,6 @@
 
 
   
-    <article id="post-evolution-and-application-of-BERT" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/07/08/evolution-and-application-of-BERT/">BERT 的演进和应用</a>
-    </h1>
-  
-
-        
-        <a href="/2019/07/08/evolution-and-application-of-BERT/" class="archive-article-date">
-  	<time datetime="2019-07-08T14:00:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-08</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Pre-train language model 风头正盛，以 BERT 为代表的模型也在各个任务上屠榜，有一统天下的趋势。知乎上也有不少文章对 BERT 的原理、应用做分析和总结的，例如张俊林老师的一系列<a href="https://zhuanlan.zhihu.com/p/68446772" target="_blank" rel="noopener">文章</a>对 BERT 和 Transformer 的解读就很有深度。但<strong>看别人写和自己读文章梳理一遍的效果是天差地别的</strong>，因此借着最近难得的闲暇，来对 Pre-train Language Model 的文章做一次整理。</p>
-        
-          <a class="article-more-a" href="/2019/07/08/evolution-and-application-of-BERT/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Deep Learning</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">NLP</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-
-      
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/07/08/evolution-and-application-of-BERT/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
@@ -1276,19 +1324,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Deep Learning</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Reinforcement Learning</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1308,11 +1356,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
+                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1320,7 +1372,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
+                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1333,14 +1389,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">栈</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1364,6 +1412,10 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">PyTorch</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">RNN</a>
               </li>
              
@@ -1372,15 +1424,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">LaTeX</a>
+                <a href="javascript:void(0)" class="js-tag color4">Academic</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">JVM</a>
+                <a href="javascript:void(0)" class="js-tag color4">Research</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Python</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">LaTeX</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1396,7 +1452,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Paper Notes</a>
+                <a href="javascript:void(0)" class="js-tag color4">JVM</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1404,11 +1460,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Attention</a>
+                <a href="javascript:void(0)" class="js-tag color2">Paper Notes</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">C++</a>
+                <a href="javascript:void(0)" class="js-tag color5">Attention</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1416,7 +1472,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">LSTM</a>
+                <a href="javascript:void(0)" class="js-tag color4">C++</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1428,15 +1484,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">LSTM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Graph Neural Networks</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Transformer</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Layer Normalization</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1445,6 +1497,14 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">DL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Transformer</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Layer Normalization</a>
               </li>
              
               <li class="article-tag-list-item">

@@ -179,6 +179,100 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-OS-IPC-Notes" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/10/14/OS-IPC-Notes/">IPC 问题</a>
+    </h1>
+  
+
+        
+        <a href="/2018/10/14/OS-IPC-Notes/" class="archive-article-date">
+  	<time datetime="2018-10-14T06:45:16.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-10-14</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>操作系统线程之间的通信是一个很重要的问题，在用 C 语言在 Linux 实现经典的“生产者和消费者”以及“读者写者”问题时产生了一些疑惑，记录之。</p>
+<h2 id="Problem"><a href="#Problem" class="headerlink" title="Problem"></a>Problem</h2><p>进程间通信的需要解决的核心问题就是<strong>线程之间的同步</strong>，比如说，有一个程序，两个线程同时对一个共享变量 <code>cnt</code> 分别进行 <code>n</code> 次加法操作，如果其初始值为 0 的话，那么正确的运行结果应该是 <code>cnt = 2n</code>，但如果我们在一台单 CPU 的机器上运行的话，结果往往不是 <code>2n</code>。为什么呢？因为机器可能不会按照我们思考的方式去执行这样的指令，一种很容易想到的产生错误的方式就是：一个线程修改了值（对 <code>cnt</code> 进行加 1 ）之后还没写回去，这个时候另一个线程就读到了 <code>cnt</code> 的旧值并且在旧值之上进行了更新操作，二者都写回去的时候，<code>cnt</code> 的值只加一而不是加二。一个显而易见的解决方式就是将各自的操作都变成<strong>原子化</strong>，也即一个线程带来的任何改变都能被另一个线程所感知到，不过这样带来的 overhead（额外开销）过大，对性能是个很大的影响。因此伟大的计算机科学家们提出了两个概念用于解决这个问题，分别是 mutex（互斥量）和 semphore（信号量）：</p>
+<blockquote>
+<p>Strictly speaking, <strong>a mutex is a locking mechanism</strong> used to synchronize access to a resource. Only one task (can be a thread or process based on OS abstraction) can acquire the mutex. It means there will be ownership associated with mutex, and only the owner can release the lock (mutex).</p>
+<p><strong>Semaphore is signaling mechanism</strong> (“I am done, you can carry on” kind of signal). For example, if you are listening songs (assume it as one task) on your mobile and at the same time your friend called you, an interrupt will be triggered upon which an interrupt service routine (ISR) will signal the call processing task to wakeup.</p>
+</blockquote>
+<p>互斥量是一把锁，用于控制对资源的访问，同一时间只有一个线程能够获得这把锁，也只有获得锁的线程才能够释放这把锁；信号量是一个信号，用于线程之间的通讯。特别地，信号量 s 有两种操作：</p>
+<ul>
+<li>P(s)：如果 s 非零，则将 s -1 并返回；如果 s 为 0，则挂起该线程，直到 s 非 0，一般来说，是等待 V 操作的通知。</li>
+<li>V(s)：V 操作将 s + 1。如果有任何线程阻塞在 P 操作等待，则 V 操作会<strong>通知</strong>折线线程中的一个，让他苏醒完成 s - 1 操作。</li>
+</ul>
+<p>这里几点需要注意：</p>
+<ol>
+<li>P 和 V 操作都是原子化的，也就是说检测信号值、执行操作、写回信号值这三个子操作时不可能被打断的。也只有这样，P、V 操作才有意义。</li>
+<li>V 操作唤醒等待线程时是随机的，我们无法预测哪个线程会苏醒，这里没有<strong>先来先走</strong>的事情存在</li>
+</ol>
+<p>概念就先介绍到这里，可能还有一些不清楚的地方，就结合接下来的两个问题的代码实现，再进一步的讲解。<br>
+        
+          <a class="article-more-a" href="/2018/10/14/OS-IPC-Notes/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">OS</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+
+      
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/10/14/OS-IPC-Notes/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Text-Generation-with-GAN" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -234,11 +328,11 @@
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Text Generation</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">GAN</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">GAN</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Text Generation</a>
         		</li>
       		
 		</ul>
@@ -750,11 +844,11 @@
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Text Generation</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">GAN</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">GAN</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Text Generation</a>
         		</li>
       		
 		</ul>
@@ -1142,108 +1236,6 @@
 
 
   
-    <article id="post-Brief-overview-of-text-generation" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/06/09/Brief-overview-of-text-generation/">Brief Overview of Text Generation</a>
-    </h1>
-  
-
-        
-        <a href="/2018/06/09/Brief-overview-of-text-generation/" class="archive-article-date">
-  	<time datetime="2018-06-09T12:44:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-06-09</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>最近走马观花地读了关于一些 Text Generation 的文章，梳理一下脉络。</p>
-<h2 id="RNN"><a href="#RNN" class="headerlink" title="RNN"></a>RNN</h2><p>记得在 Coursera 以及各大深度学习框架都有 RNN 做 char 级别的莎士比亚风格的文本生成 Demo，也算是一个非常入门的模型了。<a href="https://arxiv.org/pdf/1308.0850.pdf" target="_blank" rel="noopener">Generating Sequences With Recurrent Neural Networks</a> 提出了用 RNN 来做 Text 的生成任务，因为其 Intuition 很符合我们的认知，<strong>后面的文字基于已经生成的文字而产生</strong>。</p>
-<p>事实上，我们在用 RNN 建模一个语言模型：</p>
-<p>$ P(s) = P(x_1) P(x_2|x_1) … P(x_t|x_1, .. , x_{t-1}) = \Pi_{t=1}^{T} P(x_t|x_1, .., x_{t-1})$</p>
-<p>取 log 之后就变成相加：</p>
-<p>$ log P(s) = \sum_{t=1}^{T} log P(x_t|x_1,…,x_{t-1}) $</p>
-<p>之前的一些 n-gram 模型则会假定当前的词 $$x_t$$ 只和其附近一定范围的词语有关，通过条件概率进行一定的简化，这里就不展开，因为现在的 RNN 以及其变种能较好的解决的长距离的依赖问题，所以效果自然比简化的版本要好。</p>
-<p>在训练这个模型的时候，我们会去 maximize 这个句子在 corpus 中出现的概率，也就是 minimize 整个句子的负 log：</p>
-<p>$L(x) = -\sum_{t=1}^{T} log P(x_t|x_1,…,x_{t-1}) $</p>
-<p>一般地，我们会随机从预料中取一个句子的开头作为第一个 token，以这个句子的每个 token 作为 groud-truth，来进行 loss 的计算。但是这样会出现一个问题，就是如果我们一个词生成的不是很好，会导致后面生成的词误入歧途，整个句子就报废了，降低了某些本来是正确的词出现的概率，从而导致训练非常不稳定，类似<strong>一颗老鼠屎坏了一锅粥</strong>。所以，Teacher Forcing 被提出，也就是，每个词的生成会基于 groud-truth 生成，而不是根据模型自己之前生成的词，这样子，即使中途跑偏也能被“老师“纠正回来。</p>
-<p>但是呢但是，Teacher Force 也有一个问题，就是 Train 和 Inference 阶段的不同：<strong>Train 阶段是有 ground-truth 给你纠偏，但是 Inference 的时候没有</strong>，这下就歇菜了。就好比平时考试都有老师站在边上看你做题，一做错就告诉你正确答案，到高考了结果就凉透了，因为你可能发现<strong>有一些题你从来没有见过</strong>，导致一败涂地。这种依赖叫做 <strong>Exposure Bias</strong>，随后呢，有人提出了解决方案来：既然没有正确答案不行，那就抛硬币决定要不要给你正确答案，并且越到后面给你正确答案的概率越小，即 <a href="http://papers.nips.cc/paper/5956-scheduled-sampling-for-sequence-prediction-with-recurrent-neural-networks.pdf" target="_blank" rel="noopener">Scheduled Sampling</a>。</p>
-<p>你以为到这里就完了吗，没有。<a href="https://arxiv.org/pdf/1511.05101.pdf" target="_blank" rel="noopener">How (not) to Train your Generative Model: Scheduled Sampling, Likelihood, Adversary?</a> 指出 Schedule Sampling 是一个不一致的方法，简而言之：Maximize Likelihood 可以视作是 minimize 两个分布 P 和 Q 的 KL-Divergence，而前提是两个分布相同时 KL-Divergence最小，但是 Schedule Sampling 的 KL-Divergence 的最小值并不是 P = Q。而为什么它能起作用呢：</p>
-<blockquote>
-<p>Scheduled sampling works by pushling models towards a trivial solution of memorising distribution of symbols conditioned on their position in the sequence.</p>
-</blockquote>
-<p>说人话就是：治标不治本。</p>
-<p>另外，除了 exposure bias，还有个比较 trival 的问题：逐字的 loss 是不是不太符合我们的习惯，一般都是以<strong>句子</strong>这个粒度来评估生成的质量，有个别错别字可能无伤大雅呢？有待以后再讨论。</p>
-        
-          <a class="article-more-a" href="/2018/06/09/Brief-overview-of-text-generation/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">NLP</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Text Generation</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">GAN</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-
-      
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/06/09/Brief-overview-of-text-generation/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/4/">Next &raquo;</a>
@@ -1391,19 +1383,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Deep Learning</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Reinforcement Learning</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1423,11 +1415,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
+                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1435,7 +1431,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
+                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1448,14 +1448,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">栈</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1479,6 +1471,10 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">PyTorch</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">RNN</a>
               </li>
              
@@ -1487,15 +1483,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">LaTeX</a>
+                <a href="javascript:void(0)" class="js-tag color4">Academic</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">JVM</a>
+                <a href="javascript:void(0)" class="js-tag color4">Research</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Python</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">LaTeX</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1511,7 +1511,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Paper Notes</a>
+                <a href="javascript:void(0)" class="js-tag color4">JVM</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1519,11 +1519,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Attention</a>
+                <a href="javascript:void(0)" class="js-tag color2">Paper Notes</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">C++</a>
+                <a href="javascript:void(0)" class="js-tag color5">Attention</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1531,7 +1531,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">LSTM</a>
+                <a href="javascript:void(0)" class="js-tag color4">C++</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1543,15 +1543,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">LSTM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Graph Neural Networks</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Transformer</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Layer Normalization</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1560,6 +1556,14 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">DL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Transformer</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Layer Normalization</a>
               </li>
              
               <li class="article-tag-list-item">

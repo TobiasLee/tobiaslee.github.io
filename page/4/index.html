@@ -179,6 +179,108 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-Brief-overview-of-text-generation" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/06/09/Brief-overview-of-text-generation/">Brief Overview of Text Generation</a>
+    </h1>
+  
+
+        
+        <a href="/2018/06/09/Brief-overview-of-text-generation/" class="archive-article-date">
+  	<time datetime="2018-06-09T12:44:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-06-09</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>最近走马观花地读了关于一些 Text Generation 的文章，梳理一下脉络。</p>
+<h2 id="RNN"><a href="#RNN" class="headerlink" title="RNN"></a>RNN</h2><p>记得在 Coursera 以及各大深度学习框架都有 RNN 做 char 级别的莎士比亚风格的文本生成 Demo，也算是一个非常入门的模型了。<a href="https://arxiv.org/pdf/1308.0850.pdf" target="_blank" rel="noopener">Generating Sequences With Recurrent Neural Networks</a> 提出了用 RNN 来做 Text 的生成任务，因为其 Intuition 很符合我们的认知，<strong>后面的文字基于已经生成的文字而产生</strong>。</p>
+<p>事实上，我们在用 RNN 建模一个语言模型：</p>
+<p>$ P(s) = P(x_1) P(x_2|x_1) … P(x_t|x_1, .. , x_{t-1}) = \Pi_{t=1}^{T} P(x_t|x_1, .., x_{t-1})$</p>
+<p>取 log 之后就变成相加：</p>
+<p>$ log P(s) = \sum_{t=1}^{T} log P(x_t|x_1,…,x_{t-1}) $</p>
+<p>之前的一些 n-gram 模型则会假定当前的词 $$x_t$$ 只和其附近一定范围的词语有关，通过条件概率进行一定的简化，这里就不展开，因为现在的 RNN 以及其变种能较好的解决的长距离的依赖问题，所以效果自然比简化的版本要好。</p>
+<p>在训练这个模型的时候，我们会去 maximize 这个句子在 corpus 中出现的概率，也就是 minimize 整个句子的负 log：</p>
+<p>$L(x) = -\sum_{t=1}^{T} log P(x_t|x_1,…,x_{t-1}) $</p>
+<p>一般地，我们会随机从预料中取一个句子的开头作为第一个 token，以这个句子的每个 token 作为 groud-truth，来进行 loss 的计算。但是这样会出现一个问题，就是如果我们一个词生成的不是很好，会导致后面生成的词误入歧途，整个句子就报废了，降低了某些本来是正确的词出现的概率，从而导致训练非常不稳定，类似<strong>一颗老鼠屎坏了一锅粥</strong>。所以，Teacher Forcing 被提出，也就是，每个词的生成会基于 groud-truth 生成，而不是根据模型自己之前生成的词，这样子，即使中途跑偏也能被“老师“纠正回来。</p>
+<p>但是呢但是，Teacher Force 也有一个问题，就是 Train 和 Inference 阶段的不同：<strong>Train 阶段是有 ground-truth 给你纠偏，但是 Inference 的时候没有</strong>，这下就歇菜了。就好比平时考试都有老师站在边上看你做题，一做错就告诉你正确答案，到高考了结果就凉透了，因为你可能发现<strong>有一些题你从来没有见过</strong>，导致一败涂地。这种依赖叫做 <strong>Exposure Bias</strong>，随后呢，有人提出了解决方案来：既然没有正确答案不行，那就抛硬币决定要不要给你正确答案，并且越到后面给你正确答案的概率越小，即 <a href="http://papers.nips.cc/paper/5956-scheduled-sampling-for-sequence-prediction-with-recurrent-neural-networks.pdf" target="_blank" rel="noopener">Scheduled Sampling</a>。</p>
+<p>你以为到这里就完了吗，没有。<a href="https://arxiv.org/pdf/1511.05101.pdf" target="_blank" rel="noopener">How (not) to Train your Generative Model: Scheduled Sampling, Likelihood, Adversary?</a> 指出 Schedule Sampling 是一个不一致的方法，简而言之：Maximize Likelihood 可以视作是 minimize 两个分布 P 和 Q 的 KL-Divergence，而前提是两个分布相同时 KL-Divergence最小，但是 Schedule Sampling 的 KL-Divergence 的最小值并不是 P = Q。而为什么它能起作用呢：</p>
+<blockquote>
+<p>Scheduled sampling works by pushling models towards a trivial solution of memorising distribution of symbols conditioned on their position in the sequence.</p>
+</blockquote>
+<p>说人话就是：治标不治本。</p>
+<p>另外，除了 exposure bias，还有个比较 trival 的问题：逐字的 loss 是不是不太符合我们的习惯，一般都是以<strong>句子</strong>这个粒度来评估生成的质量，有个别错别字可能无伤大雅呢？有待以后再讨论。</p>
+        
+          <a class="article-more-a" href="/2018/06/09/Brief-overview-of-text-generation/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">NLP</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">GAN</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Text Generation</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+
+      
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/06/09/Brief-overview-of-text-generation/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-New-Stage" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1116,97 +1218,6 @@
 
 
   
-    <article id="post-Reinforcement-Learning1" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/03/06/Reinforcement-Learning1/">Policy Graident 从数学到实现</a>
-    </h1>
-  
-
-        
-        <a href="/2018/03/06/Reinforcement-Learning1/" class="archive-article-date">
-  	<time datetime="2018-03-06T14:29:33.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-06</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Text Generation 是我非常感兴趣的一个问题，传统的 Seq2Seq 能有不错的效果，但如前一篇 Blog 所说，我相信未来的文本生成必然是与 GAN 以及 Reinforcement Learning （RL）相结合的，上交的大佬 Lantao Yu 就有一篇很出色的 SeqGAN 的工作，以及最近的 MaskGAN。接下来的一段时间，尝试实现 SeqGAN 和 MaskGAN，根据需要学习相关的 RL 知识。这篇 Blog 就算是一个前哨，主要讲简单的 Policy Gradient。</p>
-<h2 id="Brief-Introduction-of-RL"><a href="#Brief-Introduction-of-RL" class="headerlink" title="Brief Introduction of RL"></a>Brief Introduction of RL</h2><p>强化学习是一类机器学习算法的统称，其核心思想是让计算机通过尝试，学会特定行为模式以达到期望目标。前一阵子大火的 AlphaGo 以及各类打游戏的 AI 都是强化学习的产物。强化学习中把计算机程序抽象成一个 Agent（Policy），其所处的环境抽象为 Environment，学习就发生在 Agent 和 Environment 的不断交互之中，示意图如下。</p>
-<p><img src="/img/agent.png" alt="Agent and Environment"></p>
-<p>还有一个重要的概念叫做 state，是关于我们所获知的发生的一切（过去所有的 observation，采取的 action，和获得的 reward） 的函数，在一个观测完全（fully observed）的环境中，我们可以认为 agent 的 state 和环境的 observation 是一样的。事实上，我们需要的 Policy，就是一个 <strong>state -&gt; action 的映射</strong>。而 Deep Reinforcement Learning，就是通过深层 NN 来构建这个映射。</p>
-<p>强化学习算法一般为两类：</p>
-<ol>
-<li>Model - free Approach</li>
-<li>Model- based Approach</li>
-</ol>
-<p>这里的 Model 指的是环境，Model-free 算法不需要对环境进行建模，Policy 通过环境的 reward （奖赏）来指导学习；而 Model-based 类算法则有着对环境的建模，我们可以利用这个 Model 来搜索预判可能发生的情况，并据此为 Policy 选择行动策略。<br>
-        
-          <a class="article-more-a" href="/2018/03/06/Reinforcement-Learning1/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Deep Learning</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Reinforcement Learning</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-
-      
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/03/06/Reinforcement-Learning1/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/3/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/5/">Next &raquo;</a>
@@ -1354,19 +1365,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Deep Learning</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Reinforcement Learning</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1386,11 +1397,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
+                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1398,7 +1413,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
+                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1411,14 +1430,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">栈</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1442,6 +1453,10 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">PyTorch</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">RNN</a>
               </li>
              
@@ -1450,15 +1465,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">LaTeX</a>
+                <a href="javascript:void(0)" class="js-tag color4">Academic</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">JVM</a>
+                <a href="javascript:void(0)" class="js-tag color4">Research</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Python</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">LaTeX</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1474,7 +1493,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Paper Notes</a>
+                <a href="javascript:void(0)" class="js-tag color4">JVM</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1482,11 +1501,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Attention</a>
+                <a href="javascript:void(0)" class="js-tag color2">Paper Notes</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">C++</a>
+                <a href="javascript:void(0)" class="js-tag color5">Attention</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1494,7 +1513,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">LSTM</a>
+                <a href="javascript:void(0)" class="js-tag color4">C++</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1506,15 +1525,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">LSTM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Graph Neural Networks</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Transformer</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Layer Normalization</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1523,6 +1538,14 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">DL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Transformer</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Layer Normalization</a>
               </li>
              
               <li class="article-tag-list-item">
