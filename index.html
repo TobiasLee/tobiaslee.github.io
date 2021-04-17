@@ -229,7 +229,7 @@
 </blockquote>
 <p>启动成功了吗？模型又开始处理数据….</p>
 <p>One hours later，机器突然卡住，程序的 log 也停了，打开 htop 一看，好家伙，256G 的内存都满了，程序都是 D 状态，咋回事？</p>
-<h2 id="Acceleration-of-Data-Loading"><a href="#Acceleration-of-Data-Loading" class="headerlink" title="Acceleration of Data Loading"></a>Acceleration of Data Loading</h2><p>我先试了少量数据，降采样到 10k，程序运行没问题， DDP 速度很快；我再尝试了单卡加载，虽然又 load 了一个小时，但是 ok，程序还是能跑起来，那么，问题是如何发生的呢？单卡的时候我看了一眼加载全量数据完毕之后的内存占用，大约在 60G 左右，考虑到 DDP 是多进程的，因此，每个进程都要独立地加载数据，4 块卡 4个进程，大约就是 250 G 的内存，因此内存爆炸，到后面数据的 io 就卡住了（没法从磁盘 load 到内存），所以造成了程序 D 状态。看了下组里的机器，最大的也就是 250 G 内存，也就是说，如果我只用 3 块卡，那么是能够跑的，但是万一有别的同学上来开程序吃了一部分内存，那么就很可能爆内存，然后就是大家的程序都同归于尽的局面，不太妙。一种不太优雅的解决方案就是，把数据切块，然后读完一小块训练完，再读下一块，再训练，再读。咨询了一下组里资深的师兄，还有一种办法就是实现一种<strong>把数据存在磁盘上，每次要用的时候才 load 到内存的</strong>数据读取方案，这样就能够避免爆内存的问题。行吧，那就干吧，但是总不能从头造轮子吧？脸折师兄提到 huggingface(yyds) 的 <a href="https://huggingface.co/datasets" target="_blank" rel="noopener">datasets</a> 能够支持这个功能，check 了一下文档，发现他是基于 pyarrow 的实现，以我的 huggingface transformers 的经验，似乎是能够实现这个功能的，所以摩拳擦掌，准备动手。</p>
+<h2 id="Acceleration-of-Data-Loading"><a href="#Acceleration-of-Data-Loading" class="headerlink" title="Acceleration of Data Loading"></a>Acceleration of Data Loading</h2><p>我先试了少量数据，降采样到 10k，程序运行没问题， DDP 速度很快；我再尝试了单卡加载，虽然又 load 了一个小时，但是 ok，程序还是能跑起来，那么，问题是如何发生的呢？单卡的时候我看了一眼加载全量数据完毕之后的内存占用，大约在 60G 左右，考虑到 DDP 是多进程的，因此，每个进程都要独立地加载数据，4 块卡 4个进程，大约就是 250 G 的内存，因此内存爆炸，到后面数据的 io 就卡住了（没法从磁盘 load 到内存），所以造成了程序 D 状态。看了下组里的机器，最大的也就是 250 G 内存，也就是说，如果我只用 3 块卡，那么是能够跑的，但是万一有别的同学上来开程序吃了一部分内存，那么就很可能爆内存，然后就是大家的程序都同归于尽的局面，不太妙。一种不太优雅的解决方案就是，把数据切块，然后读完一小块训练完，再读下一块，再训练，再读。咨询了一下组里资深的师兄，还有一种办法就是实现一种<strong>把数据存在磁盘上，每次要用的时候才 load 到内存的</strong>数据读取方案，这样就能够避免爆内存的问题。行吧，那就干吧，但是总不能从头造轮子吧？脸折师兄提到 huggingface(yyds) 的 <a href="https://huggingface.co/datasets" target="_blank" rel="noopener">datasets</a> 能够支持这个功能，check 了一下文档，发现他是基于 pyarrow 的实现了一个 memory map 的数据<a href="https://github.com/huggingface/datasets/blob/fcd3c3c8e3b1d9a2f3686a496082e21f06591380/src/datasets/table.py#L400" target="_blank" rel="noopener">读取</a>，以我的 huggingface transformers 的经验，似乎是能够实现这个功能的，所以摩拳擦掌，准备动手。</p>
 <p>首先，要把增广的数据 load 进来，datasets 提供的 <code>load_dataset</code> 函数最接近的就是 <code>load_dataset(&#39;csv&#39;, data_file)</code>，然后我们就可以逐个 column 的拿到数据并且进行预处理了。写了一会，发现总是报读取一部分数据后 columns 数目不对的错误，猜测可能原始 MNLI 数据集就不太能保证每个列都是在的，检查了一下 <code>MnliProcessor</code> 里处理的代码，发现其写死了 <code>line[8]</code> 和 <code>line[9]</code> 作为 sentence_a 和 sentence_b。无奈之下，只能采取最粗暴地方式，用 <code>text</code> mode 读进来，每一行是一个数据，再 split：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> datasets <span class="keyword">import</span> </span><br><span class="line"></span><br><span class="line">processor = processors[task_name]()</span><br><span class="line">output_mode = output_modes[task_name]</span><br><span class="line">label_list = processor.get_labels()</span><br><span class="line">num_labels = len(label_list)</span><br><span class="line"></span><br><span class="line">tokenizer = BertTokenizer.from_pretrained(args.student_model, do_lower_case=args.do_lower_case)</span><br><span class="line"><span class="comment"># 用 text</span></span><br><span class="line">mnli_datasets = load_dataset(<span class="string">"text"</span>, data_files=os.path.join(args.data_dir, <span class="string">"train_aug.tsv"</span>))</span><br><span class="line">label_classes = processor.get_labels()</span><br><span class="line">label_map = &#123;label: i <span class="keyword">for</span> i, label <span class="keyword">in</span> enumerate(label_classes)&#125;</span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">preprocess_func</span><span class="params">(examples, max_seq_length=args.max_seq_length)</span>:</span></span><br><span class="line">            splits = [e.split(<span class="string">'\t'</span>) <span class="keyword">for</span> e <span class="keyword">in</span> examples[<span class="string">'text'</span>]] <span class="comment"># split</span></span><br><span class="line">            <span class="comment"># tokenize for sent1 &amp; sent2</span></span><br><span class="line">            tokens_s1 = [tokenizer.tokenize(e[<span class="number">8</span>]) <span class="keyword">for</span> e <span class="keyword">in</span> splits] </span><br><span class="line">            tokens_s2 = [tokenizer.tokenize(e[<span class="number">9</span>]) <span class="keyword">for</span> e <span class="keyword">in</span> splits]</span><br><span class="line">            <span class="keyword">for</span> t1, t2 <span class="keyword">in</span> zip(tokens_s1, tokens_s2):</span><br><span class="line">                truncate_seq_pair(t1, t2, max_length=max_seq_length - <span class="number">3</span>)</span><br><span class="line">            input_ids_list = []</span><br><span class="line">            input_mask_list = []</span><br><span class="line">            segment_ids_list = []</span><br><span class="line">            seq_length_list = []</span><br><span class="line">            labels_list = []</span><br><span class="line">            labels = [e[<span class="number">-1</span>] <span class="keyword">for</span> e <span class="keyword">in</span> splits] <span class="comment"># last column is label column </span></span><br><span class="line">            <span class="keyword">for</span> token_a, token_b, l <span class="keyword">in</span> zip(tokens_s1, tokens_s2, labels):  <span class="comment"># zip(tokens_as, tokens_bs):</span></span><br><span class="line">                tokens = [<span class="string">"[CLS]"</span>] + token_a + [<span class="string">"[SEP]"</span>]</span><br><span class="line">                segment_ids = [<span class="number">0</span>] * len(tokens)</span><br><span class="line">                tokens += token_b + [<span class="string">"[SEP]"</span>]</span><br><span class="line">                segment_ids += [<span class="number">1</span>] * (len(token_b) + <span class="number">1</span>)</span><br><span class="line">                input_ids = tokenizer.convert_tokens_to_ids(tokens) <span class="comment"># tokenize to id </span></span><br><span class="line">                input_mask = [<span class="number">1</span>] * len(input_ids)</span><br><span class="line">                seq_length = len(input_ids)</span><br><span class="line">                padding = [<span class="number">0</span>] * (max_seq_length - len(input_ids))</span><br><span class="line">                input_ids += padding</span><br><span class="line">                input_mask += padding</span><br><span class="line">                segment_ids += padding</span><br><span class="line">                <span class="keyword">assert</span> len(input_ids) == max_seq_length</span><br><span class="line">                <span class="keyword">assert</span> len(input_mask) == max_seq_length</span><br><span class="line">                <span class="keyword">assert</span> len(segment_ids) == max_seq_length</span><br><span class="line">                input_ids_list.append(input_ids)</span><br><span class="line">                input_mask_list.append(input_mask)</span><br><span class="line">                segment_ids_list.append(segment_ids)</span><br><span class="line">                seq_length_list.append(seq_length)</span><br><span class="line">                labels_list.append(label_map[l])</span><br><span class="line"></span><br><span class="line">            results = &#123;<span class="string">"input_ids"</span>: input_ids_list,</span><br><span class="line">                       <span class="string">"input_mask"</span>: input_mask_list,</span><br><span class="line">                       <span class="string">"segment_ids"</span>: segment_ids_list,</span><br><span class="line">                       <span class="string">"seq_length"</span>: seq_length_list,</span><br><span class="line">                       <span class="string">"label_ids"</span>: labels_list&#125;</span><br><span class="line">            <span class="keyword">return</span> results</span><br><span class="line"><span class="comment"># map datasets</span></span><br><span class="line">mnli_datasets = mnli_datasets.map(preprocess_func, batched=<span class="keyword">True</span>)</span><br><span class="line"><span class="comment"># remove column</span></span><br><span class="line">train_data = mnli_datasets[<span class="string">'train'</span>].remove_columns(<span class="string">'text'</span>)</span><br></pre></td></tr></table></figure>
 <p>写完这个 <code>preprocess_func</code> ，我觉得胜利在望，但还有几个小坑需要解决s：</p>
@@ -1340,19 +1340,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Machine Learning</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">NLP</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Android</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">自定义View</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Machine Learning</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">NLP</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1364,11 +1364,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
+                <a href="javascript:void(0)" class="js-tag color2">C</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1380,10 +1384,6 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">C</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">数据结构</a>
               </li>
              
@@ -1392,15 +1392,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">MediaCodec</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">OpenGL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1424,11 +1424,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Academic</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Research</a>
+                <a href="javascript:void(0)" class="js-tag color1">LaTeX</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1436,11 +1432,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">LaTeX</a>
+                <a href="javascript:void(0)" class="js-tag color3">OS</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">OS</a>
+                <a href="javascript:void(0)" class="js-tag color4">JVM</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1452,15 +1448,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">JVM</a>
+                <a href="javascript:void(0)" class="js-tag color2">Paper Notes</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Retrofit</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Paper Notes</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1484,11 +1476,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">LSTM</a>
+                <a href="javascript:void(0)" class="js-tag color2">Graph Neural Networks</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Graph Neural Networks</a>
+                <a href="javascript:void(0)" class="js-tag color5">LSTM</a>
               </li>
              
               <li class="article-tag-list-item">
