@@ -179,6 +179,180 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-My-First-Graduate-Year-at-PKU" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2021/09/10/My-First-Graduate-Year-at-PKU/">研一这一年</a>
+    </h1>
+  
+
+        
+        <a href="/2021/09/10/My-First-Graduate-Year-at-PKU/" class="archive-article-date">
+  	<time datetime="2021-09-10T14:54:57.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-09-10</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>园子里的稚嫩面孔多了起来，熙熙攘攘的校门迎来送往，我也在这个门中，度过了完整的春夏秋冬。北京的秋天是很凉爽的，或许当得上是最舒服的一个季节。一年级的第二个学期也比第一个学期舒服了许多。</p>
+<p>课程方面，顺利修满了课程的学分，绩点都还看得过去。有趣的是选了一门讲座课，和周明老师吃了个便餐，佩服他从首席科学家到创新工场投资人的转变，也豁然觉得学而优则天使投资人似乎成为了一个新的人生规划选择。这门课更加令我惊讶的是最后的课程展示，我们小组摸鱼的成果居然得了第一名，并且获得了 3000 元的奖金，简直比做梦还梦幻（PS：隔壁寝室拿了第二，这课包圆了被我们）。</p>
+<p>生活方面，买了小电驴，对于居住在万柳的我而言幸福指数直线上升，妈妈再也不用担心我要赶班车啦。通勤更加方便以外，有了车之后的活动半径也扩大了很多，可以动不动到五道口吃个网红餐厅。如果说有什么缺点的话，就是下雨的时候不太友好，送的雨披约等于没有并且感觉穿雨衣骑车也很不舒服。好在北京的雨多是阵雨，若是碰上特别大的雨，等一会再打伞骑回去就行。新开的家园食堂也大大丰富了早饭的选择，一方面是开的比较晚，萝卜干星人表示家一早上的萝卜干+菊花粥/豆浆+油条简直是dream breakfast。</p>
+<p>运动方面，今年应该是算是超额完成了运动量。首当其中的是在包括黄教练@hlz、王教练@wpy、许教练@xrx、李教练@lyf 以及梦觉教练@梦觉教游泳的帮助下，勉强能够学会游泳。说来惭愧，作为一个游泳大省的学生，居然研一才学会游泳，正是太不应该了。不过相比于一开始连漂浮都困难，目前我已经能够坚持蛙泳<del>50</del> 900米，可以算是一个巨大突破了，希望以后能够多多精进，学学酷炫的其他泳姿。在北大杯代表信科完成首秀，并且出道即巅峰在第一场比赛中完成传射，之后水平断崖式下跌沦为管理员，在对抗比较强的比赛里我还是太容易着急和慌张了，需要多练练。</p>
+<h2 id="Research"><a href="#Research" class="headerlink" title="Research"></a>Research</h2><p>研究部分得单独列一节来讲讲，这一年下来，经历了几轮的投稿，反复摩擦之后，有挺多感想的，这边就从整个投 paper 的过程来分别谈谈这一年的收获。</p>
+<p><strong>选题</strong>：</p>
+<ol>
+<li>赛道很重要，比较卷的领域，出 paper 真的有挑战。这一年我关注在 Efficient NLP 上，很多公司都在卷这个领域，指标也很明确，说白了就是更快更强。除了刷完指标以外，故事还要能讲的好听，TinyBERT 是很强的 Model 但是最后还是只被 Findings 录用大约就是这个原因，这个领域不是特别的好讲故事。此外，新兴的 topic 容易讲故事则会更容易被接收，但也要思考新兴 topic 是否是本质的问题，有很多昙花一现的 idea，盲目追热点并不可取，还是要守住自己的一亩三分地。对于很卷的领域，我的一个想法是可以<strong>另辟蹊径，不要盯着数字，而去在设定以及进行原理的探究</strong>，或许是提高录用率的办法。</li>
+<li>有趣和有用。我选取的 Efficient NLP 这个领域或许会更加接近有用的研究，但是有用的研究或许是比较枯燥的，考虑和其他同学合作一些自己感兴趣的 topic，是一种增添趣味、增进友谊、增加 publication 的 win-win-win 方案。</li>
+</ol>
+<p><strong>实验</strong>：</p>
+<ol>
+<li><p><strong>请做正确的假设检验</strong>，可以参考这篇<a href="https://aclanthology.org/P18-1128.pdf" target="_blank" rel="noopener">文章</a>，平均数也可能是 misleading，因为结果的分布可能是大幅度的 overlap。</p>
+</li>
+<li><p>对于最终效果而言，数据 &gt;&gt; 对任务的理解 &gt; 模型。这一点的基础是目前大家的Backbone都是 BERT 之流的模型，模型本身的能力已经接近天花板了，数据和任务 inductive bias 的效果比花式叠 blocks 是更加有用的。</p>
+</li>
+</ol>
+<p><strong>写作</strong>：</p>
+<p>论文写作最难的在于 Introduction，而 Introduction 最难的部分在于你需要 sell your paper，特别需要强调两个方面：</p>
+<ol>
+<li>Challenges: 为什么之前的工作没有做好，他们做不好的原因是什么，这里或许就是体现 insight 的地方</li>
+<li>Non-trivial: solution/method 要<strong>不简单</strong>。这里的不简单是指说，换了别人做不了，非你不可。Transformer 核心 idea 很简单，但是其中的设计以及超参的设置并不是随随便便就能做 work 的。内核简单，而外在需要复杂性以体现工作的独到之处，才是一篇好文章。</li>
+</ol>
+<p><strong>合作</strong>：理解自己的 leader 精神，考虑他人的 workload，合理 credit co-author。</p>
+<p><strong>心态</strong>：把 research 当成 lifestyle，该吃吃该喝喝，被拒稿再正常不过，认真对待审稿人的意见，甄别性地加以吸收和利用，*CL 投不中没关系，或许换到 AI、Data Mining 的会就能中了，再不行就投个 workshop。因为研究的时效性，一个 paper 的价值可能是不断在衰减的，我们能做的也就只有准备工作的时候尽可能通过选题、方法延长他的半衰期，完成之后，在价值湮灭之前，为他找到归宿就行。</p>
+<h2 id="Misc"><a href="#Misc" class="headerlink" title="Misc"></a>Misc</h2><ul>
+<li><p>开了微信读书的会员，但因为骑小电驴没法玩手机，碎片阅读时间大幅缩短，正确固定划拉时间努力回本</p>
+</li>
+<li><p>尝试了禁食减肥法，效果一度很好，但是还是忍不住得吃饭，又反弹了</p>
+</li>
+<li>Blog 的产出还是不够，不过 paper 还行（逃</li>
+<li>美股原地踏步，抄底新东方，让子弹再飞一会吧</li>
+</ul>
+<p>新的学年，日拱一卒，坚定向前！</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">随笔</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+
+      
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2021/09/10/My-First-Graduate-Year-at-PKU/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-摊大饼" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="摊大饼"><a href="#摊大饼" class="headerlink" title="摊大饼"></a>摊大饼</h1><h2 id="Risk"><a href="#Risk" class="headerlink" title="Risk"></a>Risk</h2><ul>
+<li>近乎等权重的组合 降低风险；</li>
+<li>种类方面，股票、债券相关性相对于同质标的更低，可以相互对冲；</li>
+<li>轮动带来的独特优势</li>
+</ul>
+<h2 id="Target-People"><a href="#Target-People" class="headerlink" title="Target People"></a>Target People</h2><p>不合适的目标：</p>
+<ul>
+<li><p>资金量太少的人。如果你只有几万元或一二十万元资金，那我还是建议你以本职工作为重，投资上适当分散风险摊个小饼即可。首先，一些品种和券商有最低的佣金标准比如5元，如果小资金再过于分散很容易导致交易成本过高；其次，摊大饼策略主要追求的是积小胜为大胜，通常单次轮动的收益并不会太高，对太小的资金来说意义不大，性价比很可能连搬砖都不如。</p>
+</li>
+<li><p>可投入时间太少的人。虽然在主流券商都支持股价提醒和条件单之后，摊大饼所需的时间和精力已经大幅下降了（后文会详细分析）。但要想通过轮动获得超额收益，每天花一点时间读读公告、做做分析，提升一点自己的投资水平，还是有必要的。而你如果放弃轮动收益，对大部分品种来说，摊大饼可能就不一定是最好的选择了。因此，如果你连每天花少量时间在投资上都无法保证，那可能还是买指数基金或定投更为适合吧。</p>
+</li>
+<li><p>对收益的期望较高或赌性较重的人。选择摊大饼投资，意味着在一定意义你上已经放弃了短期爆赚的可能，换来的是相对稳定的战胜市场或板块，指望大幅跑赢市场甚至短期翻几番是不太可能的。对赌性较重喜欢大幅波动的人来说，摊大饼的收益曲线相对较为平滑，爆涨爆跌的可能性都比较小，很明显也是不够刺激的。</p>
+</li>
+<li><p>水平很高以及自以为水平很高的人。摊大饼策略充其量只能算是一种次优策略，它可以减少你因判断失误而严重亏损的几率，但自然也限制了你的盈利。如果你的水平足够高，能够从大量的鱼目中轻松地挑出珍珠，自然就不需要采取摊大饼这种收益不算太高的策略了。</p>
+</li>
+</ul>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+
+      
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2021/06/23/摊大饼/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Improving-Training-Efficiency-of-TinyBERT" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -554,11 +728,11 @@
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Machine Learning</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">NLP</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">NLP</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Machine Learning</a>
         		</li>
       		
 		</ul>
@@ -1007,176 +1181,6 @@
 
 
   
-    <article id="post-TG-framework-notes" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/08/31/TG-framework-notes/">文本生成框架体验记录</a>
-    </h1>
-  
-
-        
-        <a href="/2019/08/31/TG-framework-notes/" class="archive-article-date">
-  	<time datetime="2019-08-31T15:07:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-08-31</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>我之前主要在做的工作像嘻哈歌词、主题写作都是是文本生成任务，而大部分的生成任务都可以归结到 Seq2Seq 框架下来，最近也接触了利用框架跑了一些 Machine Translation 的数据集。在实现 idea 的时候，我喜欢的一种方式是快速实现一个简单的 Baseline，跑通模型看看主要的指标例如 BLEU 的效果怎么样，然后进一步地做模型的设计和修改。要快速迭代，一方面需要对基本框架 TF、PyTorch 的 API 足够熟悉，另一方面也需要有一个趁手的 toolkit，来避免做一些重复的工作（例如，Tokenization,  Load Pre-trained Word Embedding）等。<strong>这些 pipeline 在学习初期很有必要自己亲手实现以了解细节，但是在需要快速迭代的时候，就不要重复造轮子了</strong>。这里，我对使用过（大部分是浅尝辄止）的框架写一下主观上的感受，主要考虑几个方面：</p>
-<ul>
-<li>能否开箱即用</li>
-<li>定制 Model 的难易程度</li>
-<li>API 是否易于理解</li>
-</ul>
-<p>希望对选择困难的朋友们有所帮助。</p>
-        
-          <a class="article-more-a" href="/2019/08/31/TG-framework-notes/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">NLP</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Text Generation</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-
-      
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/08/31/TG-framework-notes/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-A-Long-Way-To-Go" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/07/14/A-Long-Way-To-Go/">一切才刚刚开始</a>
-    </h1>
-  
-
-        
-        <a href="/2019/07/14/A-Long-Way-To-Go/" class="archive-article-date">
-  	<time datetime="2019-07-14T15:04:09.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-14</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>最近主要做的事情就是过了信科的夏令营，拿到优秀营员资格，之后又出了 EMNLP 的 review 意见。我大约在大二的时候下定决心要努力成为一名 NLPer，如今应该算是走在了正确的道路上，最近也算是取得了一些成果，所以过程记下来，希望以后自己丧气的时候，再看看，找回自己的初心。</p>
-<h2 id="信科夏令营游记"><a href="#信科夏令营游记" class="headerlink" title="信科夏令营游记"></a>信科夏令营游记</h2><h3 id="Day-1"><a href="#Day-1" class="headerlink" title="Day 1"></a>Day 1</h3><p>第一天就是报道，并且办理入住手续，因为我在中关村提前租了房子，所以没有去安排的酒店 check in，听去的同学说条件还不错，北大还是很厚道的，<del>相比什么都不给报的复旦</del>，发了 100 块饭卡，应该够吃。</p>
-<p>上午有个简短的开营仪式，听老师吹北大，焦点就在和隔壁较劲，想必这就是爱情吧。</p>
-<p>下午就是各个方向老师来介绍实验室，晚上有 POJ 的模拟机试，提前适应环境，需要联系的朋友可以在<a href="bailian.openjudge.cn">OpenJudge</a>上找往年题。模拟做的是去年的题，A 了三题，rank 30% 左右，我以为这样就很稳了，结果第二天果然被打脸 2333。</p>
-<p>模拟上机之前先溜到孙栩老师办公室，找他聊天，发现正好在，就和他进行了亲切的交谈，并嘱咐我第二天机试好好表现。<strong>提醒同学们，能尽早勾搭老师就勾搭老师!</strong></p>
-        
-          <a class="article-more-a" href="/2019/07/14/A-Long-Way-To-Go/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">随笔</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-
-      
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/07/14/A-Long-Way-To-Go/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
@@ -1324,7 +1328,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Deep Learning</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1332,11 +1344,23 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
+                <a href="javascript:void(0)" class="js-tag color4">NLP</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
+                <a href="javascript:void(0)" class="js-tag color2">Machine Learning</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">C</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1348,39 +1372,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Machine Learning</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">NLP</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">C</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">GAN</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1392,15 +1392,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">MediaCodec</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">OpenGL</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
+                <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1408,7 +1400,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Java</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">MediaCodec</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">OpenGL</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1424,15 +1428,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">LaTeX</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Python</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">OS</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1440,15 +1436,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">LaTeX</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">OS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">ML</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">爬虫</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Paper Notes</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1456,15 +1452,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">爬虫</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Attention</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Seq2Seq</a>
+                <a href="javascript:void(0)" class="js-tag color2">Paper Notes</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">C++</a>
+                <a href="javascript:void(0)" class="js-tag color3">Seq2Seq</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1476,11 +1476,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Graph Neural Networks</a>
+                <a href="javascript:void(0)" class="js-tag color5">LSTM</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">LSTM</a>
+                <a href="javascript:void(0)" class="js-tag color4">C++</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Graph Neural Networks</a>
               </li>
              
               <li class="article-tag-list-item">

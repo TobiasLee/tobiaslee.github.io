@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://tobiaslee.top/2021/09/10/My-First-Graduate-Year-at-PKU/</loc>
+    <lastmod>2021-09-11T07:50:03.790Z</lastmod>
+  </url>  <url>
+    <loc>https://tobiaslee.top/2021/06/23/%E6%91%8A%E5%A4%A7%E9%A5%BC/</loc>
+    <lastmod>2021-06-24T10:22:55.357Z</lastmod>
+  </url>  <url>
     <loc>https://tobiaslee.top/2021/04/16/Improving-Training-Efficiency-of-TinyBERT/</loc>
     <lastmod>2021-04-17T03:37:07.085Z</lastmod>
   </url>  <url>

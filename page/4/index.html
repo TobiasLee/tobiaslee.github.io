@@ -179,6 +179,250 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-RaGAN-Notes" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/07/05/RaGAN-Notes/">RaSGAN Notes</a>
+    </h1>
+  
+
+        
+        <a href="/2018/07/05/RaGAN-Notes/" class="archive-article-date">
+  	<time datetime="2018-07-05T02:27:13.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-05</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>在机器之心上看到说 Goodfellow 给一篇刚上 arXiv 的 <a href="https://arxiv.org/abs/1807.00734" target="_blank" rel="noopener">The relativistic discriminator: a key element missing from standard GAN</a> 文章点了赞，就去看了眼，发现确实很有意思。</p>
+<h2 id="Intuition"><a href="#Intuition" class="headerlink" title="Intuition"></a>Intuition</h2><p>文章说标准的 GAN（SGAN） 在 Generator（下文用 G 代替） 生成的样本越来越逼真的时候 Discriminator 缺了个东西。什么呢？<strong>相对</strong>的概念，先来看下面这张图片：</p>
+<p><img src="/img/corgi_and_bread.png" alt="Corgis and Bread"></p>
+<p>可以看到，我们的 real data 是面包，fake data 是柯基（好萌啊2333)，$ C(x) $ 越大则说明是面包的概率越大。图中列出了三种情况：</p>
+<ol>
+<li>真的面包，真的柯基：这种情况二者的区别很明显，因而 $ P(bread |\bar C) = 1 $</li>
+<li>真的面包，柯基屁股（很像面包）：这种情况区别就没有第一种那么明显了，因而 $ P $ 有所下降</li>
+<li>像狗的面包，真的柯基：和第二种情况类似，<strong>相对的区别度</strong>降低了， $ P $ 同样有所下降</li>
+</ol>
+<p>有了一个模糊的印象之后，我们展开说说这个相对究竟是什么。</p>
+<h2 id="Arguments-of-RaGAN"><a href="#Arguments-of-RaGAN" class="headerlink" title="Arguments of RaGAN"></a>Arguments of RaGAN</h2><p><strong>相对</strong>，一言以蔽之：Discriminator（下文中用 D 代替）衡量样本真实性的时候，应该要<strong>同时</strong>利用 real data 和 fake data，衡量的由绝对的真假变成<strong>相对的为真或为假</strong>的概率。 作者从三个方面论述了其观点：</p>
+<h3 id="Priori-Knowledge"><a href="#Priori-Knowledge" class="headerlink" title="Priori Knowledge"></a>Priori Knowledge</h3><p><strong>先验知识</strong>的利用，即每次我们喂给 Discriminator（下文中用 D 代替） 的样本中，基本上是一半 real data，一半 fake（Generator generated）。也就是说，<strong>不知道这个前提的话</strong>，那么如果 G 生成的样本（比如说图片）能够以假乱真的话，那么 D 会认为所有的样本都是 real 的，而如果知道这个前提，那么当 fake 比 real 更 real 的时候，discrinimator 应该给 real samples 打低分（认为他们是 fake） 而不是认为所有的 samples 都是 real。因为在看到了更 real 的 fake samples 之后，相对地，利用先验知识，我们会认为不那么 real 的 samples（比如狗面包）是 fake 的。而 SGAN 的训练中并没有利用到这一部分先验知识。</p>
+<h3 id="Divergence-Optimization"><a href="#Divergence-Optimization" class="headerlink" title="Divergence Optimization"></a>Divergence Optimization</h3><p>我们知道，SGAN 在训练 D 的时候事实上是在 minimize 生成器分布和真实数据分布的 JS-Divergence，而 JS-Divergence 在两个分布相同时达到最小值，其表现是 D 无法区分 real data 和 fake data，认为其为真的概率均为 0.5；JS-Divergence 在两个分布差异较大的时候较大，即 D 认为 real data 为真的概率为 1，而认为 fake data 为真的概率为 0。理想的训练过程是如下 (C) 图所示：</p>
+<p><img src="/img/divergence_argument.png" alt="Divergence Optimization Process"></p>
+<p>但事实上，我们在训练的时候<strong>一味地希望生成的图片足够逼真</strong>，即一直在将 <code>D(fake_data)</code> 向 <code>1</code> 推，而不管 <code>D(real_data)</code>。这有做是达不到最小值的，这样的 optimization 过程是存在问题的，WGAN 论文中似乎也有提到这一点。</p>
+<h3 id="Gradient"><a href="#Gradient" class="headerlink" title="Gradient"></a>Gradient</h3><p>WGAN 等一系列对 GAN 做了改进的 GAN 被称为 IPM-based GAN，作者将其梯度和标准的 GAN 进行了对比：</p>
+<p><img src="/img/gradient_sgan.png" alt="SGAN Gradient"></p>
+<p>下面是 IPM-based GAN 的梯度：</p>
+<p><img src="/img/gradient_ipm.png" alt="IPM-based GAN Gradient"></p>
+<p>当下面这些条件满足的时候，两式相等：</p>
+<ol>
+<li>在训练 D 的时候，$ D(x_r) = 0, D(x_f) = 1 $ </li>
+<li>训练 G 的时候，$ D(x_f) = 0 $</li>
+<li>$C(x) \in \mathit{F}$，其中 $F$ 是一类实值函数（这个一般都能满足）</li>
+</ol>
+<p>考虑到 IPM-based GAN 相对于 SGAN 具有更好的稳定性，可以推断，如果将 SGAN 推向 IPM-based GAN，能够提高其稳定性。怎么才能达到这个转变呢？如果我们认为 D 足够好，即能够在训练 G 时做到认为 $D(x_r) = 1 \ and \  D(x_f) = 0 ​$（这是一个比较强的假设，但是在训练一开始是能够满足的），而在训练 D 的时候 $D(x_r) = D(x_f) = 1 ​$，如开头图片的 (b) 所示那种情况，那么唯一缺少的条件就是 $D(x_r) = 0 ​$。但是在 SGAN 中，$D(x_r)​$ 只跟 real data 有关，也即是<strong>绝对的真假</strong>，如果 G 生成的样本能够影响 $D(x_r)​$，让它变得不那么真实，也即<strong>相对的真假</strong>。这个时候，$D(x_r)​$ 才可能变成 0。总结起来一句话就是，在 $D(x_f)​$ 提升的时候 $D(x_r)​$ 相应地减少（这是一种相对的变化），这样 GAN 的训练才能更加稳定。</p>
+<h2 id="Methods"><a href="#Methods" class="headerlink" title="Methods"></a>Methods</h2><h3 id="Relativistic-GAN"><a href="#Relativistic-GAN" class="headerlink" title="Relativistic GAN"></a>Relativistic GAN</h3><p>如何把这种相对为真和为假的概率考虑进去？很简单，只要把 logits 做一个简单相减，即：</p>
+<p><img src="/img/relative_gan.png" alt="Relative Loss"></p>
+<p>这里用 <code>sigmoid</code> 函数将 logits 转化成概率，然后再取对数；我们可以很容易地把这个式子进行泛化，即用更一般的函数（不一定是似然函数）来替换它。</p>
+<h3 id="Relativistic-average-GAN"><a href="#Relativistic-average-GAN" class="headerlink" title="Relativistic average GAN"></a>Relativistic average GAN</h3><p>不过这个时候，我们发现 GAN 中 D 的功能已经悄然发生的改变，由原来的：<strong>衡量输入数据为真的概率</strong>，变成了输入的数据与其对立类型随机的一个样本（如果输入为 real data，那么衡量其比 fake data 更像真的概率，反之亦然）相比<strong>更</strong>像真的的概率。那么，更一般地，我们利用对立类型的<strong>平均真实度</strong>来作为更可靠的参照对象。</p>
+<p><img src="/img/ragan.png" alt="Relativistic average GAN"></p>
+<p>所谓平均真实度，就是对整个（或者一个 mini-batch）  real data 和 fake data 求其 $D(x)$ 的数学期望，这样的估计能够更加整体的反映训练在这一时刻生成器生成的 fake data 的真实程度。同样，我们可以轻易地将其泛化到别的函数之上。最后整个算法流程如下：</p>
+<p><img src="/img/algorithm_ragan.png" alt="Algorithm of RaGAN"></p>
+<h2 id="Toy-Demo"><a href="#Toy-Demo" class="headerlink" title="Toy Demo"></a>Toy Demo</h2><p>原作给了很多例子来说明 RaGAN 的效果，并且也提供了相应的<a href="https://github.com/AlexiaJM/RelativisticGAN" target="_blank" rel="noopener">代码</a>。这里我就拿 MNIST 做一个小小的 Demo，在原版的 GAN 的 demo 上做了一个很小的改动，就是把 loss 计算中的 logits 进行对应的相减。</p>
+<h3 id="Generator"><a href="#Generator" class="headerlink" title="Generator"></a>Generator</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Generator Net</span></span><br><span class="line">Z = tf.placeholder(tf.float32, shape=[<span class="keyword">None</span>, <span class="number">100</span>])</span><br><span class="line"></span><br><span class="line">G_W1 = tf.Variable(xavier_init([<span class="number">100</span>, <span class="number">128</span>]), name=<span class="string">"G_W1"</span>)</span><br><span class="line">G_W2 = tf.Variable(xavier_init([<span class="number">128</span>, <span class="number">784</span>]), name=<span class="string">"G_W2"</span>)</span><br><span class="line"></span><br><span class="line">G_b1 = tf.Variable(tf.zeros([<span class="number">128</span>]), name=<span class="string">"G_b1"</span>)</span><br><span class="line">G_b2 = tf.Variable(tf.zeros([<span class="number">784</span>]), name=<span class="string">"G_21"</span>)</span><br><span class="line"></span><br><span class="line">theta_G = [G_W1, G_W2, G_b1, G_b2]</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">generator</span><span class="params">(z)</span>:</span></span><br><span class="line">    G_h1 = tf.nn.relu(tf.matmul(z, G_W1) + G_b1)</span><br><span class="line">    G_log_prob = tf.matmul(G_h1, G_W2) + G_b2</span><br><span class="line">    G_prob = tf.nn.sigmoid(G_log_prob)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> G_prob</span><br></pre></td></tr></table></figure>
+<h3 id="Discriminator"><a href="#Discriminator" class="headerlink" title="Discriminator"></a>Discriminator</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Discriminator Net</span></span><br><span class="line">D_W1 = tf.Variable(xavier_init([<span class="number">784</span>, <span class="number">128</span>]), name=<span class="string">"D_W1"</span>)</span><br><span class="line">D_b1 = tf.Variable(tf.zeros(shape=[<span class="number">128</span>]), name=<span class="string">"D_b1"</span>)</span><br><span class="line"></span><br><span class="line">D_W2 = tf.Variable(xavier_init([<span class="number">128</span>, <span class="number">1</span>]), name=<span class="string">"D_W2"</span>)</span><br><span class="line">D_b2 = tf.Variable(tf.zeros(shape=[<span class="number">1</span>]), name=<span class="string">"D_b2"</span>)</span><br><span class="line"></span><br><span class="line">theta_D = [D_W1, D_W2, D_b1, D_b2]</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">discriminator</span><span class="params">(x)</span>:</span></span><br><span class="line">    D_h1 = tf.nn.relu(tf.matmul(x, D_W1) + D_b1)</span><br><span class="line">    D_logit = tf.matmul(D_h1, D_W2) + D_b2</span><br><span class="line">    D_prob = tf.nn.sigmoid(D_logit)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> D_prob, D_logit</span><br></pre></td></tr></table></figure>
+<h3 id="RaGAN"><a href="#RaGAN" class="headerlink" title="RaGAN"></a>RaGAN</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Ra GAN  simple version </span></span><br><span class="line">mnist = input_data.read_data_sets(<span class="string">'MNIST_data'</span>, one_hot=<span class="keyword">True</span>)</span><br><span class="line">X = tf.placeholder(tf.float32, shape=[<span class="keyword">None</span>, <span class="number">784</span>], name=<span class="string">"X"</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">G_sample = generator(Z)</span><br><span class="line">D_real, D_logit_real = discriminator(X)</span><br><span class="line">D_fake, D_logit_fake = discriminator(G_sample)</span><br><span class="line"><span class="comment"># discriminator </span></span><br><span class="line"><span class="comment"># log( real_logits - fake_logits)</span></span><br><span class="line">D_loss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=D_logit_real - D_logit_fake, labels=tf.ones_like(D_logit_fake)))</span><br><span class="line"></span><br><span class="line"><span class="comment"># generator loss</span></span><br><span class="line"><span class="comment"># log(fake_logits - real_logits )</span></span><br><span class="line">G_loss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=D_logit_fake - D_logit_real, labels=tf.ones_like(D_logit_fake)))</span><br><span class="line"></span><br><span class="line"><span class="comment"># optimizer</span></span><br><span class="line">D_solver = tf.train.AdamOptimizer().minimize(D_loss, var_list=theta_D)</span><br><span class="line">G_solver = tf.train.AdamOptimizer().minimize(G_loss, var_list=theta_G)</span><br></pre></td></tr></table></figure>
+<h3 id="Train"><a href="#Train" class="headerlink" title="Train"></a>Train</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sample_Z</span><span class="params">(m, n)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> np.random.uniform(<span class="number">-1.</span>, <span class="number">1.</span>, size=[m, n])</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">steps = <span class="number">1000001</span></span><br><span class="line">mb_size = <span class="number">128</span></span><br><span class="line">Z_dim = <span class="number">100</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">plot</span><span class="params">(samples)</span>:</span></span><br><span class="line">    fig = plt.figure(figsize=(<span class="number">4</span>, <span class="number">4</span>))</span><br><span class="line">    gs = gridspec.GridSpec(<span class="number">4</span>, <span class="number">4</span>)</span><br><span class="line">    gs.update(wspace=<span class="number">0.05</span>, hspace=<span class="number">0.05</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> i, sample <span class="keyword">in</span> enumerate(samples):</span><br><span class="line">        ax = plt.subplot(gs[i])</span><br><span class="line">        plt.axis(<span class="string">'off'</span>)</span><br><span class="line">        ax.set_xticklabels([])</span><br><span class="line">        ax.set_yticklabels([])</span><br><span class="line">        ax.set_aspect(<span class="string">'equal'</span>)</span><br><span class="line">        plt.imshow(sample.reshape(<span class="number">28</span>, <span class="number">28</span>), cmap=<span class="string">'Greys_r'</span>)</span><br><span class="line"></span><br><span class="line">    plt.show(block=<span class="keyword">False</span>)</span><br><span class="line">    <span class="keyword">return</span> fig</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> tf.Session() <span class="keyword">as</span> sess:</span><br><span class="line">    sess.run(tf.global_variables_initializer())</span><br><span class="line">    num = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(steps):</span><br><span class="line">        X_mb, _ = mnist.train.next_batch(mb_size)</span><br><span class="line">        </span><br><span class="line">        _, D_loss_curr = sess.run([D_solver, D_loss], feed_dict=&#123;</span><br><span class="line">            X: X_mb,</span><br><span class="line">            Z: sample_Z(mb_size, Z_dim)</span><br><span class="line">        &#125;)</span><br><span class="line">        <span class="comment"># 注意，这里的 feed_dict 和原来不一样了</span></span><br><span class="line">        _, G_loss_curr = sess.run([G_solver, G_loss], feed_dict=&#123;</span><br><span class="line">            X: X_mb, Z: sample_Z(mb_size, Z_dim)</span><br><span class="line">        &#125;)</span><br><span class="line">        <span class="comment"># 下面的 vanilla GAN 的 loss</span></span><br><span class="line">        <span class="comment"># _, G_loss_curr = sess.run([G_solver, G_loss], feed_dict=&#123;Z: sample_Z(mb_size, Z_dim)&#125;)</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> i % <span class="number">100</span> == <span class="number">0</span>:</span><br><span class="line">            print(<span class="string">"Step %d"</span> % i)</span><br><span class="line">            print(<span class="string">"G loss: %f"</span> % G_loss_curr)</span><br><span class="line">            print(<span class="string">"D loss: %f"</span> % D_loss_curr)</span><br><span class="line">            print()</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> i % <span class="number">1000</span> == <span class="number">0</span>:</span><br><span class="line">            samples = sess.run(G_sample, feed_dict=&#123;Z: sample_Z(<span class="number">16</span>, Z_dim)&#125;)</span><br><span class="line">            fig = plot(samples)</span><br><span class="line">            fname = <span class="string">'&#123;&#125;.png'</span>.format(str(num).zfill(<span class="number">5</span>))</span><br><span class="line">            plt.savefig(fname, bbox_inches=<span class="string">'tight'</span>)</span><br><span class="line">            print(<span class="string">'saved image '</span> + fname)</span><br><span class="line">            num += <span class="number">1</span></span><br><span class="line">            <span class="comment"># plt.clf()</span></span><br><span class="line">            plt.close(fig)</span><br></pre></td></tr></table></figure>
+<h2 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h2><p>GAN 的难训练是<strong>臭名昭著</strong>了，作者通过考虑引入相对这个概念来使得训练过程变得更加稳定。这类见微知著的工作，还有前不久的 IndRNN 真的非常符合我的胃口了。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Deep Learning</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">GAN</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+
+      
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/07/05/RaGAN-Notes/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Pytorch-Tutorial-Walkthrough" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/06/30/Pytorch-Tutorial-Walkthrough/">Pytorch 初体验</a>
+    </h1>
+  
+
+        
+        <a href="/2018/06/30/Pytorch-Tutorial-Walkthrough/" class="archive-article-date">
+  	<time datetime="2018-06-30T13:48:55.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-06-30</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>深度学习框架很多，TensorFlow 算是比较流行的了，但静态图有时候确实写的很难受，以及一些比较复杂的 model 实现起来比较蛋疼；最近在看的文章的实现没有 TensorFlow 版本，起初我想改写一个 TensorFlow 版本出来，结果实现不了，一方面可能我确实比较菜，另一方面，也只能说 TensorFlow 有些东西在设计上让人为难。所以，那就试试 PyTorch 咯。这篇文章主要是记录我学习 PyTorch 官方 60 分钟<a href="https://pytorch.org/tutorials/beginner/deep_learning_60min_blitz.html" target="_blank" rel="noopener">教程</a>的过程。</p>
+<h2 id="Tensor"><a href="#Tensor" class="headerlink" title="Tensor"></a>Tensor</h2><p>逃不开的还是 Tensor 这个对象，PyTorch 创建、操作 Tensor 的方法和 numpy 很类似，据说 Torch 一开始就是 Numpy 的 GPU 加速版，简单列些一些 API：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">x = torch.empty(<span class="number">5</span>, <span class="number">3</span>) <span class="comment"># 创建一个未初始化的 5x3 tensor</span></span><br><span class="line">x = torch.rand(<span class="number">5</span>, <span class="number">3</span>) <span class="comment"># 随机生成 5x3 </span></span><br><span class="line">x = torch.zeros(<span class="number">5</span>, <span class="number">3</span>, dtype=torch.long)</span><br></pre></td></tr></table></figure>
+<p>比较有意思的是，创建 Tensor 的时候 size 参数不是一个 <code>tuple</code> e.g. <code>(5, 3)</code> ，而是用 <code>*args</code> 的方式传入。</p>
+<p>常用的算术操作可以通过 <code>x+y</code> 或者是 <code>torch.add(x, y)</code> 来实现，同时 PyTorch 也提供了<strong>就地 </strong>(in place) 的操作：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">y.add_(x) <span class="comment"># equals y = y + x</span></span><br></pre></td></tr></table></figure>
+<p>所有的操作名 + 下划线都是一个就地操作，<code>x.copy_(y)</code> 会用 <code>y</code> 的值<strong>替代</strong><code>x</code>。</p>
+<p>另外，对于单元素的 Tensor，可以通过使用 <code>.item()</code> 来获取它；TensorFlow 中的 <code>reshape()</code> 对应的是 <code>view()</code>，并且，和 numpy 一样，<strong>Tensor</strong> 支持切片操作：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">x = torch.randn(<span class="number">4</span>, <span class="number">4</span>) <span class="comment"># x -&gt; 4x4</span></span><br><span class="line">x.view(<span class="number">-1</span> , <span class="number">8</span>) <span class="comment"># x -&gt; 2 x 8</span></span><br><span class="line">x[:, <span class="number">1</span>] <span class="comment"># 取第二列的所有元素</span></span><br></pre></td></tr></table></figure>
+<p>既然之前说 Torch 是 Numpy 的一个 GPU 版本，也就支持 ndarray 和 Tensor 的相互转化（这就比 TensorFlow 用起来舒服很多），可以用 <code>Tensor.numpy()</code> 获取到对应的 ndarray，逆操作则是 <code>torch.from_numpy()</code>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># example 1 tensor -&gt; numpy</span></span><br><span class="line">a = torch.ones(<span class="number">3</span>) <span class="comment"># tensor([1., 1. , 1.])</span></span><br><span class="line">b = a.numpy() <span class="comment"># 通过 tensor.numpy() 获取对应的 ndarray 对象</span></span><br><span class="line">a.add_(<span class="number">1</span>)  <span class="comment"># 就地 + 1 , a= a+1</span></span><br><span class="line">print(a)<span class="comment"># tensor([2., 2., 2.])</span></span><br><span class="line">print(b) <span class="comment"># [2., 2., 2.]</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># example 2   numpy -&gt; tensor</span></span><br><span class="line">a = np.ones(<span class="number">3</span>)</span><br><span class="line">b = torch.from_numpy(a)</span><br><span class="line">np.add(a, <span class="number">1</span>, out=a)</span><br><span class="line">print(a)  <span class="comment"># [2., 2., 2.]</span></span><br><span class="line">print(b) <span class="comment"># tensor([2., 2., 2.])</span></span><br></pre></td></tr></table></figure>
+<p>上面这个例子很重要，说明了<strong>ndarray 和 Tensor 对象之间的转换是一种引用关系，而非创建新的对象</strong>。也就是说，<strong>任何一个相关对象的变化都会影响到另一方</strong>，就像例子 1 中，我们对原始的 <code>a</code> 进行 <code>add_(1)</code>，在此之前得到的 <code>b</code> 对象的值也改变了，例子二中同样出现了这样的情况，这一点需要特别注意。</p>
+<h3 id="CUDA-Tensors"><a href="#CUDA-Tensors" class="headerlink" title="CUDA Tensors"></a>CUDA Tensors</h3><p>我们可以把 Tensor 放到 GPU 上来加速计算，而 PyTorch 为此提供了很方便的方式：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> torch.cuda.is_available(): <span class="comment"># 如果 CUDA 可用</span></span><br><span class="line">    device = torch.device(<span class="string">"cuda"</span>)          <span class="comment"># CUDA 设备对象</span></span><br><span class="line">    y = torch.ones_like(x, device=device)  <span class="comment"># 直接在 GPU 上创建 Tensor 对象</span></span><br><span class="line">    x = x.to(device)                       <span class="comment"># 也可以用``.to("cuda")`` 代替</span></span><br><span class="line">    z = x + y</span><br><span class="line">    print(z)</span><br><span class="line">    print(z.to(<span class="string">"cpu"</span>, torch.double))       <span class="comment"># ``.to`` 同时可以改变数据类型</span></span><br></pre></td></tr></table></figure>
+<p>如上面的例子所示，我们可以在创建 Tensor 对象时指定 <code>device</code> 参数来指明 Tensor 创建的位置，也可以再创建了之后使用 <code>.to()</code> 方法来进行双向的迁移：既可以从 CPU 到 GPU（例子中的 <code>x.to(device)</code>，也可以从 GPU 到 CPU（<code>z.to(&quot;cpu&quot;, torch.double)</code>）。对比 TensorFlow ：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> tf.device(<span class="string">'/cpu:0'</span>):</span><br><span class="line">    <span class="comment"># something you want to do on CPU</span></span><br><span class="line"><span class="keyword">with</span> tf.device(<span class="string">'/gpu:0'</span>):</span><br><span class="line">    <span class="comment"># somethin you want to do on GPU</span></span><br></pre></td></tr></table></figure>
+<p>就我所知，TensorFlow 只能在创建的时候指明位置，而无法像 PyTorch 这般灵活的迁移。</p>
+<h2 id="Autograd"><a href="#Autograd" class="headerlink" title="Autograd"></a>Autograd</h2><p>自动求导已经是深度学习框架的必备了，首先，我们可以通过设置 Tensor 的 <code>.requires_grad</code> 参数来指明 Tensor 是否参与梯度运算，这和 TensorFlow 中的 <code>trainable</code> 是类似的；接着我们通过对某个对象（比如 loss ）函数进行 <code>.backward()</code> 操作，来进行反向梯度的计算，并且能够通过计算链上对象的 <code>.grad</code> 属性来获取到对应的梯度。拿官方的例子做一个简单的说明：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">x = torch.ones(<span class="number">2</span>, <span class="number">2</span>, requires_grad=<span class="keyword">True</span>) <span class="comment"># 声明 x，指明需要参加梯度的计算 x: 2x2 全 1</span></span><br><span class="line">y = x + <span class="number">2</span></span><br><span class="line">z = y * y * <span class="number">3</span> <span class="comment"># z = 3 * (x+2)^2</span></span><br><span class="line">out = z.mean()</span><br></pre></td></tr></table></figure>
+<p>梯度计算的过程如下：</p>
+<p>$ o =\frac{1}{4}\sum_i z_i$</p>
+<p>$ z_i = 3(x_i+2)^2 $</p>
+<p>$ z_i\bigr\rvert_{x_i=1} = 27 $</p>
+<p>$ \frac{\partial o}{\partial x_i} = \frac{3}{2}(x_i+2) $</p>
+<p>$  \frac{\partial o}{\partial x_i}\bigr\rvert_{x_i=1} = \frac{9}{2} = 4.5 $</p>
+<p>因此，<code>x.grad</code> 的值在我们对 <code>out</code> 进行 <code>out.backward()</code> 操作之后，结果为：</p>
+<blockquote>
+<p>tensor([[ 4.5000,  4.5000],</p>
+<p>​             [ 4.5000,  4.5000]])</p>
+</blockquote>
+<p><code>backward()</code> 函数的原型如下：</p>
+<blockquote>
+<p> torch.autograd.backward(<em>tensors</em>, <em>grad_tensors=None</em>, <em>retain_graph=None</em>, <em>create_graph=False</em>, <em>grad_variables=None</em>)</p>
+</blockquote>
+<p>其中第一个参数用来声明<strong>梯度的权重</strong>。如果目标函数是一个标量，则可以不传这个参数，比如上面的 <code>out.backward()</code> ，则默认权重为 <code>1</code> ，如果我们改成 <code>out.backward(torch.tensor(2,dtype=torch.float))</code> 则各个 $$x_i$$ 梯度就会变成原来的 2 倍，利用权重我们就可以来控制各个参数的更新速度。</p>
+<h2 id="Build-A-Neural-Network"><a href="#Build-A-Neural-Network" class="headerlink" title="Build  A Neural Network"></a>Build  A Neural Network</h2><p>学框架不搭一个 NN 来玩 MNIST 或者 CIFAR 怎么能叫入门呢？来来来，走一波~</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Net</span><span class="params">(nn.Module)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        super(Net, self).__init__()</span><br><span class="line">        self.conv1 = nn.Conv2d(<span class="number">3</span>, <span class="number">6</span>, <span class="number">5</span>) <span class="comment"># input 3 channels, output 6 channels , filter size = 5</span></span><br><span class="line">        self.conv2 = nn.Conv2d(<span class="number">6</span>, <span class="number">16</span>, <span class="number">5</span>) <span class="comment"># input 3 channels, output 16 channels, filter size = 5</span></span><br><span class="line">        <span class="comment"># Wx + b</span></span><br><span class="line">        self.fc1 = nn.Linear(<span class="number">16</span> * <span class="number">5</span> * <span class="number">5</span>, <span class="number">120</span>)</span><br><span class="line">        self.fc2 = nn.Linear(<span class="number">120</span>, <span class="number">84</span>)</span><br><span class="line">        self.fc3 = nn.Linear(<span class="number">84</span>, <span class="number">10</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span><span class="params">(self, x)</span>:</span></span><br><span class="line">        <span class="comment"># max pooling, window size : 2x2</span></span><br><span class="line">        x = F.max_pool2d(F.relu(self.conv1(x)), (<span class="number">2</span>, <span class="number">2</span>))</span><br><span class="line">        <span class="comment"># 如果是 方形的输入，window size 可以只用一个参数</span></span><br><span class="line">        x = F.max_pool2d(F.relu(self.conv2(x)), <span class="number">2</span>)</span><br><span class="line">        x = x.view(<span class="number">-1</span>, self.num_flat_features(x))</span><br><span class="line">        x = F.relu(self.fc1(x))</span><br><span class="line">        x = F.relu(self.fc2(x))</span><br><span class="line">        x = self.fc3(x)</span><br><span class="line">        <span class="keyword">return</span> x</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">num_flat_features</span><span class="params">(self, x)</span>:</span> <span class="comment"># 展平 x</span></span><br><span class="line">        size = x.size()[<span class="number">1</span>:]  <span class="comment"># 获取各个维度的大小，除了第一维 batch_size</span></span><br><span class="line">        num_features = <span class="number">1</span></span><br><span class="line">        <span class="keyword">for</span> s <span class="keyword">in</span> size:</span><br><span class="line">            num_features *= s</span><br><span class="line">        <span class="keyword">return</span> num_features</span><br></pre></td></tr></table></figure>
+<p>诶，有没有觉得有点像 Keras，不过高级的 API 用起来就是爽，不用写那么多代码2333，接下来就是定义 loss 和进行 backprop 来更新参数：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch.optim <span class="keyword">as</span> optim</span><br><span class="line"><span class="comment"># 定义 loss</span></span><br><span class="line">criterion = nn.CrossEntropy()</span><br><span class="line"><span class="comment"># 创建 optimizer</span></span><br><span class="line">optimizer = optim.SGD(net.parameters(), lr=<span class="number">0.01</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 在循环里不断进行如下操作：</span></span><br><span class="line">optimizer.zero_grad()   <span class="comment"># 清零梯度</span></span><br><span class="line">output = net(input)</span><br><span class="line">loss = criterion(output, target)</span><br><span class="line">loss.backward()</span><br><span class="line">optimizer.step()    <span class="comment"># 梯度更新</span></span><br></pre></td></tr></table></figure>
+<p>和 TensorFlow 的区别就在于，TensorFlow 的话只要我们用 <code>session.run(optimizer)</code> 就可以完成梯度的更新操作，而 PyTorch 则需要：</p>
+<ol>
+<li>Optimizer 清零梯度</li>
+<li>对 loss 进行手动的 <code>backward()</code> 操作</li>
+<li>Optimizer 更新 <code>.step()</code></li>
+</ol>
+<p>三步走，记住了没有！</p>
+<p>还有一点比较方便的是，和 Tensor 类似，我们可以使用 <code>Net.to()</code> 来把模型部署到 GPU 上：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">net.to(<span class="string">"cuda:0"</span>)</span><br></pre></td></tr></table></figure>
+<p>但是！记得要把你的输入也放到 GPU 上，不然就会报错：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">inputs, labels = inputs.to(device), labels.to(device) <span class="comment"># 把 input 和 label 同样迁移到 GPU 上</span></span><br></pre></td></tr></table></figure>
+<h2 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h2><p>初体验如果要给个评价的话，我觉得是比 TensorFlow 好很多（毕竟 TensorFlow 一上来的 Session、静态图会让人有点摸不着头脑）。但用什么框架其实都无所谓，就和语言一样，虽然争来争去，但每种语言都有自己的用武之地，以前我还会和室友争辩 Java 和 Python 谁才是最好的语言，现在就不会了（因为我也觉得 Python 好写一点，逃）。框架更不用说，TensorFlow 有他应用的工业场景（希望能早日接触到），PyTorch 现在看来也许更适合需要快速实现原型的科研人员。而我们能做的，就是多接触，横向比较着来看而不要因为自己擅长而蒙蔽了双眼，<strong>多学一技压身，总是没错的</strong>。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Deep Learning</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+
+      
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/06/30/Pytorch-Tutorial-Walkthrough/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Brief-overview-of-text-generation" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -999,225 +1243,6 @@
 
 
   
-    <article id="post-SeqGAN" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/03/11/SeqGAN/">SeqGAN —— GAN + RL +NLP</a>
-    </h1>
-  
-
-        
-        <a href="/2018/03/11/SeqGAN/" class="archive-article-date">
-  	<time datetime="2018-03-11T12:46:33.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-11</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>SeqGAN 是第一篇用 GAN 在 NLP 上做出一些成果的 model，<a href="http://lantaoyu.com/cv/" target="_blank" rel="noopener">Lantao Yu</a> 的 CV 看的我也是羡慕不已，想着同龄人已经有如此出色的成绩，不由得感觉自己还是太菜了。</p>
-<h2 id="GAN-for-NLP"><a href="#GAN-for-NLP" class="headerlink" title="GAN for NLP"></a>GAN for NLP</h2><p>先前写过一篇文章，<a href="http://tobiaslee.top/2017/12/10/Thoughts-about-adversarial-training-methods-in-NLP/">关于 Adversarial Training 在 NLP 的一些思考</a>，Adversarial Training 算是 GAN 的源头，而 GAN 算是其在生成器领域的一大成就。但这个 GAN 在文本领域一直不怎么 work，先前我也做过用 GAN 中 Discriminator 作为 Classifier，希望对抗训练能够提升其分类准确度，然而并不成功。原因当时也总结了一下，记录在<a href="https://www.zhihu.com/question/68390841/answer/264504804" target="_blank" rel="noopener">这里</a>，一句话概括就是 Generator 太垃圾根本不能忽悠 Discriminator，反而 Discriminator 因为训练轮数少了（和 Generator 交替训练）被拖了后腿。那么问题又回到了 GAN 来生成文本的问题上了，图像和文本的核心区别在于<strong>图像的 Pixel 表示是连续的，而文本是由离散的 token 组成</strong>。因而，Goodfellow 也在 reddit 上说: </p>
-<blockquote>
-<p>You can make slight changes to the synthetic data only if it is based on continuous numbers. If it is based on discrete numbers, there is no way to make a slight change.</p>
-<p>If you output the word “penguin”, you can’t change that to “penguin + .001” on the next step, because there is no such word as “penguin + .001”. You have to go all the way from “penguin” to “ostrich”.</p>
-</blockquote>
-<p>参数的微小改变不能对结果产生影响，或者说影响的方向也不对，这就导致 Discriminator 的梯度回传变得没有意义。再进一步的关于 GAN for NLP 的讨论，建议可以阅读胡杨的<a href="https://zhuanlan.zhihu.com/p/29168803" target="_blank" rel="noopener">文章</a>。前面说的这些都是为了凸显 SeqGAN 这一工作的重要性，毕竟，GAN 在 NLP 上这么难搞，还能搞出来，肯定了不得。确实，<strong>SeqGAN 是了 RL + GAN 用于文本生成的一大创举</strong>，接下来，一睹风采。</p>
-<h2 id="Seq-GAN"><a href="#Seq-GAN" class="headerlink" title="Seq GAN"></a>Seq GAN</h2><p>Seq GAN 的模型很简洁：</p>
-<p><img src="/img/seqgan.png" alt="SeqGAN model"></p>
-<p>沿用 GAN 的架构， Generator 来生成文本和 Discriminator 来判别文本是真实的还是生成的，那么是怎么解决更新 Generator 参数的这个问题的呢？用 Policy Gradient！如果我们把 <strong>Generator 看成是一个 Agent，他在每一 time step 上生成的 word token 作为 action，此前生成的所有 tokens 作为 state</strong>，我们就可以设计一个 reward function 来指导 Generator 生成更真实的句子。因为 Discriminator 输出是真实句子的概率 0-1，直接拿来作为 reward，于是就有了下面的式子:</p>
-<p>$$ Q_{D_\phi}^{G_\theta}=(a = y_{T}, s= Y_{1:T-1} = D_{\phi}(Y_{1:T}))$$</p>
-<p>但是对于生成了一半的句子怎么评估其真实性呢？用蒙特卡洛（蒙特卡洛就是随机采样）搜索在一个 Generator 的拷贝上（为了避免搜索过程引入对梯度的影响）补全句子，然后再交给 Discriminator 评估。于是，完成的 Q function 如下：</p>
-<p><img src="/img/seqreward.png" alt="Q function"></p>
-<p>讲到这里，整个模型的架构已经讲完了，是不是很简单粗暴明了。接下来实作上还有一些小 tricks，文章的算法摘录如下：</p>
-<p><img src="/img/seq_algorithm.png" alt="SeqGAN Algorithm"></p>
-        
-          <a class="article-more-a" href="/2018/03/11/SeqGAN/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Deep Learning</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Reinforcement Learning</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">NLP</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">GAN</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">论文笔记</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-
-      
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/03/11/SeqGAN/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Actor-Critic" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/03/09/Actor-Critic/">Actor-Critic - A improvement of Policy Gradient</a>
-    </h1>
-  
-
-        
-        <a href="/2018/03/09/Actor-Critic/" class="archive-article-date">
-  	<time datetime="2018-03-09T13:59:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-09</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="Improvement-of-Policy-Gradient"><a href="#Improvement-of-Policy-Gradient" class="headerlink" title="Improvement of Policy Gradient"></a>Improvement of Policy Gradient</h2><p>上篇 Blog 中讲到，我们对于 Agent 参数的更新是基于 reward function 对最大似然 loss 加权得到的 Objective Function，这里有两个问题：</p>
-<ol>
-<li>reward function 需要在完整的一次 trajectory 后才能够计算，也就是说，是<strong>回合更新</strong>的。这样更新的频率更新就比较慢，相应地，训练就会缓慢一些。</li>
-<li>因为每次我们都是在当前的一个回合上计算 reward，但每次回合 Agent 所采取的策略都会有所不同，这样子就会导致我们的方差（variance）比较大。</li>
-</ol>
-<p>对于第一个问题，我们的解决方法是，根据每个 Agent 的每次 Action 进行参数的更新，也就是我们接下来要说的 Actor-Critic；第二个问题，也就是我们最好能够对所有的样本进行估计来计算我们的 reward（也就是 reward 的数学期望），以此来降低方差。</p>
-<p>具体地，我们可以采取以下几种 reward function:</p>
-<p><img src="/img/pg2.png" alt="Different Reward Function"></p>
-<p><em>图源自知乎，详见 Reference</em></p>
-<p>第一种也就是最为普通的 reward function，各步的累加；第二种则是不考虑先前步的 reward，这里有一个 casualty 的性质，即今天的参数更新是无法影响昨天以及之前获得的 reward的，因而可以只考虑今天之后的 reward；第三种则是加入了 baseline，在基准之上衡量 reward，能够更好地指示动作的好坏，基准一般会采取所有回合的 reward 均值。值得强调的是，这三种方式都是<strong>对 reward 的无偏估计 (unbiased)</strong>，但天上不会掉馅饼，尽管第二种第三种方式对第一种方式修改后 variance 有所降低，但整体的方差还是比较大的。</p>
-<p>而后面三种，则是希望通过<strong>再用一个 NN，来评估当前的状态能够获得 reward</strong>。这样的估计，必然是 biased 的，因为这个 NN 基本不可能是 Perfect 的；当然，这样做的好处就能够降低 variance，所以这是一个 trade off 的问题，后面三种的详细式子如下：</p>
-<p><img src="/img/value_fit.png" alt="Value Functions"></p>
-<p>Q 是对当前状态 $s_t$和采取的动作$a_t$能够获得的 reward 进行估计；而 V 仅仅考虑对状态 $s_t$ 能获得的 reward，也就是对于所有 $a_t$ 的 Q 的数学期望；A 又称 Advantage Function，是衡量 $a_t$ 好坏的一个指标，从 $ A= Q-V$ 就能看出来。那么问题来了，这三个函数彼此相互关联，我们用 Neural Network(NN) 来拟合哪一个呢？</p>
-<p>答案其实也已经在上面的那种图里了，通过一些约等式，我们能够通过拟合 $V^{\pi}(s)$ 来得到 Advantage Function，实际应用中主要就是采取 Advantage Function 作为对当前所采取动作的评估函数。</p>
-<h2 id="Actor-Critic-Network"><a href="#Actor-Critic-Network" class="headerlink" title="Actor Critic Network"></a>Actor Critic Network</h2><p>上面的 Advantage Function 起到的作用类似一个教练（或者说是批评家），对于我们的 Actor 当前的状态和采取的动作做出指示，帮助他更好的达到目标，这也就是 Actor-Critic 算法的名字由来。我个人对 AC 算法的认识就是基于对 Policy Gradient 的优化而得到的，Actor 就是我们之前谈到的 Policy，其核心就在于<strong>用 NN 来扮演这个 Critic 的角色</strong>。</p>
-<p>既然是 <code>NN fit V function</code>，那么训练集是什么呢？即<strong>我们如何根据当前的状态，来估计整个回合获得的 reward</strong>呢？这里有两种做法：</p>
-<ol>
-<li>Monte Carlo evaluation：蒙特卡洛搜索，就是对未来可能采取的动作进行搜索，计算获得的 reward</li>
-<li>通过 V 本身来计算，获得的 reward 等于当前这一动作能获得的 r 和下一状态用 V 估计值之和，即 $ reward = r(s_t, a_t) + V (s_{t+1})$ </li>
-</ol>
-<p><img src="/img/target.png" alt="Two methods of evaluation of V"></p>
-<p>一般我们都会采用第二种方法，也称为 <code>bootstrapped estimate</code>，由此，我们就可以构造出相应的 training data，用 NN 解决一个 regression 问题：</p>
-<p><img src="/img/critic.png" alt="Regression Problem">   </p>
-<h2 id="Program"><a href="#Program" class="headerlink" title="Program"></a>Program</h2><p>又到了喜闻乐见的代码实现部分，其实也简单，两个 NN 嘛，有点 GAN 的感觉。实际上，有论文将 Actor 和 Critic 两个 NN 整合成一个 NN，并且做出了不错的效果，好处就是能够共享特征(shared features)，不好的地方就是，训练可能不是很稳定。这次就不贴完整代码，上一篇 Blog 和这篇以及后续 RL 相关的代码都会上传到 <a href="https://github.com/TobiasLee/ReinforcementLearningPractice" target="_blank" rel="noopener">GitHub</a> 上，这里只讲解部分核心的函数。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Actor 类</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Actor</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, sess, n_features, n_actions, lr=<span class="number">1e-3</span>)</span>:</span> </span><br><span class="line">	<span class="comment"># 相应的初始化，创建 placeholder</span></span><br><span class="line">	<span class="comment"># 构建全连接层</span></span><br><span class="line">	<span class="comment"># 设置 Optimizer 等</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">learn</span><span class="params">(self, s, a, td)</span>:</span></span><br><span class="line">     <span class="comment"># 根据 state, action, td error(即 Advantage) 更新参数</span></span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">choose_action</span><span class="params">(self, s)</span>:</span> <span class="comment"># choose action based on the state</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Critic 类</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Critic</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, sess, n_features, lr=<span class="number">1e-2</span>, gamma=<span class="number">0.99</span>)</span>:</span></span><br><span class="line">        <span class="comment"># 初始化 </span></span><br><span class="line">	    <span class="comment"># 构建 NN，</span></span><br><span class="line">       </span><br><span class="line">        <span class="keyword">with</span> tf.variable_scope(<span class="string">"td_square_error"</span>): <span class="comment"># Regression problem </span></span><br><span class="line">            <span class="comment"># 这里我们同样加入了 discount factor</span></span><br><span class="line">            self.td_error = self.r + gamma * self.v_ - self.v</span><br><span class="line">            <span class="comment"># 用 square 作为 loss function</span></span><br><span class="line">            self.loss = tf.square(self.td_error)</span><br><span class="line">        <span class="comment"># 设置 Optimizer </span></span><br><span class="line">        <span class="keyword">with</span> tf.variable_scope(<span class="string">"train"</span>):</span><br><span class="line">            self.train_op = tf.train.AdamOptimizer(lr).minimize(self.loss)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">learn_state</span><span class="params">(self, s, r, s_)</span>:</span></span><br><span class="line">        <span class="comment"># advantage function A = r + V_t+1 - V_t</span></span><br><span class="line">        s, s_ = s[np.newaxis, :], s_[np.newaxis, :]</span><br><span class="line">        v_ = self.sess.run(self.v, &#123;self.s: s_&#125;) <span class="comment"># v_ : V_t+1</span></span><br><span class="line">        <span class="comment"># 根据 training data 更新 Critic</span></span><br><span class="line">        td_error, _ = self.sess.run(</span><br><span class="line">            [self.td_error, self.train_op],</span><br><span class="line">            &#123;self.s: s,self.r: r,self.v_: v_&#125;)</span><br><span class="line">        <span class="keyword">return</span> td_error</span><br></pre></td></tr></table></figure>
-<p>训练部分，和 Policy Gradient 大同小异：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">sess = tf.Session()</span><br><span class="line"><span class="comment"># 创建 Actor Critic 实例</span></span><br><span class="line">actor = Actor(sess, n_features=N_F, n_actions=N_A, lr=LR_A)</span><br><span class="line">critic = Critic(sess, n_features=N_F, gamma=GAMMA)</span><br><span class="line"></span><br><span class="line">sess.run(tf.global_variables_initializer())</span><br><span class="line"><span class="comment"># 训练 MAX_EPISODE </span></span><br><span class="line"><span class="keyword">for</span> i_episode <span class="keyword">in</span> range(MAX_EPISODE):</span><br><span class="line">    s = env.reset()</span><br><span class="line">    t = <span class="number">0</span></span><br><span class="line">    track_r = list()</span><br><span class="line">    <span class="keyword">while</span> <span class="keyword">True</span>:</span><br><span class="line">        <span class="keyword">if</span> RENDER: env.render()</span><br><span class="line">        a = actor.choose_action(s)</span><br><span class="line">        s_, r, done, info = env.step(a)</span><br><span class="line">        <span class="keyword">if</span> done:</span><br><span class="line">            r = <span class="number">-20</span></span><br><span class="line">        track_r.append(r)</span><br><span class="line">        <span class="comment"># critic learn td_error</span></span><br><span class="line">        td_error = critic.learn_state(s, r, s_)</span><br><span class="line">        <span class="comment"># actor update behave based on the td_error</span></span><br><span class="line">        actor.learn(s, a, td_error)</span><br><span class="line"></span><br><span class="line">        s = s_ <span class="comment"># update state</span></span><br><span class="line">        t += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> done:</span><br><span class="line">            <span class="comment"># if done or t &gt;= MAX_EP_STEPS:</span></span><br><span class="line">            ep_rs_sum = sum(track_r)</span><br><span class="line">            <span class="keyword">if</span> <span class="string">"running_reward"</span> <span class="keyword">not</span> <span class="keyword">in</span> globals():</span><br><span class="line">                running_reward = ep_rs_sum</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                running_reward = running_reward * <span class="number">0.95</span> + ep_rs_sum*<span class="number">0.05</span></span><br><span class="line">            <span class="keyword">if</span> running_reward &gt; DISPLAY_REWARD_THRESHOLD: <span class="comment"># render the game</span></span><br><span class="line">                RENDER = <span class="keyword">True</span></span><br><span class="line">            print(<span class="string">"episode :"</span>, i_episode, <span class="string">" reward: "</span>, int(running_reward))</span><br><span class="line">            <span class="keyword">break</span></span><br></pre></td></tr></table></figure>
-<p>最后，我们来看一下结果：</p>
-<p><img src="/img/ret.gif" alt="Result"></p>
-<p>一个很有趣的现象就是，第一次玩出界了，第二次能够在快出界的时候纠偏回来，性能确实比简单的 Policy Gradient 好很多。不过，这个训练似乎并不收敛，跑了 200 epoch 之后又会因为一次错误的尝试而导致后面一系列的错误… 果不其然是玄学啊。</p>
-<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><p><a href="https://zhuanlan.zhihu.com/p/29486661" target="_blank" rel="noopener">知乎- Actor-Critic 算法小结</a></p>
-<p><a href="https://www.youtube.com/watch?v=tWNpiNzWuO8&amp;index=4&amp;list=PLkFD6_40KJIznC9CDbVTjAF2oyt8_VAe3" target="_blank" rel="noopener">CS294-112 9/6/17</a></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Deep Learning</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Reinforcement Learning</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-
-      
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/03/09/Actor-Critic/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/3/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/5/">Next &raquo;</a>
@@ -1365,7 +1390,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Deep Learning</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1373,11 +1406,23 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
+                <a href="javascript:void(0)" class="js-tag color4">NLP</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
+                <a href="javascript:void(0)" class="js-tag color2">Machine Learning</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">C</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1389,39 +1434,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Machine Learning</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">NLP</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">C</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">GAN</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1433,15 +1454,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">MediaCodec</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">OpenGL</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
+                <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1449,7 +1462,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Java</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">MediaCodec</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">OpenGL</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1465,15 +1490,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">LaTeX</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Python</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">OS</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1481,15 +1498,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">LaTeX</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">OS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">ML</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">爬虫</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Paper Notes</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1497,15 +1514,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">爬虫</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Attention</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Seq2Seq</a>
+                <a href="javascript:void(0)" class="js-tag color2">Paper Notes</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">C++</a>
+                <a href="javascript:void(0)" class="js-tag color3">Seq2Seq</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1517,11 +1538,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Graph Neural Networks</a>
+                <a href="javascript:void(0)" class="js-tag color5">LSTM</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">LSTM</a>
+                <a href="javascript:void(0)" class="js-tag color4">C++</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Graph Neural Networks</a>
               </li>
              
               <li class="article-tag-list-item">
