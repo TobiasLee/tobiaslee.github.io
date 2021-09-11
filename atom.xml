@@ -41,27 +41,6 @@
   </entry>
   
   <entry>
-    <title></title>
-    <link href="https://tobiaslee.top/2021/06/23/%E6%91%8A%E5%A4%A7%E9%A5%BC/"/>
-    <id>https://tobiaslee.top/2021/06/23/摊大饼/</id>
-    <published>2021-06-23T05:25:04.580Z</published>
-    <updated>2021-06-24T10:22:55.357Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="摊大饼"><a href="#摊大饼" class="headerlink" title="摊大饼"></a>摊大饼</h1><h2 id="Risk"><a href="#Risk" class="headerlink" title="Risk"></a>Risk</h2><ul><li>近乎等权重的组合 降低风险；</li><li>种类方面，股票、债券相关性相对于同质标的更低，可以相互对冲；</li><li>轮动带来的独特优势</li></ul><h2 id="Target-People"><a href="#Target-People" class="headerlink" title="Target People"></a>Target People</h2><p>不合适的目标：</p><ul><li><p>资金量太少的人。如果你只有几万元或一二十万元资金，那我还是建议你以本职工作为重，投资上适当分散风险摊个小饼即可。首先，一些品种和券商有最低的佣金标准比如5元，如果小资金再过于分散很容易导致交易成本过高；其次，摊大饼策略主要追求的是积小胜为大胜，通常单次轮动的收益并不会太高，对太小的资金来说意义不大，性价比很可能连搬砖都不如。</p></li><li><p>可投入时间太少的人。虽然在主流券商都支持股价提醒和条件单之后，摊大饼所需的时间和精力已经大幅下降了（后文会详细分析）。但要想通过轮动获得超额收益，每天花一点时间读读公告、做做分析，提升一点自己的投资水平，还是有必要的。而你如果放弃轮动收益，对大部分品种来说，摊大饼可能就不一定是最好的选择了。因此，如果你连每天花少量时间在投资上都无法保证，那可能还是买指数基金或定投更为适合吧。</p></li><li><p>对收益的期望较高或赌性较重的人。选择摊大饼投资，意味着在一定意义你上已经放弃了短期爆赚的可能，换来的是相对稳定的战胜市场或板块，指望大幅跑赢市场甚至短期翻几番是不太可能的。对赌性较重喜欢大幅波动的人来说，摊大饼的收益曲线相对较为平滑，爆涨爆跌的可能性都比较小，很明显也是不够刺激的。</p></li><li><p>水平很高以及自以为水平很高的人。摊大饼策略充其量只能算是一种次优策略，它可以减少你因判断失误而严重亏损的几率，但自然也限制了你的盈利。如果你的水平足够高，能够从大量的鱼目中轻松地挑出珍珠，自然就不需要采取摊大饼这种收益不算太高的策略了。</p></li></ul>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;h1 id=&quot;摊大饼&quot;&gt;&lt;a href=&quot;#摊大饼&quot; class=&quot;headerlink&quot; title=&quot;摊大饼&quot;&gt;&lt;/a&gt;摊大饼&lt;/h1&gt;&lt;h2 id=&quot;Risk&quot;&gt;&lt;a href=&quot;#Risk&quot; class=&quot;headerlink&quot; title=&quot;Risk&quot;&gt;&lt;/a&gt;Ris
-      
-    
-    </summary>
-    
-    
-  </entry>
-  
-  <entry>
     <title>TinyBERT 蒸馏速度实现加速小记</title>
     <link href="https://tobiaslee.top/2021/04/16/Improving-Training-Efficiency-of-TinyBERT/"/>
     <id>https://tobiaslee.top/2021/04/16/Improving-Training-Efficiency-of-TinyBERT/</id>
@@ -155,9 +134,9 @@
     
       <category term="Deep Learning" scheme="https://tobiaslee.top/tags/Deep-Learning/"/>
     
-      <category term="NLP" scheme="https://tobiaslee.top/tags/NLP/"/>
-    
       <category term="Machine Learning" scheme="https://tobiaslee.top/tags/Machine-Learning/"/>
+    
+      <category term="NLP" scheme="https://tobiaslee.top/tags/NLP/"/>
     
   </entry>
   
@@ -1598,9 +1577,9 @@
     </summary>
     
     
-      <category term="NLP" scheme="https://tobiaslee.top/tags/NLP/"/>
-    
       <category term="Machine Learning" scheme="https://tobiaslee.top/tags/Machine-Learning/"/>
+    
+      <category term="NLP" scheme="https://tobiaslee.top/tags/NLP/"/>
     
       <category term="TensorFlow" scheme="https://tobiaslee.top/tags/TensorFlow/"/>
     
@@ -1652,9 +1631,9 @@
     </summary>
     
     
-      <category term="NLP" scheme="https://tobiaslee.top/tags/NLP/"/>
-    
       <category term="Machine Learning" scheme="https://tobiaslee.top/tags/Machine-Learning/"/>
+    
+      <category term="NLP" scheme="https://tobiaslee.top/tags/NLP/"/>
     
       <category term="TensorFlow" scheme="https://tobiaslee.top/tags/TensorFlow/"/>
     
