@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://tobiaslee.top/"/>
-  <updated>2021-09-11T07:50:03.790Z</updated>
+  <updated>2021-09-22T13:02:47.116Z</updated>
   <id>https://tobiaslee.top/</id>
   
   <author>
@@ -21,16 +21,18 @@
     <link href="https://tobiaslee.top/2021/09/10/My-First-Graduate-Year-at-PKU/"/>
     <id>https://tobiaslee.top/2021/09/10/My-First-Graduate-Year-at-PKU/</id>
     <published>2021-09-10T14:54:57.000Z</published>
-    <updated>2021-09-11T07:50:03.790Z</updated>
+    <updated>2021-09-22T13:02:47.116Z</updated>
     
-    <content type="html"><![CDATA[<p>园子里的稚嫩面孔多了起来，熙熙攘攘的校门迎来送往，我也在这个门中，度过了完整的春夏秋冬。北京的秋天是很凉爽的，或许当得上是最舒服的一个季节。一年级的第二个学期也比第一个学期舒服了许多。</p><p>课程方面，顺利修满了课程的学分，绩点都还看得过去。有趣的是选了一门讲座课，和周明老师吃了个便餐，佩服他从首席科学家到创新工场投资人的转变，也豁然觉得学而优则天使投资人似乎成为了一个新的人生规划选择。这门课更加令我惊讶的是最后的课程展示，我们小组摸鱼的成果居然得了第一名，并且获得了 3000 元的奖金，简直比做梦还梦幻（PS：隔壁寝室拿了第二，这课包圆了被我们）。</p><p>生活方面，买了小电驴，对于居住在万柳的我而言幸福指数直线上升，妈妈再也不用担心我要赶班车啦。通勤更加方便以外，有了车之后的活动半径也扩大了很多，可以动不动到五道口吃个网红餐厅。如果说有什么缺点的话，就是下雨的时候不太友好，送的雨披约等于没有并且感觉穿雨衣骑车也很不舒服。好在北京的雨多是阵雨，若是碰上特别大的雨，等一会再打伞骑回去就行。新开的家园食堂也大大丰富了早饭的选择，一方面是开的比较晚，萝卜干星人表示家一早上的萝卜干+菊花粥/豆浆+油条简直是dream breakfast。</p><p>运动方面，今年应该是算是超额完成了运动量。首当其中的是在包括黄教练@hlz、王教练@wpy、许教练@xrx、李教练@lyf 以及梦觉教练@梦觉教游泳的帮助下，勉强能够学会游泳。说来惭愧，作为一个游泳大省的学生，居然研一才学会游泳，正是太不应该了。不过相比于一开始连漂浮都困难，目前我已经能够坚持蛙泳<del>50</del> 900米，可以算是一个巨大突破了，希望以后能够多多精进，学学酷炫的其他泳姿。在北大杯代表信科完成首秀，并且出道即巅峰在第一场比赛中完成传射，之后水平断崖式下跌沦为管理员，在对抗比较强的比赛里我还是太容易着急和慌张了，需要多练练。</p><h2 id="Research"><a href="#Research" class="headerlink" title="Research"></a>Research</h2><p>研究部分得单独列一节来讲讲，这一年下来，经历了几轮的投稿，反复摩擦之后，有挺多感想的，这边就从整个投 paper 的过程来分别谈谈这一年的收获。</p><p><strong>选题</strong>：</p><ol><li>赛道很重要，比较卷的领域，出 paper 真的有挑战。这一年我关注在 Efficient NLP 上，很多公司都在卷这个领域，指标也很明确，说白了就是更快更强。除了刷完指标以外，故事还要能讲的好听，TinyBERT 是很强的 Model 但是最后还是只被 Findings 录用大约就是这个原因，这个领域不是特别的好讲故事。此外，新兴的 topic 容易讲故事则会更容易被接收，但也要思考新兴 topic 是否是本质的问题，有很多昙花一现的 idea，盲目追热点并不可取，还是要守住自己的一亩三分地。对于很卷的领域，我的一个想法是可以<strong>另辟蹊径，不要盯着数字，而去在设定以及进行原理的探究</strong>，或许是提高录用率的办法。</li><li>有趣和有用。我选取的 Efficient NLP 这个领域或许会更加接近有用的研究，但是有用的研究或许是比较枯燥的，考虑和其他同学合作一些自己感兴趣的 topic，是一种增添趣味、增进友谊、增加 publication 的 win-win-win 方案。</li></ol><p><strong>实验</strong>：</p><ol><li><p><strong>请做正确的假设检验</strong>，可以参考这篇<a href="https://aclanthology.org/P18-1128.pdf" target="_blank" rel="noopener">文章</a>，平均数也可能是 misleading，因为结果的分布可能是大幅度的 overlap。</p></li><li><p>对于最终效果而言，数据 &gt;&gt; 对任务的理解 &gt; 模型。这一点的基础是目前大家的Backbone都是 BERT 之流的模型，模型本身的能力已经接近天花板了，数据和任务 inductive bias 的效果比花式叠 blocks 是更加有用的。</p></li></ol><p><strong>写作</strong>：</p><p>论文写作最难的在于 Introduction，而 Introduction 最难的部分在于你需要 sell your paper，特别需要强调两个方面：</p><ol><li>Challenges: 为什么之前的工作没有做好，他们做不好的原因是什么，这里或许就是体现 insight 的地方</li><li>Non-trivial: solution/method 要<strong>不简单</strong>。这里的不简单是指说，换了别人做不了，非你不可。Transformer 核心 idea 很简单，但是其中的设计以及超参的设置并不是随随便便就能做 work 的。内核简单，而外在需要复杂性以体现工作的独到之处，才是一篇好文章。</li></ol><p><strong>合作</strong>：理解自己的 leader 精神，考虑他人的 workload，合理 credit co-author。</p><p><strong>心态</strong>：把 research 当成 lifestyle，该吃吃该喝喝，被拒稿再正常不过，认真对待审稿人的意见，甄别性地加以吸收和利用，*CL 投不中没关系，或许换到 AI、Data Mining 的会就能中了，再不行就投个 workshop。因为研究的时效性，一个 paper 的价值可能是不断在衰减的，我们能做的也就只有准备工作的时候尽可能通过选题、方法延长他的半衰期，完成之后，在价值湮灭之前，为他找到归宿就行。</p><h2 id="Misc"><a href="#Misc" class="headerlink" title="Misc"></a>Misc</h2><ul><li><p>开了微信读书的会员，但因为骑小电驴没法玩手机，碎片阅读时间大幅缩短，正确固定划拉时间努力回本</p></li><li><p>尝试了禁食减肥法，效果一度很好，但是还是忍不住得吃饭，又反弹了</p></li><li>Blog 的产出还是不够，不过 paper 还行（逃</li><li>美股原地踏步，抄底新东方，让子弹再飞一会吧</li></ul><p>新的学年，日拱一卒，坚定向前！</p>]]></content>
+    <content type="html"><![CDATA[<p>欢迎大家关注我的公众号<strong>三石杂货铺</strong>，第一时间收获更新：</p><p><img src="/img/qrcode.png" alt="QR Code"></p><hr><p>园子里的稚嫩面孔多了起来，熙熙攘攘的校门迎来送往，我也在这个门中，度过了完整的春夏秋冬。北京的秋天是很凉爽的，或许当得上是最舒服的一个季节。一年级的第二个学期也比第一个学期舒服了许多。</p><p>课程方面，顺利修满了课程的学分，绩点都还看得过去。有趣的是选了一门讲座课，和周明老师吃了个便餐，佩服他从首席科学家到创新工场投资人的转变，也豁然觉得学而优则天使投资人似乎成为了一个新的人生规划选择。这门课更加令我惊讶的是最后的课程展示，我们小组摸鱼的成果居然得了第一名，并且获得了 3000 元的奖金，简直比做梦还梦幻（PS：隔壁寝室拿了第二，这课包圆了被我们）。</p><p>生活方面，买了小电驴，对于居住在万柳的我而言幸福指数直线上升，妈妈再也不用担心我要赶班车啦。通勤更加方便以外，有了车之后的活动半径也扩大了很多，可以动不动到五道口吃个网红餐厅。如果说有什么缺点的话，就是下雨的时候不太友好，送的雨披约等于没有并且感觉穿雨衣骑车也很不舒服。好在北京的雨多是阵雨，若是碰上特别大的雨，等一会再打伞骑回去就行。新开的家园食堂也大大丰富了早饭的选择，一方面是开的比较晚，萝卜干星人表示家一早上的萝卜干+菊花粥/豆浆+油条简直是dream breakfast。</p><p>运动方面，今年应该是算是超额完成了运动量。首当其中的是在包括黄教练@hlz、王教练@wpy、许教练@xrx、李教练@lyf 以及梦觉教练@梦觉教游泳的帮助下，勉强能够学会游泳。说来惭愧，作为一个游泳大省的学生，居然研一才学会游泳，正是太不应该了。不过相比于一开始连漂浮都困难，目前我已经能够坚持蛙泳<del>50</del> 900米，可以算是一个巨大突破了，希望以后能够多多精进，学学酷炫的其他泳姿。在北大杯代表信科完成首秀，并且出道即巅峰在第一场比赛中完成传射，之后水平断崖式下跌沦为管理员，在对抗比较强的比赛里我还是太容易着急和慌张了，需要多练练。</p><h2 id="Research"><a href="#Research" class="headerlink" title="Research"></a>Research</h2><p>研究部分得单独列一节来讲讲，这一年下来，经历了几轮的投稿，反复摩擦之后，有挺多感想的，这边就从整个投 paper 的过程来分别谈谈这一年的收获。</p><p><strong>选题</strong>：</p><ol><li>赛道很重要，比较卷的领域，出 paper 真的有挑战。这一年我关注在 Efficient NLP 上，很多公司都在卷这个领域，指标也很明确，说白了就是更快更强。除了刷完指标以外，故事还要能讲的好听，TinyBERT 是很强的 Model 但是最后还是只被 Findings 录用大约就是这个原因，这个领域不是特别的好讲故事。此外，新兴的 topic 容易讲故事则会更容易被接收，但也要思考新兴 topic 是否是本质的问题，有很多昙花一现的 idea，盲目追热点并不可取，还是要守住自己的一亩三分地。对于很卷的领域，我的一个想法是可以<strong>另辟蹊径，不要盯着数字，而去在设定以及进行原理的探究</strong>，或许是提高录用率的办法。</li><li>有趣和有用。我选取的 Efficient NLP 这个领域或许会更加接近有用的研究，但是有用的研究或许是比较枯燥的，考虑和其他同学合作一些自己感兴趣的 topic，是一种增添趣味、增进友谊、增加 publication 的 win-win-win 方案。</li></ol><p><strong>实验</strong>：</p><ol><li><p><strong>请做正确的假设检验</strong>，可以参考这篇<a href="https://aclanthology.org/P18-1128.pdf" target="_blank" rel="noopener">文章</a>，平均数也可能是 misleading，因为结果的分布可能是大幅度的 overlap。</p></li><li><p>对于最终效果而言，数据 &gt;&gt; 对任务的理解 &gt; 模型。这一点的基础是目前大家的Backbone都是 BERT 之流的模型，模型本身的能力已经接近天花板了，数据和任务 inductive bias 的效果比花式叠 blocks 是更加有用的。</p></li></ol><p><strong>写作</strong>：</p><p>论文写作最难的在于 Introduction，而 Introduction 最难的部分在于你需要 sell your paper，特别需要强调两个方面：</p><ol><li>Challenges: 为什么之前的工作没有做好，他们做不好的原因是什么，这里或许就是体现 insight 的地方</li><li>Non-trivial: solution/method 要<strong>不简单</strong>。这里的不简单是指说，换了别人做不了，非你不可。Transformer 核心 idea 很简单，但是其中的设计以及超参的设置并不是随随便便就能做 work 的。内核简单，而外在需要复杂性以体现工作的独到之处，才是一篇好文章。</li></ol><p><strong>合作</strong>：理解自己的 leader 精神，考虑他人的 workload，合理 credit co-author。</p><p><strong>心态</strong>：把 research 当成 lifestyle，该吃吃该喝喝，被拒稿再正常不过，认真对待审稿人的意见，甄别性地加以吸收和利用，*CL 投不中没关系，或许换到 AI、Data Mining 的会就能中了，再不行就投个 workshop。因为研究的时效性，一个 paper 的价值可能是不断在衰减的，我们能做的也就只有准备工作的时候尽可能通过选题、方法延长他的半衰期，完成之后，在价值湮灭之前，为他找到归宿就行。</p><h2 id="Misc"><a href="#Misc" class="headerlink" title="Misc"></a>Misc</h2><ul><li><p>开了微信读书的会员，但因为骑小电驴没法玩手机，碎片阅读时间大幅缩短，正确固定划拉时间努力回本</p></li><li><p>尝试了禁食减肥法，效果一度很好，但是还是忍不住得吃饭，又反弹了</p></li><li>Blog 的产出还是不够，不过 paper 还行（逃</li><li>美股原地踏步，抄底新东方，让子弹再飞一会吧</li></ul><p>新的学年，日拱一卒，坚定向前！</p>]]></content>
     
     <summary type="html">
     
       
       
-        &lt;p&gt;园子里的稚嫩面孔多了起来，熙熙攘攘的校门迎来送往，我也在这个门中，度过了完整的春夏秋冬。北京的秋天是很凉爽的，或许当得上是最舒服的一个季节。一年级的第二个学期也比第一个学期舒服了许多。&lt;/p&gt;
-&lt;p&gt;课程方面，顺利修满了课程的学分，绩点都还看得过去。有趣的是选了一门讲座课，
+        &lt;p&gt;欢迎大家关注我的公众号&lt;strong&gt;三石杂货铺&lt;/strong&gt;，第一时间收获更新：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/img/qrcode.png&quot; alt=&quot;QR Code&quot;&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;园子里的稚嫩面孔多了起来，熙熙攘攘的校门迎来送往，我也在这个门中
       
     
     </summary>
@@ -614,9 +616,9 @@
     
       <category term="NLP" scheme="https://tobiaslee.top/tags/NLP/"/>
     
-      <category term="GAN" scheme="https://tobiaslee.top/tags/GAN/"/>
-    
       <category term="Text Generation" scheme="https://tobiaslee.top/tags/Text-Generation/"/>
+    
+      <category term="GAN" scheme="https://tobiaslee.top/tags/GAN/"/>
     
   </entry>
   
@@ -748,9 +750,9 @@
     
       <category term="Deep Learning" scheme="https://tobiaslee.top/tags/Deep-Learning/"/>
     
-      <category term="GAN" scheme="https://tobiaslee.top/tags/GAN/"/>
-    
       <category term="Text Generation" scheme="https://tobiaslee.top/tags/Text-Generation/"/>
+    
+      <category term="GAN" scheme="https://tobiaslee.top/tags/GAN/"/>
     
   </entry>
   
@@ -860,9 +862,9 @@
     
       <category term="NLP" scheme="https://tobiaslee.top/tags/NLP/"/>
     
-      <category term="GAN" scheme="https://tobiaslee.top/tags/GAN/"/>
-    
       <category term="Text Generation" scheme="https://tobiaslee.top/tags/Text-Generation/"/>
+    
+      <category term="GAN" scheme="https://tobiaslee.top/tags/GAN/"/>
     
   </entry>
   

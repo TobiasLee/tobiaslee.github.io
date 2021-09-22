@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://tobiaslee.top/2021/09/10/My-First-Graduate-Year-at-PKU/</loc>
-    <lastmod>2021-09-11T07:50:03.790Z</lastmod>
+    <lastmod>2021-09-22T13:02:47.116Z</lastmod>
   </url>  <url>
     <loc>https://tobiaslee.top/2021/04/16/Improving-Training-Efficiency-of-TinyBERT/</loc>
     <lastmod>2021-04-17T03:37:07.085Z</lastmod>
