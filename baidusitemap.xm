@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://tobiaslee.top/2021/10/19/Early-Exiting-PLMs/</loc>
+    <lastmod>2021-10-19T01:38:29.706Z</lastmod>
+  </url>  <url>
     <loc>https://tobiaslee.top/2021/09/10/My-First-Graduate-Year-at-PKU/</loc>
     <lastmod>2021-09-22T13:02:47.116Z</lastmod>
   </url>  <url>

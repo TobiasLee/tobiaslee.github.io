@@ -179,6 +179,94 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-TG-framework-notes" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/08/31/TG-framework-notes/">文本生成框架体验记录</a>
+    </h1>
+  
+
+        
+        <a href="/2019/08/31/TG-framework-notes/" class="archive-article-date">
+  	<time datetime="2019-08-31T15:07:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-08-31</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>我之前主要在做的工作像嘻哈歌词、主题写作都是是文本生成任务，而大部分的生成任务都可以归结到 Seq2Seq 框架下来，最近也接触了利用框架跑了一些 Machine Translation 的数据集。在实现 idea 的时候，我喜欢的一种方式是快速实现一个简单的 Baseline，跑通模型看看主要的指标例如 BLEU 的效果怎么样，然后进一步地做模型的设计和修改。要快速迭代，一方面需要对基本框架 TF、PyTorch 的 API 足够熟悉，另一方面也需要有一个趁手的 toolkit，来避免做一些重复的工作（例如，Tokenization,  Load Pre-trained Word Embedding）等。<strong>这些 pipeline 在学习初期很有必要自己亲手实现以了解细节，但是在需要快速迭代的时候，就不要重复造轮子了</strong>。这里，我对使用过（大部分是浅尝辄止）的框架写一下主观上的感受，主要考虑几个方面：</p>
+<ul>
+<li>能否开箱即用</li>
+<li>定制 Model 的难易程度</li>
+<li>API 是否易于理解</li>
+</ul>
+<p>希望对选择困难的朋友们有所帮助。</p>
+        
+          <a class="article-more-a" href="/2019/08/31/TG-framework-notes/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">NLP</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Text Generation</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+
+      
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/08/31/TG-framework-notes/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-A-Long-Way-To-Go" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1017,132 +1105,6 @@
 
 
   
-    <article id="post-customized-RNN-cell" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/11/02/customized-RNN-cell/">定制 RNN Cell</a>
-    </h1>
-  
-
-        
-        <a href="/2018/11/02/customized-RNN-cell/" class="archive-article-date">
-  	<time datetime="2018-11-02T13:31:31.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-11-02</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>之前写过一篇 IndRNN 的文章，第一次照着开源代码实现了自己定制 RNN，其实也很简单，就是把 RNN 实现里的 <code>__call__</code> 函数进行修改，每一个时间步的全连接 <code>matmul</code> 改成 element-wise 的 <code>*</code> 即可，IndRNN 的<a href="https://github.com/batzner/indrnn" target="_blank" rel="noopener">GitHub</a>，是一个很不错的练手参考。最近做文本生成的时候遇到两个经典模型，在复现的时候同样是需要对 RNN 的结构进行改动，这篇文章就记录实现的一些细节。两个模型可以分成两类：在时间步的输入上进行操作和修改 Cell 内部结构。</p>
-<h2 id="Add-Extra-Input"><a href="#Add-Extra-Input" class="headerlink" title="Add Extra Input"></a>Add Extra Input</h2><p>第一个模型是 <a href="http://ir.hit.edu.cn/~xcfeng/xiaocheng%20Feng&#39;s%20Homepage_files/final-topic-essay-generation.pdf" target="_blank" rel="noopener">MTA-LSTM</a>，IJCAI 2018 的一篇关于主题写作的文章，也有开源<a href="https://github.com/hit-computer/MTA-LSTM" target="_blank" rel="noopener">实现</a>，但是因为其代码版本比较老，并且 inference 阶段的代码比较难并行无法和现有的 <code>seq2seq</code> 的接口结合使用。So，需求就是实现其代码并且尽可能地需要和<code>seq2seq</code> 接口符合以便于后续的使用。模型的结构如下：</p>
-<p><img src="/img/MTA-LSTM.png" alt="MTA-LSTM"></p>
-<p>论文的核心思想如下：</p>
-<ol>
-<li>根据主题词进行文章写作，利用 LSTM 作为生成器</li>
-<li>在每个时间步，将 Topic Word Embedding 和 Inputs 拼接在一起交给 LSTM 进行生成</li>
-<li>为了控制主题信息的流动，会维持一个 Coverage Vector，来表明哪些主题已经使用过哪些尚未被表达出来，从未让写出的文章主题信息更加明确</li>
-</ol>
-<p>我的实现版本代码已经放在了 <a href="https://github.com/TobiasLee/MTA-LSTM-TensorFlow" target="_blank" rel="noopener">GitHub</a>，下面主要记录一下实现的思路。</p>
-<p>首先明确一点，为了和现有的 <code>seq2seq</code> 接口匹配，必然是无法去修改 LSTM Cell 的 <code>__call__</code> 函数的，因为目前的 <code>dynamic_decode</code> 函数对其中的 <code>cell</code> 每一个时间步都会调用 <code>cell(inputs, state)</code> ，也即我们无法在函数参数列表中增加我们想要的额外的参数。怎么做呢？利用 <strong>Wrapper</strong>！类似装饰者模式，我们在 LSTM Cell 外面包上一层，通过这一层来对 LSTM 的输入进行操作。下面是代码：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MTAWrapper</span><span class="params">(RNNCell)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, cell, topic, v, uf, query_layer, memory_layer, mask=None, max_len=<span class="number">100</span>, attention_size=<span class="number">128</span>, state_is_tuple=True</span></span></span><br><span class="line"><span class="function"><span class="params">                 )</span>:</span></span><br><span class="line">		<span class="comment"># 实际的 LSTM 由 cell 完成</span></span><br><span class="line">        self._cell = cell</span><br><span class="line">        self.topic = topuc <span class="comment"># topic embedding</span></span><br><span class="line">        <span class="comment"># initilize coverage vector</span></span><br><span class="line">        self.coverage_vector = array_ops.ones([self.batch_size, self.num_keywords])</span><br><span class="line">        <span class="comment"># get some weight variables from params</span></span><br><span class="line">        <span class="comment"># compute res </span></span><br><span class="line">        res1 = tf.sigmoid(</span><br><span class="line">            tf.matmul(tf.reshape(self.topic, [self.batch_size, <span class="number">-1</span>]), self.u_f))  <span class="comment"># batch_size x num_keyword</span></span><br><span class="line">        self.phi_res = self.seq_len * res1  <span class="comment"># batch_size x num_keywords</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__call__</span><span class="params">(self, inputs, state, scope=None)</span>:</span></span><br><span class="line">        c_t, h_t = state  <span class="comment"># h_t batch_size x hidden_size</span></span><br><span class="line">        <span class="keyword">with</span> vs.variable_scope(<span class="string">"topic_attention"</span>):</span><br><span class="line">            <span class="comment"># Attention mechanism based on coverage vector to compute mt </span></span><br><span class="line">            <span class="comment"># update coverage vector</span></span><br><span class="line">            self.coverage_vector = self.coverage_vector - score / self.phi_res</span><br><span class="line">        <span class="keyword">return</span> self._cell(tf.concat([inputs, mt], axis=<span class="number">1</span>), state)</span><br></pre></td></tr></table></figure>
-<p>为了节约篇幅，省去一些代码，主要看两个部分：</p>
-<ol>
-<li><p><code>__init__</code> 函数：我们在这里传入了大量参数，其中包括了:</p>
-<ol>
-<li>cell：实际 RNN 的操作是由这个 LSTM cell 完成的，我们的 wrapper 只是夹在中间进行一些<strong>小小的修改</strong>。</li>
-<li>主题词的 embedding：这是每一步计算需要用到的信息，并且是固定。</li>
-<li>一些要使用到的 variable：为什么 variable 从外部传入而不是定义在 <code>__call__</code> 函数之内呢？<strong>因为  training 和 inference 阶段，我们会重新 wrap 一下我们的 cell</strong>，至于为什么，先按下不表。如果在内部定义的话，则 training 阶段学到的权重无法在 inference 阶段使用（其 name scope 是不一样的），inference 使用的依旧是初始化得到的权重，等于白学。</li>
-</ol>
-</li>
-<li><p><code>__call__</code> 函数：在这里我们进行每个时间步的 <code>mt</code> 的计算，并且将其和 inputs 进行拼接作为额外的信息，其中计算的细节就是对照公式进行实现的。这里有个坑需要谈一下：<strong>TensorFlow 不支持一个 Tensor 出现在多个 Loop 中</strong>。而如果我们之前不对 inference 阶段的 cell 重新进行包装的话，则 coverage vector 将会出现在 training 和 inference 的循环中，无法构建计算图。为此，我们才需要对 cell 进行重新 wrap：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">training_cell = MTAWrapper(self.decoder_cell, topic_embedded,  self.v, self.uf, self.query_layer, self.memory_layer, mask=masks)</span><br><span class="line">decoder_pt = tf.contrib.seq2seq.BasicDecoder( cell=training_cell, helper=helper_pt, initial_state=self.initial_state, output_layer=self.output_layer)</span><br><span class="line"><span class="comment"># 重新 wrap，并且把之前习得的 weight variable 通过构造函数传入</span></span><br><span class="line">infer_cell = MTAWrapper(self.decoder_cell, topic_embedded, self.v, self.uf, self.query_layer, self.memory_layer, mask=masks)</span><br><span class="line">decoder_i = tf.contrib.seq2seq.BasicDecoder( cell=infer_cell, helper=helper_i, initial_state=self.initial_state, output_layer=self.output_layer)</span><br></pre></td></tr></table></figure>
-<p>所以我们才会需要重新传入 weight variables。最后，计算完 <code>mt</code> 之后，直接拼接交给 <code>cell</code> 去调用每一时间步就 ok。</p>
-</li>
-</ol>
-<h2 id="Add-Extra-Gate"><a href="#Add-Extra-Gate" class="headerlink" title="Add Extra Gate"></a>Add Extra Gate</h2><p>对 LSTM 的结构进行修改，听着很有挑战性吧，这次不仅是要增加一个额外的输入，并且还需要添加一个额外的门来控制额外输入信息的流动。<a href="http://www.emnlp2015.org/proceedings/EMNLP/pdf/EMNLP199.pdf" target="_blank" rel="noopener">SC-LSTM</a> 是一篇发表在 EMNLP 2015 上的文章，也是做类似的主题生成问题，模型图如下：</p>
-<p><img src="/img/SC-LSTM.png" alt="SC-LSTM"></p>
-<p>这里的额外输入就是 action vector，一个 one-hot 的向量来表明主题信息，额外的 gate 就是图中的 $r_t$，其对输入的 action vector 根据当前的输入以及之前的 hidden state 计算一个值，控制 topic 信息的流动，最后这一信息经过 gate 之后会参与的新的 hidden state 的计算之中。这次，我们必须对 <code>__call__</code> 函数的进行修改了，因为不再是简单的输入拼接，<strong>而 LSTM 内部的 hidden state 的计算过程也需要依赖这个 action vector</strong>。先来看代码：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SCLSTM</span><span class="params">(BasicLSTMCell)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, kwd_voc_size, *args, **kwargs)</span>:</span></span><br><span class="line">        BasicLSTMCell.__init__(self, *args, **kwargs)</span><br><span class="line">        self.key_words_voc_size = kwd_voc_size</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__call__</span><span class="params">(self, inputs, state, d_act)</span>:</span></span><br><span class="line">        sigmoid = math_ops.sigmoid</span><br><span class="line">        one = constant_op.constant(<span class="number">1</span>, dtype=dtypes.int32)</span><br><span class="line">		<span class="comment"># parameters for tanh function</span></span><br><span class="line">        w_d = vs.get_variable(<span class="string">'w_d'</span>, [self.key_words_voc_size, self._num_units])</span><br><span class="line">        <span class="comment"># Parameters of gates are concatenated into one multiply for efficiency.</span></span><br><span class="line">        <span class="keyword">if</span> self._state_is_tuple:</span><br><span class="line">            c, h = state</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            c, h = array_ops.split(value=state, num_or_size_splits=<span class="number">2</span>, axis=one)</span><br><span class="line">        gate_inputs = math_ops.matmul(</span><br><span class="line">            array_ops.concat([inputs, h], <span class="number">1</span>), self._kernel)</span><br><span class="line">        gate_inputs = nn_ops.bias_add(gate_inputs, self._bias)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># i = input_gate, j = new_input, f = forget_gate, o = output_gate</span></span><br><span class="line">        i, j, f, o = array_ops.split(</span><br><span class="line">            value=gate_inputs, num_or_size_splits=<span class="number">4</span>, axis=one)</span><br><span class="line"></span><br><span class="line">        forget_bias_tensor = constant_op.constant(self._forget_bias, dtype=f.dtype)</span><br><span class="line"></span><br><span class="line">        add = math_ops.add</span><br><span class="line">        multiply = math_ops.multiply</span><br><span class="line">        <span class="comment"># add extra topic information to candidate calculation </span></span><br><span class="line">        new_c = add(add(multiply(c, sigmoid(add(f, forget_bias_tensor))),</span><br><span class="line">                        multiply(sigmoid(i), self._activation(j))),</span><br><span class="line">                    math_ops.tanh(math_ops.matmul(d_act, w_d)))</span><br><span class="line">        new_h = multiply(self._activation(new_c), sigmoid(o))</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> self._state_is_tuple:</span><br><span class="line">            new_state = LSTMStateTuple(new_c, new_h)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            new_state = array_ops.concat([new_c, new_h], <span class="number">1</span>)</span><br><span class="line">        <span class="keyword">return</span> new_h, new_state</span><br></pre></td></tr></table></figure>
-<p>其中的核心就是我们申请了一个额外的变量 <code>w_d</code>，并且在 candidate 的计算之中加上了一项额外的 <code>tanh</code> 项，这是和文章的公式对应的：</p>
-<p><img src="/img/cd_com.png" alt="Candidate Computation"></p>
-<p>但是修改了 LSTM Cell 的 <code>__call__</code> 函数之后，就和 seq2seq 接口不匹配了，依旧是借助 Wrapper 来实现接口的匹配，并且额外的 gate 也在 wrapper 中进行实现：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ActionWrapper</span><span class="params">(RNNCell)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, cell, action_vec, wr, hr)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> isinstance(cell, SC_DropoutWrapper) <span class="keyword">and</span> <span class="keyword">not</span> isinstance(cell, SCLSTM):</span><br><span class="line">            <span class="keyword">raise</span> TypeError(<span class="string">"The wrapper is only designed for SCLSTM."</span>)</span><br><span class="line">        self._cell = cell</span><br><span class="line">        self.action_vec = action_vec  <span class="comment"># initial one-hot action vector</span></span><br><span class="line">        self.wr = wr  <span class="comment"># [word_embedding_size, topic_size ]</span></span><br><span class="line">        self.hr = hr  <span class="comment"># [hidden_size, topic_size]</span></span><br><span class="line"></span><br><span class="line">	<span class="comment"># note: params only inputs and state</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__call__</span><span class="params">(self, inputs, state, scope=None)</span>:</span></span><br><span class="line">        ct, ht = state</span><br><span class="line">        <span class="comment"># compute sigmoid and update action vec</span></span><br><span class="line">        <span class="comment"># r_t = sigmoid( W_wr x_t + W_hr h_&#123;t-1&#125;)  = sigmoid(e1 + e2)</span></span><br><span class="line">        e1 = math_ops.matmul(inputs, self.wr)  <span class="comment"># [batch_size, topic_size]</span></span><br><span class="line">        e2 = math_ops.matmul(ht, self.hr)</span><br><span class="line">        r_t = math_ops.sigmoid(math_ops.add(e1, e2))  <span class="comment"># [batch_size, topic_size]</span></span><br><span class="line">        <span class="comment"># update action vector</span></span><br><span class="line">        self.action_vec = r_t * self.action_vec</span><br><span class="line">        <span class="keyword">return</span> self._cell(inputs, state, self.action_vec)</span><br></pre></td></tr></table></figure>
-<p> 和之前一样，在构造函数之中我们传入了 one-hot 的 action vector，并且获取一些 variables，理由和之前一样，<strong>action vector 每步都要更新，但是不能出现在两个循环之中</strong>。<code>__call__</code> 函数的结构和原先的 LSTM 保持一致，这样就能够和 seq2seq 的接口配合着使用，而在内部，根据文章的公式设置了一个 <code>r_t</code> 作为 gate 来控制 topic information：</p>
-<p><img src="/img/rt_formula.png" alt="r_t"></p>
-<p>使用的时候，同样地，我们可以通过使用 <code>ActionWrapper(SCLSTMCell(hidden_state))</code> 来进行使用。</p>
-<h2 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h2><p>至此，我们已经展现了如何利用 TensorFlow 的 <code>Wrapper</code> 对象来 RNN cell 功能的修改，同时能够通过接口参数的设计来让自定义的 RNN cell 和其他的 API 一起协作起来。这个 <code>Wrapper</code> 类，实际上就是装饰者模式的一种应用，一层一层地包裹住来增加功能并且能够屏蔽接口的不同。踩到的坑也就是在文中提到的：</p>
-<ol>
-<li>同一个 Tensor 对象不能出现在不同 Loop 中</li>
-<li>使用  Wrapper 对象的时候注意内部定义的 variable，可能需要通过外部传入来使学到的参数进入到后续的使用中（training 和 inference）</li>
-</ol>
-<p>复现这两篇 Paper 的过程中主要参考了 RNN 的<a href="https://github.com/tensorflow/tensorflow/blob/r1.11/tensorflow/python/ops/rnn_cell_impl.py" target="_blank" rel="noopener">源码</a>（似乎新旧版本的 API 还有不一样？），虽然之前也有读过，但自己写一遍又是不一样体验。希望以后多写写这样的代码~</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">TensorFlow</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">RNN</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">LSTM</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-
-      
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/11/02/customized-RNN-cell/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
@@ -1290,15 +1252,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Deep Learning</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Reinforcement Learning</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1310,15 +1276,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">NLP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Machine Learning</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">NLP</a>
+                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1330,23 +1296,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">C</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
+                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1358,6 +1316,18 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Pre-trained Language Models</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">MediaCodec</a>
               </li>
              
@@ -1366,11 +1336,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">ACM</a>
+                <a href="javascript:void(0)" class="js-tag color2">SeqGAN</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">SeqGAN</a>
+                <a href="javascript:void(0)" class="js-tag color3">PyTorch</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1378,7 +1348,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">PyTorch</a>
+                <a href="javascript:void(0)" class="js-tag color1">LaTeX</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1390,10 +1360,6 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">LaTeX</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Python</a>
               </li>
              
@@ -1402,19 +1368,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">JVM</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">ML</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">爬虫</a>
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">JVM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Paper Notes</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">ML</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1430,6 +1396,10 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">C++</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Compile Principle</a>
               </li>
              
@@ -1438,15 +1408,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">C++</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">LSTM</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Graph Neural Networks</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">View</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1463,10 +1433,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Layer Normalization</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">View</a>
               </li>
             
             <div class="clearfix"></div>
