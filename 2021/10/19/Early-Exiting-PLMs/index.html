@@ -6,12 +6,12 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="https://tobiaslee.top">
-  <title>Dynamic Early Exiting Survey | Stay Hungry,Stay Foolish.</title>
+  <title>A Brief Survey on Dynamic Early Exiting | Stay Hungry,Stay Foolish.</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="随着如 BERT、RoBERTa 等预训练模型在一众自然语言处理任务上取得了出色的表现，如何在取得较好性能的前提下，缩小模型的大小，加快模型的推理速度，成为了学术界和工业界的一个热门的研究方向。这篇文章将会介绍基于动态提前退出（ Dynamic Early Exiting） 的预训练模型推理加速方面的系列工作。 动态提前退出Dynamic Early Exiting（动态提前退出）的核心是根据样本">
 <meta name="keywords" content="NLP,Pre-trained Language Models">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Dynamic Early Exiting Survey">
+<meta property="og:title" content="A Brief Survey on Dynamic Early Exiting">
 <meta property="og:url" content="https://tobiaslee.top/2021/10/19/Early-Exiting-PLMs/index.html">
 <meta property="og:site_name" content="Stay Hungry,Stay Foolish.">
 <meta property="og:description" content="随着如 BERT、RoBERTa 等预训练模型在一众自然语言处理任务上取得了出色的表现，如何在取得较好性能的前提下，缩小模型的大小，加快模型的推理速度，成为了学术界和工业界的一个热门的研究方向。这篇文章将会介绍基于动态提前退出（ Dynamic Early Exiting） 的预训练模型推理加速方面的系列工作。 动态提前退出Dynamic Early Exiting（动态提前退出）的核心是根据样本">
@@ -27,9 +27,9 @@
 <meta property="og:image" content="https://tobiaslee.top/img/gf.png">
 <meta property="og:image" content="https://tobiaslee.top/img/sentee.png">
 <meta property="og:image" content="https://tobiaslee.top/img/sentee-result.png">
-<meta property="og:updated_time" content="2021-10-19T01:38:29.706Z">
+<meta property="og:updated_time" content="2021-11-23T02:47:23.971Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Dynamic Early Exiting Survey">
+<meta name="twitter:title" content="A Brief Survey on Dynamic Early Exiting">
 <meta name="twitter:description" content="随着如 BERT、RoBERTa 等预训练模型在一众自然语言处理任务上取得了出色的表现，如何在取得较好性能的前提下，缩小模型的大小，加快模型的推理速度，成为了学术界和工业界的一个热门的研究方向。这篇文章将会介绍基于动态提前退出（ Dynamic Early Exiting） 的预训练模型推理加速方面的系列工作。 动态提前退出Dynamic Early Exiting（动态提前退出）的核心是根据样本">
 <meta name="twitter:image" content="https://tobiaslee.top/img/ee.png">
   
@@ -199,7 +199,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      Dynamic Early Exiting Survey
+      A Brief Survey on Dynamic Early Exiting
     </h1>
   
 
@@ -224,8 +224,7 @@
 <p>无独有偶，同样是 ACL 2020，还有两篇也是基于动态退出的想法进行 BERT 推理加速的文章，这里对其简要介绍如下：</p>
 <p><a href="##参考文献">FastBERT</a>: 和 DeeBERT 不同之处在于其中间层的分类器用了更加复杂的基于 attention 的分类器，并且在训练中间分类器的时候增加了额外的 self-attention 目标，使得中间层的输出和最后一层分类器的输出保持一致。文章在一种文本分类数据集能够在 ~10x 加速比的情况下保持原始模型的性能。</p>
 <p><a href="##参考文献">RightTool</a>: 文章利用中间分类器的预测结果的 confidence，即预测类别的概率值作为退出的指标，并且对其进行了 post-hoc carlibration，以避免 over-confident 的问题。文章和之前的 Paper 不同的地方在于，其对于样本复杂度进行了分析，发现样本长度和难度的相关性很低，而模型的预测的置信度和难度的相关性也不高，相关系数大约在 0.3 附近，这也提示我们说虽然目前基于启发式的退出策略已经取得了不错的成绩，但还有着提升的空间。</p>
-<p>##改进</p>
-<p>后续有不少工作尝试对 Dynamic Early Exiting 的框架进行探究和改进，<a href="##参考文献">CascadeBERT</a> 总结了 Dynamic Early Exiting 在<strong>高加速比</strong>下，即大部分样本都在浅层退出时，会遇到的两个瓶颈问题：(1) 退出决策不鲁棒，即样本难度和中间分类器的分类置信度并不匹配(2) 浅层表示具备的信息不够充分。</p>
+<h2 id="改进"><a href="#改进" class="headerlink" title="改进"></a>改进</h2><p>后续有不少工作尝试对 Dynamic Early Exiting 的框架进行探究和改进，<a href="##参考文献">CascadeBERT</a> 总结了 Dynamic Early Exiting 在<strong>高加速比</strong>下，即大部分样本都在浅层退出时，会遇到的两个瓶颈问题：(1) 退出决策不鲁棒，即样本难度和中间分类器的分类置信度并不匹配(2) 浅层表示具备的信息不够充分。</p>
 <p>对于前者，作者设计了一个用于衡量退出决策和样本难度顺序是否匹配的指标 Difficulty Inversion Score（难度逆序分数），越高说明中间层分类器给出的退出决策和样本难度越一致，文章发现 DeeBERT 的中间分类器在其自己 选择退出的样本上进行了分析，发现其依旧无法给出较好的退出决策：</p>
 <p><img src="/img/cascadebert-dis.png" alt="cascadebert-dis"></p>
 <p>对于后者，作者比较了使用相同层的表示，并且在 DeeBERT 选择退出的样本上进行了性能分析：</p>
@@ -356,6 +355,15 @@
 
   
 <nav id="article-nav">
+  
+    <a href="/2021/11/14/EMNLP21-and-Rebuttal/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          EMNLP21 和 Rebuttal 攻略
+        
+      </div>
+    </a>
   
   
     <a href="/2021/09/10/My-First-Graduate-Year-at-PKU/" id="article-nav-older" class="article-nav-link-wrap">
@@ -511,10 +519,6 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Deep Learning</a>
               </li>
              
@@ -523,7 +527,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
+                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -531,15 +535,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Android</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">自定义View</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">NLP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -551,23 +551,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">C</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -579,7 +571,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
+                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Pre-trained Language Models</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -587,7 +587,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Pre-trained Language Models</a>
+                <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Android</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -599,19 +603,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">SeqGAN</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">PyTorch</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Java</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">LaTeX</a>
+                <a href="javascript:void(0)" class="js-tag color2">SeqGAN</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">自定义View</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">PyTorch</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -623,15 +627,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Python</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">OS</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">爬虫</a>
+                <a href="javascript:void(0)" class="js-tag color1">LaTeX</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -639,11 +635,23 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Paper Notes</a>
+                <a href="javascript:void(0)" class="js-tag color3">OS</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">ML</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Python</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">爬虫</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Paper Notes</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -663,6 +671,10 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">LSTM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Compile Principle</a>
               </li>
              
@@ -671,15 +683,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">LSTM</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Graph Neural Networks</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">View</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -696,6 +700,10 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Layer Normalization</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">View</a>
               </li>
             
             <div class="clearfix"></div>

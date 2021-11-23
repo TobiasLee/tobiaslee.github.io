@@ -179,6 +179,124 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-EMNLP21-and-Rebuttal" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2021/11/14/EMNLP21-and-Rebuttal/">EMNLP21 和 Rebuttal 攻略</a>
+    </h1>
+  
+
+        
+        <a href="/2021/11/14/EMNLP21-and-Rebuttal/" class="archive-article-date">
+  	<time datetime="2021-11-14T10:43:47.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-11-14</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>这次 EMNLP 很幸运的中了 4 篇文章，有两篇的得分其实挺 negative，最后还是靠着 rebuttal 掰成了 Findings，也算是达到期望。这篇 Blog 就给大家分享一下这四篇工作，毕竟这是一个酒香还怕巷子深的年代（当然，ResNet 这种茅台级别的工作不用PR也是会迟早被家喻户晓的哈哈），以及一些 rebuttal 的感悟。</p>
+<h2 id="Text-Autoaugment"><a href="#Text-Autoaugment" class="headerlink" title="Text Autoaugment"></a>Text Autoaugment</h2><p><a href="https://arxiv.org/abs/2109.00523" target="_blank" rel="noopener">TAA</a>是关于文本自动增强的策略的一个工作。一作 Andy 哥，也是著名对抗攻击 baseline PWWS 的作者。文章的核心是想要解决 edition-based 数据增强方案的两个问题：(1) DA 对于一些超参数的设置非常敏感，比如删词的比例，造成性能很大的波动；(2): 很多的 edition 操作是拍脑袋出来的，有些是增广操作非常单一，限制了增广数据集的多样性，因此也进一步限制了数据增广的效果。</p>
+<p>为此，我们提出<strong>将数据增强操作组合成一个 policy</strong>，这个 policy 包含了对采取某种数据增广操作的概率，数据增强的 edit type 以及对应的超参（例如删词操作的比例）。并且引入 AutoML 中的 SMBO 来对这个 policy 进行优化。优化的核心思路类似 Meta-Learning，<strong>先在训练集上进行 policy 训练，然后在验证集上验证效果，再拿着验证集上的效果作为 feedback 来更新 policy 的参数</strong>。</p>
+<p><img src="https://github.com/lancopku/text-autoaugment/blob/main/figures/taa.png?raw=true" alt="TAA"></p>
+<p>实验部分，我们在 low-resource 以及 class-imbalance 的设定下进行了实验，相比于之前的一些方案能够取得统计上显著的提升。并且还做了一些有趣的分析，例如在小规模训练集上学习的 policy 迁移到大规模训练集上也有比较好的效果，同时不同数据集上学习出的 policy 的迁移性能也有很有趣的模式。具体的细节，大家可以参考我们的 Paper。</p>
+<p>在中稿之后，Andy 也带着组里的师弟对代码做了比较多的改动，以适配目前大家用的比较多的 transformers 框架，并且可以通过一两行代码进行配置，可以关注 TAA 的 <a href="https://github.com/lancopku/text-autoaugment" target="_blank" rel="noopener">Repo</a>。</p>
+<p>回顾这篇文章的中稿过程，其实还是挺波折的。这边也可以给大家分享一下 TAA 的几次大的改动。（1）最早的一版 readability 存在比较大的问题，因为对问题的建模有一些复杂，带来理解上的难度，几个作者反复讨论多次之后才找到一个比较好的折中，能够把方法讲清楚的同时也让 reader 能够看懂。（2）前几次被拒的时候 reviewer 批评实验不够 convincing。解决的方法就是，我一直反复强调的，就是<strong>在条件允许的情况下，特别是对于一些小数据集，假设检验尽可能做</strong>。我作为审稿人看到标准差有5个点的情况下带来 5-6 个点的提升，在没有假设检验的情况下我是无法被说服提升的明显的。补充了假设检验以及后续的一些实验，EMNLP 的审稿人认为我们的实验非常 solid（3）除了性能以外，<strong>对方法本身的分析是画龙点睛的</strong>，最早的版本只有对性能的分析，总会让人感觉审美疲劳，我们后来额外添加了增广数据的多样性分析以及迁移性能的分析，充实文章内容的同时也更全面地展现了 TAA 框架的优点。</p>
+<h2 id="Dynamic-KD"><a href="#Dynamic-KD" class="headerlink" title="Dynamic KD"></a>Dynamic KD</h2><p><a href="https://github.com/lancopku/DynamicKD" target="_blank" rel="noopener">DynamicKD</a> 则是我们和 Wechat AI 合作的一篇论文。我们注意到目前预训练模型知识蒸馏的 common practice 会把 teacher model / training data / training objective 提前固定好，而没有考虑到 student 模型在蒸馏过程中能力不断变强的这一事实。从这一点出发，我们提出了 Dynamic Knowledge Distillation 这样一个框架，来探究根据学生模型的能力动态的调整三个方面所带来的性能和效率上的收益：</p>
+<p><img src="/img/dkd.png" alt="Dynamic KD Framework"></p>
+<p>核心的方案也很简单，就是根据学生模型的预测结果的不确定性，不确定性高则意味着学生模型对于当前样本的自信程度较低，则相应地对这三个方面进行挑选即可。下面就简单介绍一下我们探索的一些发现。</p>
+<p><strong>Dynamic Teacher Adoption</strong></p>
+<p>首先是教师模型的 size 选择方面，我们的实验发现<strong>model size 更大效果更好的 teacher 预训练模型不一定能够蒸馏出效果更好的学生模型</strong>，因为当学生模型和教师模型的容量差距超过一定阈值的时候，学生模型很难去拟合教师模型的输出，造成蒸馏效果的下降。这一点在 CV 之中之前也有人发现了这一点，我们在 PLMs 上也验证了这样一个现象。之前 CV 的解决方案是引入 Teacher Assistant，即一个中等大小的模型进行过渡以降低教师模型太大所带来的影响，而我们的策略则是：当学生模型对某个样本预测非常自信的时候，则可以更多地依赖较大教师模型的信号；反之，则更多地依赖小教师模型。关于这一点，在 oral 的时候被问到了一个挺关键的问题：<strong>模型大小的差距是在 KD 一开始就被确定了的，也即，能力差距实际上是固定的</strong>。这一点实际上在我们讨论的时候就注意到了这一点，我们的看法是，模型能力确实只和 size 有关，但同样 size 的模型，在其训练程度不同的时候，能力也有差距。所以当学生模型性能较强时去 query 大的教师模型，能够缓解之前提到的拟合能力不足的问题，进而带来效果上的提升。</p>
+<p><strong>Dynamic Data Selection</strong></p>
+<p>第二个我们探究的方面是动态的数据选择方面，期待找到对于学生模型更加有利的训练数据。这背后的一个事实是，TinyBERT 用了数据增广操作进行知识蒸馏取得了很好的效果，但也带来了巨大的教师模型侧的开销，有没有可能以更加经济的方式达到同样的效果呢。我们的实验发现，借用 active learning 里的一些简单的基于 uncertainty 的策略，每次挑选 batch 内部最困难的 10% 的样本，就可以达到非常接近的效果：</p>
+<p><img src="/img/dkd_data_ret.png" alt="Dynamic Dat Selection Results"></p>
+<p><strong>Dynamic Objective Adjustment</strong></p>
+<p>最后一个则是目标函数，之前的 setting 一般是提出一个额外的 loss objective，比如 BERT-PKD 的隐状态的 MSE loss ，然后搜索出对应目标函数的权重 $\lambda_{PKD}$并且保持训练中超参数不变。同样的，我们好奇的是，如果动态的调整不同目标之间的比例，是否对最后的效果有所提升？我们在 BERT-PKD 和 KL loss 上进行了验证，发现在模型不确定的时候更多地依赖隐层对齐的目标，以及在模型确定的时候拟合输出概率分布的 KL-divergence 能提升模型蒸馏的效果。</p>
+<p><strong>Summary and Furture Directions</strong></p>
+<p>总的来说，这篇文章并不是一篇方法性的文章，而是体现了我们对目前 KD 框架一个新维度的拓展，即考虑学生模型能力的 KD 框架，以期望获得更好的效率和性能。未来同样有很多方向值得进一步探索，比如多 teacher 情况下的异构的问题，以及目标函数之间的 correlation，都很值得进一步的挖掘。</p>
+<h2 id="CascadeBERT-amp-FormBERT"><a href="#CascadeBERT-amp-FormBERT" class="headerlink" title="CascadeBERT  &amp; FormBERT"></a>CascadeBERT  &amp; FormBERT</h2><p>这两篇都是 Findings，一长一短，就放在一起简单介绍一下。</p>
+<p><a href="https://github.com/lancopku/CascadeBERT" target="_blank" rel="noopener">CascadeBERT</a> 是一篇关注于预训练模型早退（Early Exiting）机制用于推理加速的文章，关于早退，上一篇 <a href="https://tobiaslee.top/2021/10/19/Early-Exiting-PLMs/">blog</a> 尝试做了一个简单的 survey。文章、首先对之前 Early Exiting 方法在高加速比的需求下效果不好的原因进行了分析，结论是<strong>浅层的表示信息不足以及中间层的分类器退出决策</strong>不准确所造成的。因此后续我们提出把一大一小两个完整的 BERT 拼接在一起，做级联（Cascade）并且对小模型的输出的概率分布进行校准，使得其退出决策更加可靠，因而在高加速比的场景下能够取得更好的效果。这边展开一些我关于早退工作的看法。首先，目前大家测试的时候计算加速比的方法不一，而这一点，Xiangyang Liu &amp; Tianxiang Sun 最近做了一个 <a href="http://eluebenchmark.fastnlp.top/#/landing" target="_blank" rel="noopener">ELUE benchmark</a>，提供了一个比较好的基准平台；此外，他们尝试在预训练过程中加入早退的目标函数得到了 ElasticBERT，ElasticBERT 所解决的问题也和 CascadeBERT 类似，CascadeBERT 是利用 google 预训练好的模型进行级联，而 ElasticBERT 则是通过预训练来解决了表示不充分的问题，并且更加贴近 early exiting 的 weight sharing 的模式，效果因此也非常的好。另外，效果很好的 FastBERT 主要得益于其更加复杂的中间层分类器，以及在这之上的自蒸馏目标函数，解决了分类器退出不准确的问题。</p>
+<p><a href="https://github.com/TobiasLee/FormBERT" target="_blank" rel="noopener">FormBERT</a> 是我和 Hua Zheng 师姐合作的一篇论文。idea 起源于之前我们合作的 NAACL 论文，那篇 NAACL 尝试利用构词信息（Word Formation）来辅助词义生成，我们很自然地就想到这个思路也可以扩展到词义消歧上。具体来说，“征文”中的“征”如果是动词，那么就是一个“Verb-Object”的构词，则对应的“征文”对应的是一个动作；反过来，如果“征”是个定语来修饰“文”，则对应的“征文”就是一个名词，指的是“征收的文章”：</p>
+<p><img src="/img/formbert.png" alt="FormBERT"></p>
+<p>基于此，我们首先构建了带有构词信息的数据集，并且尝试在 WSD 中加入这样的信息，并且引入了一个构词预测模块，来降低推理阶段对这种外部信息的意外。实验发现能够利用构词信息确实能够带来一定的增益。这篇文章的思路本身是挺直接的，但是对于中文构词信息的利用之前鲜有人尝试，Hua Zheng 师姐一系列的工作一直在挖掘这点，我觉得很成体系并且是对中文信息处理很有益处的。数据集因为版权问题暂时还不能 release 出来，应该在不久的将来就能够公布。</p>
+<h2 id="Rebuttal"><a href="#Rebuttal" class="headerlink" title="Rebuttal"></a>Rebuttal</h2><p>我原先对于 Rebuttal 的认知是一个鸡肋定位的东西，因为审稿人基本不太会看 Rebuttal，因而改分这种事情就变得非常随缘，但是不 rebuttal 又很气，因为有些审稿人实在是太粗心，所以还得老老实实 rebuttal。但是最近几次 rebuttal 都很 lucky 的逆天改命，让我对 rebuttal 又重新燃起了希望。并且最近 Guangxiang 给我们分享了一个 rebuttal 攻略，他亲测在 NeurIPS 上提了 2 分。攻略来自一个 OSU 的团队的 <a href="https://deviparikh.medium.com/how-we-write-rebuttals-dc84742fece1" target="_blank" rel="noopener">blog</a>，里边有很多 TIPS，这边摘取一些我认为比较核心的分享给大家。</p>
+<h3 id="Audience-amp-Goal"><a href="#Audience-amp-Goal" class="headerlink" title="Audience &amp; Goal"></a>Audience &amp; Goal</h3><p>首先，搞清楚 rebuttal 的受众和目标很重要，而 rebuttal 的受众其实就两类人：</p>
+<p>(1) reviewers，但因为审稿的随机性，审稿人对于你 Paper 了解程度的方差是很大的，因此一些比较难以 get 的东西他们扫一眼过去是看不到的，并且当他们看 rebuttal 的时候，他大概率不记得很多的细节；</p>
+<p>(2) AC，对于你的 paper 他是<strong>更加不了解的</strong>，我们对他们最大程度的假定就是他会读 reviews &amp; rebuttal。</p>
+<p>搞清楚受众之后，我们的目标也对应的分成两类：</p>
+<p>(1) 对于审稿人，澄清他们的疑惑，回答问题，修正他们的误解，并且回击错误的审稿意见，整合他们的反馈来提升工作的价值；</p>
+<p>(2) 对于AC：<strong>令他们相信，你的工作做的很好</strong>，让他明白 reviewer 的关心的问题在 rebuttal 中很好的解决了，同时，尝试着帮他写一个 meta-review 来提炼文章的亮点，<strong>引导他做出决定</strong></p>
+<p>这里的 (2) 实际上是我之前一直容易忽略的一个视角，也就是说 <strong>rebuttal 是给 AC 看的</strong>，搞清楚这一点之后，我们就可以从一个更高的视角来审视 rebuttal。一个合格的 rebuttal，应该能让一个中立的第三方在只看 review 和 rebuttal 的时候，做出相应的决策。</p>
+<h3 id="TIPS"><a href="#TIPS" class="headerlink" title="TIPS"></a>TIPS</h3><p>下面摘录一些重要的 TIPS：</p>
+<ul>
+<li>Start positive，第一印象很重要，在 review summary 中一定要多一些正面的表述，不然 AC 上来一看都是 negative 那就很容易有先入为主的负面印象，进而造成之后他的决策不利于你的paper；</li>
+<li>分清主次问题：对于重要的问题，能够被清楚的回答的问题，将它们的顺序往前往。不需要 care 审稿人是否在意顺序的对应，因为他们大概率忘了自己文了什么（x</li>
+<li>回答问题背后的问题：有些时候审稿人问的一个问题 A，其实并不是想问问题 A，而是想问问题 B，这个时候你得猜出他想问 B 并且回答 B。这个还挺难的，所以得仔细推敲。</li>
+<li>保持对话的氛围：Rebuttal 并不是让大家吵架，而更多的是一个 discuss 的过程，所以行文的格式上如果有一种你方问罢我解答的对话感觉，就可以让人身心愉悦，进而增加中稿稿率；</li>
+<li>适当强调，明确的回答/实验结果可以适当 highlight，不然容易 catch 不到终点；</li>
+<li>用事实说话，即使不能增加结果，若是已有的结果能够明确的回应 reviewer 的关切，那么直接摆证据是最 convincing 的。</li>
+</ul>
+<p>这些策略给我独立写 rebuttal 的时候提供了很大的帮助，并且我在 AAAI rebuttal 的过程中也应用了相应的策略，虽然不知道结果如何，这个攻略把 rebuttal 这事很好的系统化了，可以说有攻略在手，rebuttal 不慌。</p>
+<p>祝我自己以及大家好运 :) ！</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">NLP</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+
+      
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2021/11/14/EMNLP21-and-Rebuttal/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Early-Exiting-PLMs" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -186,7 +304,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2021/10/19/Early-Exiting-PLMs/">Dynamic Early Exiting Survey</a>
+      <a class="article-title" href="/2021/10/19/Early-Exiting-PLMs/">A Brief Survey on Dynamic Early Exiting</a>
     </h1>
   
 
@@ -211,8 +329,7 @@
 <p>无独有偶，同样是 ACL 2020，还有两篇也是基于动态退出的想法进行 BERT 推理加速的文章，这里对其简要介绍如下：</p>
 <p><a href="##参考文献">FastBERT</a>: 和 DeeBERT 不同之处在于其中间层的分类器用了更加复杂的基于 attention 的分类器，并且在训练中间分类器的时候增加了额外的 self-attention 目标，使得中间层的输出和最后一层分类器的输出保持一致。文章在一种文本分类数据集能够在 ~10x 加速比的情况下保持原始模型的性能。</p>
 <p><a href="##参考文献">RightTool</a>: 文章利用中间分类器的预测结果的 confidence，即预测类别的概率值作为退出的指标，并且对其进行了 post-hoc carlibration，以避免 over-confident 的问题。文章和之前的 Paper 不同的地方在于，其对于样本复杂度进行了分析，发现样本长度和难度的相关性很低，而模型的预测的置信度和难度的相关性也不高，相关系数大约在 0.3 附近，这也提示我们说虽然目前基于启发式的退出策略已经取得了不错的成绩，但还有着提升的空间。</p>
-<p>##改进</p>
-<p>后续有不少工作尝试对 Dynamic Early Exiting 的框架进行探究和改进，<a href="##参考文献">CascadeBERT</a> 总结了 Dynamic Early Exiting 在<strong>高加速比</strong>下，即大部分样本都在浅层退出时，会遇到的两个瓶颈问题：(1) 退出决策不鲁棒，即样本难度和中间分类器的分类置信度并不匹配(2) 浅层表示具备的信息不够充分。</p>
+<h2 id="改进"><a href="#改进" class="headerlink" title="改进"></a>改进</h2><p>后续有不少工作尝试对 Dynamic Early Exiting 的框架进行探究和改进，<a href="##参考文献">CascadeBERT</a> 总结了 Dynamic Early Exiting 在<strong>高加速比</strong>下，即大部分样本都在浅层退出时，会遇到的两个瓶颈问题：(1) 退出决策不鲁棒，即样本难度和中间分类器的分类置信度并不匹配(2) 浅层表示具备的信息不够充分。</p>
 <p>对于前者，作者设计了一个用于衡量退出决策和样本难度顺序是否匹配的指标 Difficulty Inversion Score（难度逆序分数），越高说明中间层分类器给出的退出决策和样本难度越一致，文章发现 DeeBERT 的中间分类器在其自己 选择退出的样本上进行了分析，发现其依旧无法给出较好的退出决策：</p>
 <p><img src="/img/cascadebert-dis.png" alt="cascadebert-dis"></p>
 <p>对于后者，作者比较了使用相同层的表示，并且在 DeeBERT 选择退出的样本上进行了性能分析：</p>
@@ -1159,101 +1276,6 @@
 
 
   
-    <article id="post-meta-learning-notes" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/10/02/meta-learning-notes/">Meta-Learning：Learning to Learn and Applications</a>
-    </h1>
-  
-
-        
-        <a href="/2019/10/02/meta-learning-notes/" class="archive-article-date">
-  	<time datetime="2019-10-02T12:00:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-10-02</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Meta-Learning 是一个最近非常 promising 的方向，背后的 Learning to Learn 的思想在解决一些 Low-Resource / Few-shot 场景下的问题是非常有帮助的。因此，这篇文章就是 Meta-Learning 的学习笔记，同时因为我个人的研究方向，会讨论一些在 NLP 问题上的应用。</p>
-<h2 id="Meta-Learning"><a href="#Meta-Learning" class="headerlink" title="Meta-Learning"></a>Meta-Learning</h2><p>首先，在了解 Meta-Learning 具体的方法之前，一个很重要的问题就是，Meta-Learning 有什么用？为什么要用 Meta-Learning 呢？先来看看传统监督学习的 paradigm：在 training set 上利用 examples 来 training (update model parameter)，然后在 test set 上做 testing (only inference)。</p>
-<p>如果我们希望我们的 model 有足够的泛化能力，那么对于 training set 的大小是有一定要求的，一般来说， the bigger the better，这也是现在预训练模型动辄 billion-level 的 Corpus 的一个很重要的原因。并且很多场景下的数据分布，是服从一个<strong>长尾分布</strong>的，即有一些 class 的样本很多，而有一些 class 的样本很少，<strong>典型的就是，类别不均衡问题</strong>，在这样的限制之下，怎么学习一个良好的分类器，特别是在那些只有极少数样例的 class 上。</p>
-<p>另一个很明显的对比就是人类学习的时候，能够基于过往的经验快速地学习，即使新的任务只有 few examples，比如下面这个图，你觉得是哪个画家的风格呢？:</p>
-<p><img src="/img/human_test.png" alt="Human Test"></p>
-<p>正确答案是 Braque（我在这两者之间摇摆不定了很久hhh），Chelsea 在 Tutorial 现场是多数人答对了，看来我可能真的没什么艺术天赋？这里每个风格只有 3 个样例，我们答对的一个很大的原因就是来自于<strong>过往的经验</strong>，如果我们的 Machine Learning Method 也能具备这样的能力，那么他是不是就能离真正的智能更近一步？Meta-Learning 就是用来做这个的，Learning to Learn！</p>
-        
-          <a class="article-more-a" href="/2019/10/02/meta-learning-notes/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">NLP</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">ML</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">RL</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">DL</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-
-      
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/10/02/meta-learning-notes/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
@@ -1397,10 +1419,6 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">Deep Learning</a>
               </li>
              
@@ -1409,7 +1427,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
+                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1417,15 +1435,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Android</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">自定义View</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">NLP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1437,23 +1451,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">C</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1465,7 +1471,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
+                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Pre-trained Language Models</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1473,7 +1487,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Pre-trained Language Models</a>
+                <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Android</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1485,19 +1503,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">SeqGAN</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">PyTorch</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Java</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">LaTeX</a>
+                <a href="javascript:void(0)" class="js-tag color2">SeqGAN</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">自定义View</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">PyTorch</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1509,15 +1527,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Python</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">OS</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">爬虫</a>
+                <a href="javascript:void(0)" class="js-tag color1">LaTeX</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1525,11 +1535,23 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Paper Notes</a>
+                <a href="javascript:void(0)" class="js-tag color3">OS</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">ML</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Python</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">爬虫</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Paper Notes</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1549,6 +1571,10 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">LSTM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Compile Principle</a>
               </li>
              
@@ -1557,15 +1583,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">LSTM</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Graph Neural Networks</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">View</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1582,6 +1600,10 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Layer Normalization</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">View</a>
               </li>
             
             <div class="clearfix"></div>
