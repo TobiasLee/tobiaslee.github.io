@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://tobiaslee.top/2023/02/02/DecisionForPursuingAPhD/</loc>
+    <lastmod>2023-02-02</lastmod>
+  </url>
+  <url>
     <loc>https://tobiaslee.top/2021/11/14/EMNLP21-and-Rebuttal/</loc>
     <lastmod>2021-11-23</lastmod>
   </url>
