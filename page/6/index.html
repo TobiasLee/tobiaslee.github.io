@@ -182,6 +182,122 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-Virtual-Methods-in-C-Learning-Notes" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/12/14/Virtual-Methods-in-C-Learning-Notes/">Virtual Methods in C++ Learning Notes</a>
+    </h1>
+  
+
+        
+        <a href="/2017/12/14/Virtual-Methods-in-C-Learning-Notes/" class="archive-article-date">
+  	<time datetime="2017-12-14T08:52:35.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-12-14</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>早就听闻 C++ 中虚函数的大名，今天 OOP 课上老师讲了，感觉还有一些不清晰的地方，上课老师几个比较坑的例子也有一些细节需要注意。回来翻看了一下《C++ Primer Plus》，做笔记以供日后复习。</p>
+<h2 id="前置知识"><a href="#前置知识" class="headerlink" title="前置知识"></a>前置知识</h2><p>在学习虚函数之前需要一些 C 语言和基本的 C++ 知识，这里不展开，简单带过：</p>
+<ol>
+<li>函数调用的方式：在 C/C++ 中，函数调用，实质上是<strong>通过地址作为入口</strong>找到对应的代码块，进行执行。</li>
+<li>继承：子类继承父类之后，会获得父类所有的成员，并且，在构造函数（constructor)的调用链中，以<strong>父类在前，子类在后</strong>的顺序依次调用；析构（deconstructor）函数恰好相反，<strong>子类在先，父类在后</strong>。</li>
+</ol>
+<h2 id="静态-动态联编"><a href="#静态-动态联编" class="headerlink" title="静态/动态联编"></a>静态/动态联编</h2><blockquote>
+<p>编译器负责将源代码中的函数调用解释为执行特定的函数代码块，这一过程被称为函数名联编（binding）。在编译过程（Compile time）进行联编称为静态联编（static binding），而虚函数的存在使得编译器有时需要在运行时（Run time）选择正确的虚方法的代码，称为动态联编。</p>
+<p>——《C++ Primer Plus》</p>
+</blockquote>
+<p>似乎还是有点抽象，需要用代码来解释，在此之前，再讨论一个小问题：指针和引用类型的兼容性。</p>
+        
+          <a class="article-more-a" href="/2017/12/14/Virtual-Methods-in-C-Learning-Notes/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">C++</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+
+      
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2017/12/14/Virtual-Methods-in-C-Learning-Notes/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+
+
+
+  <div id="gitalk-container" style="padding: 0px 30px 0px 30px;"></div> 
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script type="text/javascript">
+
+if(true){
+	var gitalk = new Gitalk({
+  	clientID: '287baa057ce9ec4607fc',
+  	clientSecret: 'af27eca29f4fb81302ec92b0f0bf9e70e635db2d',
+  	repo: 'blog-comments',
+  	owner: 'TobiasLee',
+  	admin: ['TobiasLee'],
+  	id: '',
+  	distractionFreeMode: 'true'
+})
+gitalk.render('gitalk-container') 
+}
+</script>
+
+  
+
+
+
+
+  
     <article id="post-Thoughts-about-adversarial-training-methods-in-NLP" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -279,8 +395,8 @@ if(true){
   	clientID: '287baa057ce9ec4607fc',
   	clientSecret: 'af27eca29f4fb81302ec92b0f0bf9e70e635db2d',
   	repo: 'blog-comments',
-  	owner: 'tobiaslee',
-  	admin: ['tobiaslee'],
+  	owner: 'TobiasLee',
+  	admin: ['TobiasLee'],
   	id: '',
   	distractionFreeMode: 'true'
 })
@@ -393,8 +509,8 @@ if(true){
   	clientID: '287baa057ce9ec4607fc',
   	clientSecret: 'af27eca29f4fb81302ec92b0f0bf9e70e635db2d',
   	repo: 'blog-comments',
-  	owner: 'tobiaslee',
-  	admin: ['tobiaslee'],
+  	owner: 'TobiasLee',
+  	admin: ['TobiasLee'],
   	id: '',
   	distractionFreeMode: 'true'
 })
@@ -504,8 +620,8 @@ if(true){
   	clientID: '287baa057ce9ec4607fc',
   	clientSecret: 'af27eca29f4fb81302ec92b0f0bf9e70e635db2d',
   	repo: 'blog-comments',
-  	owner: 'tobiaslee',
-  	admin: ['tobiaslee'],
+  	owner: 'TobiasLee',
+  	admin: ['TobiasLee'],
   	id: '',
   	distractionFreeMode: 'true'
 })
@@ -613,8 +729,8 @@ if(true){
   	clientID: '287baa057ce9ec4607fc',
   	clientSecret: 'af27eca29f4fb81302ec92b0f0bf9e70e635db2d',
   	repo: 'blog-comments',
-  	owner: 'tobiaslee',
-  	admin: ['tobiaslee'],
+  	owner: 'TobiasLee',
+  	admin: ['TobiasLee'],
   	id: '',
   	distractionFreeMode: 'true'
 })
@@ -719,8 +835,8 @@ if(true){
   	clientID: '287baa057ce9ec4607fc',
   	clientSecret: 'af27eca29f4fb81302ec92b0f0bf9e70e635db2d',
   	repo: 'blog-comments',
-  	owner: 'tobiaslee',
-  	admin: ['tobiaslee'],
+  	owner: 'TobiasLee',
+  	admin: ['TobiasLee'],
   	id: '',
   	distractionFreeMode: 'true'
 })
@@ -838,8 +954,8 @@ if(true){
   	clientID: '287baa057ce9ec4607fc',
   	clientSecret: 'af27eca29f4fb81302ec92b0f0bf9e70e635db2d',
   	repo: 'blog-comments',
-  	owner: 'tobiaslee',
-  	admin: ['tobiaslee'],
+  	owner: 'TobiasLee',
+  	admin: ['TobiasLee'],
   	id: '',
   	distractionFreeMode: 'true'
 })
@@ -949,8 +1065,8 @@ if(true){
   	clientID: '287baa057ce9ec4607fc',
   	clientSecret: 'af27eca29f4fb81302ec92b0f0bf9e70e635db2d',
   	repo: 'blog-comments',
-  	owner: 'tobiaslee',
-  	admin: ['tobiaslee'],
+  	owner: 'TobiasLee',
+  	admin: ['TobiasLee'],
   	id: '',
   	distractionFreeMode: 'true'
 })
@@ -1069,8 +1185,8 @@ if(true){
   	clientID: '287baa057ce9ec4607fc',
   	clientSecret: 'af27eca29f4fb81302ec92b0f0bf9e70e635db2d',
   	repo: 'blog-comments',
-  	owner: 'tobiaslee',
-  	admin: ['tobiaslee'],
+  	owner: 'TobiasLee',
+  	admin: ['TobiasLee'],
   	id: '',
   	distractionFreeMode: 'true'
 })
@@ -1186,122 +1302,8 @@ if(true){
   	clientID: '287baa057ce9ec4607fc',
   	clientSecret: 'af27eca29f4fb81302ec92b0f0bf9e70e635db2d',
   	repo: 'blog-comments',
-  	owner: 'tobiaslee',
-  	admin: ['tobiaslee'],
-  	id: '',
-  	distractionFreeMode: 'true'
-})
-gitalk.render('gitalk-container') 
-}
-</script>
-
-  
-
-
-
-
-  
-    <article id="post-Attention-Mechanism-学习笔记" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/08/15/Attention-Mechanism-学习笔记/">Attention Mechanism 学习笔记1</a>
-    </h1>
-  
-
-        
-        <a href="/2017/08/15/Attention-Mechanism-学习笔记/" class="archive-article-date">
-  	<time datetime="2017-08-15T11:28:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-08-15</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><code>Attention Mechanism</code> （注意力机制），是目前在 Neural Network 中应用很广的一种优化模型的方法，下一阶段的目标就是能够利用 TensorFlow 写出 Attention-based LSTM 来做 Text Classification 问题，这篇文章的目的就是记录学习过程中阅读 Paper、Blog 的理解和总结。</p>
-<h2 id="Attention"><a href="#Attention" class="headerlink" title="Attention"></a>Attention</h2><p>首先一个问题就是，什么是 <code>Attention</code>？我的理解就是一种 <code>focus</code>，聚焦在某一个局部。打个比方，当我们看到一照片，我们会不自觉地被某一部分所吸引，然后从这一部分向四周延伸出去，注意到画面的其他部分。当然这个吸引的部分可能因人而异，后续的向四周拓展的顺序也不一定一样。</p>
-<p><img src="/img/landscape.jpg" alt="Landscape"></p>
-<p>拿上面这张图片来说，我先看到的是木房子的整体，然后关注到房子的条纹结构，再到远处的海边、山，最后是天空。这就是视觉上的注意力机制，在某种程度上说，这也是我们人脑为了节省计算资源的一种方式。</p>
-<p>那么到了深度学习领域，我们会用 CNN 去处理图片，比如给图片起标题（Image Captioning）或者说是用 RNN 处理文本，做机器翻译（Neural Machine Translation，简称 NMT），如果同样地引入注意力机制，让模型更关注图片或者是文本的某一部分，是不是也能够节省计算资源呢？答案是，Yes！<br>
-        
-          <a class="article-more-a" href="/2017/08/15/Attention-Mechanism-学习笔记/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">Deep Learning</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Machine Learning</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-
-      
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/08/15/Attention-Mechanism-学习笔记/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-
-
-
-  <div id="gitalk-container" style="padding: 0px 30px 0px 30px;"></div> 
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
-<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
-<script type="text/javascript">
-
-if(true){
-	var gitalk = new Gitalk({
-  	clientID: '287baa057ce9ec4607fc',
-  	clientSecret: 'af27eca29f4fb81302ec92b0f0bf9e70e635db2d',
-  	repo: 'blog-comments',
-  	owner: 'tobiaslee',
-  	admin: ['tobiaslee'],
+  	owner: 'TobiasLee',
+  	admin: ['TobiasLee'],
   	id: '',
   	distractionFreeMode: 'true'
 })
@@ -1317,7 +1319,7 @@ gitalk.render('gitalk-container')
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/5/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/7/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/5/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/7/">Next &raquo;</a>
     </nav>
   
 
@@ -1474,7 +1476,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">NLP</a>
+                <a href="javascript:void(0)" class="js-tag color3">Android</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">自定义View</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1482,11 +1488,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Android</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">自定义View</a>
+                <a href="javascript:void(0)" class="js-tag color4">NLP</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1506,19 +1508,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">C</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
+                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1531,6 +1533,14 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">ACM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Distributed Training</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Large Language Models</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1554,6 +1564,10 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">PyTorch</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">LaTeX</a>
               </li>
              
@@ -1566,15 +1580,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">PyTorch</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Python</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">爬虫</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1582,19 +1588,23 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">ML</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">JVM</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Retrofit</a>
+                <a href="javascript:void(0)" class="js-tag color3">爬虫</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">ML</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Paper Notes</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Retrofit</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1606,7 +1616,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">LSTM</a>
+                <a href="javascript:void(0)" class="js-tag color4">C++</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1618,11 +1628,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">C++</a>
+                <a href="javascript:void(0)" class="js-tag color2">Graph Neural Networks</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Graph Neural Networks</a>
+                <a href="javascript:void(0)" class="js-tag color5">LSTM</a>
               </li>
              
               <li class="article-tag-list-item">

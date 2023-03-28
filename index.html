@@ -182,6 +182,166 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-Deepspeed101-Pipeline-Parallelism" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2023/03/28/Deepspeed101-Pipeline-Parallelism/">LLM101-Parallelism学习笔记</a>
+    </h1>
+  
+
+        
+        <a href="/2023/03/28/Deepspeed101-Pipeline-Parallelism/" class="archive-article-date">
+  	<time datetime="2023-03-28T11:52:43.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-03-28</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>ChatGPT 大模型的时代到来了，怎么样才能不做一个 Prompt 工程师呢？那自然是学习如何训练大模型了。个人理解，大模型的训练的目标函数并不难，就是 language modeling 的极大似然估计，难的是<strong>大规模算力的调度和高质量数据的清洗</strong>。而这方面的经验和技术储备，很多的同学因为受到实验室的资源限制，其实是远远不够的，那我们能做的，就是通过尽可能地和公司合作，并且熟练地掌握分布式的训练框架，这些框架的核心就是各式各样的并行，这篇 Blog 就来分享一下学习并行机制以及 megatron LM 的相关代码。</p>
+<h2 id="几种并行机制"><a href="#几种并行机制" class="headerlink" title="几种并行机制"></a>几种并行机制</h2><h3 id="Data-Parallelism"><a href="#Data-Parallelism" class="headerlink" title="Data Parallelism"></a>Data Parallelism</h3><p>数据并行是之前做单机多卡（Single-node multi GPUs）最常用的一种方案，其核心就是在不同 GPU 上分别 host 一个模型，从而每块 GPU 能够拥有自己的一部分 dataset subset，达到一个亚线性的加速，例如，使用八块 GPU 训练会比单块 GPU 快大约八倍不到的速度。之所以无法达到完全的 GPU 数量倍数的加速比，是因为各个 GPU 所 host 参数需要在梯度更新后进行参数同步，即：</p>
+<ol>
+<li>各个 GPU 单独在自己的数据上计算梯度</li>
+<li>对各个 GPU 的梯度进行平均，将平均后的梯度分发给各个 GPU</li>
+<li>各个 GPU 利用得到的平均梯度对参数进行更新</li>
+<li>利用某些 Barrier 机制来确保各个 GPU 的参数都完成更新后，进行下一个 batch</li>
+</ol>
+<p>第二步中需要在 GPU 之间进行大量的数据传输，造成对训练吞吐量的影响，当然有一些异步的机制来降低这一数据传输的开销，但一般这种开销也基本可以接受，使用原版的数据并行就可以了。</p>
+<h3 id="Pipeline-Parallelism"><a href="#Pipeline-Parallelism" class="headerlink" title="Pipeline Parallelism"></a>Pipeline Parallelism</h3><p>如果模型的参数特别大无法 fit 到GPU 的显存中，数据平行就无能为力了。Pipeline Parallell 的解决思路就是将模型的不同部分放到不同 GPU 上，直观的理解就是把多块 GPU 的显存都拼接起来，合成一块更大的显存的 GPU。对于 Transformer 模型，最直接的 pipeline parallel 就是根据 TransformerLayer 来切块（例如，总共 32层，8块 GPU，则我们可以在每块 GPU 上放 4 层），然后将不同的块放到不同的 GPU 上。由于层和层之间的依赖关系，例如，8-4层的计算依赖于 0到3层的结果，则对应 GPU 上的计算需要等待前序块的 GPU 完成计算，这种等待被称之为气泡 bubble，同样会降低计算的吞吐量（学过操统的流水线的同学应该会感觉非常熟悉）。</p>
+<p>如何降低气泡数量从而提升计算吞吐量呢？我们可以尝试将计算的粒度变小，即复用 Data Parallel 的思路，在等待的时候，计算下一个小 batch，从而用小 batch 的计算来填补等待的空白，对应地，梯度计算的时候也复用数据并行的方案即可，然后进行 GPU 之间的传递。因为前向计算和反向梯度传播之中都包含结果或者是activation 的传递，以及有多卡多 minibatch 之间的聚合，这里存在巨大的调度设计的空间以提升效率。GPipe 和 PipeDream 则是两个代表性的方案，前者分别地处理前向和反向的计算（完成所有 batch 的前向后再进行反向传播），而后者则是当第一个 minibatch 的前向完成之后即可进行反向的计算，因而更能够降低等待时间。</p>
+<p><img src="/img/gpipe.svg" alt="GPipe"></p>
+<p><img src="/img/pipedream.svg" alt="PipeDream"></p>
+<h3 id="Tensor-Parallelism"><a href="#Tensor-Parallelism" class="headerlink" title="Tensor Parallelism"></a>Tensor Parallelism</h3><p>张量并行则是更细粒度的计算层面的并行机制。相较于 Pipeline 在层和层之间切分，张量并行则是在层内部，对基础的矩阵操作进行切块。 Transformer 模型的主要计算单元 FFN 和 Self-Attention 中存在大量的矩阵运算，而矩阵运算又可以被视为是<strong>列向量和行向量的</strong>点积，而行-行/列-列之间的计算是相互独立的（或许最后需要求和汇总），因此我们可以将矩阵切块放到不同 GPU 上，进一步提升并行度。MegatronLM 对此有比较直观的图解：</p>
+<p><img src="/img/megatronlm.png" alt="MegatronLM"></p>
+<p>具体地，给定一个矩阵乘法操作：</p>
+<p>$$ Y = GeLU(XA) $$</p>
+<p>其中 $Y$ 和 $X$ 分别对应输出和输入，$A$ 则是一个权重矩阵，则我们有两种对 $XA$ 进行分割的操作：</p>
+<p>第一种将输入按列分块$ X = [X_1, X_2] $，将权重按行分块$A = [A_1 ; A_2]$ （分号表示 A1, A2 的列数相同），</p>
+<p>则我们需要对结果进行聚合得到</p>
+<p>$$ Y = GeLU(X_1 A_1  + X_2 A_2)$$</p>
+<p>而因为 $GeLU$ 是非线性函数，$GeLU(X_1A_1 + X_2 A_2) != GeLU(X_1A_1) + GeLU(X_2A_2)$ ，因而在得到最终的结果之前还需要进行一次聚合；</p>
+<p>另外一种切割则是将 $A$ 按列切分，则有 $A = [A_1, A_2]$，对应的可以得到 $[Y_1, Y2] = [GeLU(X A_1), GeLU(X A_2)]$，可以单独计算每个部分而不需要一个同步节点用来求和，因而可以降低 GPU 之间同步所需要的通讯量，但在 dropout 之前需要对所有结果进行一个聚合操作（类似 GeLU 的非线性），第二种切分方式对应的示意图如下:</p>
+<p><img src="/img/tensorslice.png" alt="Tensor Slice"></p>
+<p>对应到具体的实现，则可以在 MegatronLM 里找到两种分割的实现，分别称之为 <a href="https://github.com/NVIDIA/Megatron-LM/blob/main/megatron/core/tensor_parallel/layers.py#L409" target="_blank" rel="noopener">ColumnParallelLinear</a> 和 <a href="https://github.com/NVIDIA/Megatron-LM/blob/main/megatron/core/tensor_parallel/layers.py#L568" target="_blank" rel="noopener">RowParallelLinear</a>。</p>
+<p>其核心就在于 <code>weight</code> 权重的初始化分别是:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ColumnParallel</span></span><br><span class="line">self.weight = Parameter(torch.empty(self.output_size_per_partition,</span><br><span class="line">                                                self.input_size,</span><br><span class="line">                                                dtype=params_dtype))</span><br><span class="line"><span class="comment"># RowParallel</span></span><br><span class="line">self.weight = Parameter(torch.empty(self.output_size,</span><br><span class="line">                                    self.input_size_per_partition,</span><br><span class="line">                                    dtype=params_dtype))</span><br></pre></td></tr></table></figure>
+<p>以及 RowParallel（即第一种实现）需要在前向中进行 AllReduce。此外，因为 ColumnParallel 得到的输出 Y 天然是按列分块的，因而可以在后面接上一个 RowParallel（输入是按列分块，权重按行分块），而只需要做一次 reduce 操作即可完成 MLP 的计算。</p>
+<h4 id="Parallel-Vocab-Embedding"><a href="#Parallel-Vocab-Embedding" class="headerlink" title="Parallel Vocab Embedding"></a>Parallel Vocab Embedding</h4><p>语言模型里的 Embedding matrix (look-up table)其实也可以看做是一个大规模的矩阵乘法运算，因而也可以通过张量并行来实现：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">self.weight = Parameter(torch.empty(</span><br><span class="line">                self.num_embeddings_per_partition, self.embedding_dim,</span><br><span class="line">                dtype=params_dtype))</span><br></pre></td></tr></table></figure>
+<p>因而当我们在 load 大规模语言模型特别是利用 tensor parallel 训练的模型的时候，需要确保模型的对应的设置也正确，否则则会出现 load error ，即参数形状不对（例如 50000 的词表可能被分成四块，每块 12500）的问题。</p>
+<p>对应的，Output Embedding (输出为词表概率的矩阵)也可能做了对应的并行，并且和 CrossEntropy Loss 一起考虑进行相应的 mask 后的<a href="https://github.com/NVIDIA/Megatron-LM/blob/main/megatron/core/tensor_parallel/cross_entropy.py#L14" target="_blank" rel="noopener">计算</a>。</p>
+<h2 id="Takeaway"><a href="#Takeaway" class="headerlink" title="Takeaway"></a>Takeaway</h2><p>以上提到的几种并行策略都可以叠加使用，达到更好的并行效果。此外，我们也会注意到，<strong>更细粒度的并行意味着和模型结构更高的耦合</strong>，即需要对模型的结构、计算有着特定的假设才可以使用对应的并行策略，而不存在某种策略适合所有的模型。最后，附上 Huggingface 给出的并行选择的方法：</p>
+<ul>
+<li><p>单卡：模型放得下就可以不用并行；显存放不下可以考虑使用 ZeRO 和 Offload CPU（将 optimizer state 放到 CPU 上）</p>
+</li>
+<li><p>单机多卡：模型放得下可以使用数据并行和 Zero；放不下则可以考虑 Pipeline Parallel（PP），ZeRO 以及 Tensor Parallel（TP）。几种方法的在 GPU 通讯带宽较好的（e.g., NVLINK A100）的场景下速度，否则 PP 会更快，而 TP 的效率取决于如何配置，可以多尝试不同的并行度；</p>
+</li>
+<li><p>多机多卡：节点之间通讯比较好的话考虑 ZeRO 或者 PP + DP + TP；节点通讯带宽差并且单个 GPU memory 较少，则考虑：DP+PP+TP+ZeRO-1</p>
+</li>
+</ul>
+<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><ol>
+<li><p><a href="https://huggingface.co/transformers/v4.9.0/parallelism.html" target="_blank" rel="noopener">https://huggingface.co/transformers/v4.9.0/parallelism.html</a> </p>
+</li>
+<li><p><a href="https://github.com/huggingface/transformers/issues/10321" target="_blank" rel="noopener">https://github.com/huggingface/transformers/issues/10321</a></p>
+</li>
+<li><a href="https://openai.com/research/techniques-for-training-large-neural-networks" target="_blank" rel="noopener">https://openai.com/research/techniques-for-training-large-neural-networks</a></li>
+<li>MegatronLM: <a href="https://arxiv.org/pdf/1909.08053.pdf" target="_blank" rel="noopener">https://arxiv.org/pdf/1909.08053.pdf</a></li>
+</ol>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">NLP</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Distributed Training</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Large Language Models</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+
+      
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2023/03/28/Deepspeed101-Pipeline-Parallelism/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+
+
+
+  <div id="gitalk-container" style="padding: 0px 30px 0px 30px;"></div> 
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script type="text/javascript">
+
+if(true){
+	var gitalk = new Gitalk({
+  	clientID: '287baa057ce9ec4607fc',
+  	clientSecret: 'af27eca29f4fb81302ec92b0f0bf9e70e635db2d',
+  	repo: 'blog-comments',
+  	owner: 'TobiasLee',
+  	admin: ['TobiasLee'],
+  	id: '',
+  	distractionFreeMode: 'true'
+})
+gitalk.render('gitalk-container') 
+}
+</script>
+
+  
+
+
+
+
+  
     <article id="post-DecisionForPursuingAPhD" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -273,8 +433,8 @@ if(true){
   	clientID: '287baa057ce9ec4607fc',
   	clientSecret: 'af27eca29f4fb81302ec92b0f0bf9e70e635db2d',
   	repo: 'blog-comments',
-  	owner: 'tobiaslee',
-  	admin: ['tobiaslee'],
+  	owner: 'TobiasLee',
+  	admin: ['TobiasLee'],
   	id: '',
   	distractionFreeMode: 'true'
 })
@@ -419,8 +579,8 @@ if(true){
   	clientID: '287baa057ce9ec4607fc',
   	clientSecret: 'af27eca29f4fb81302ec92b0f0bf9e70e635db2d',
   	repo: 'blog-comments',
-  	owner: 'tobiaslee',
-  	admin: ['tobiaslee'],
+  	owner: 'TobiasLee',
+  	admin: ['TobiasLee'],
   	id: '',
   	distractionFreeMode: 'true'
 })
@@ -581,8 +741,8 @@ if(true){
   	clientID: '287baa057ce9ec4607fc',
   	clientSecret: 'af27eca29f4fb81302ec92b0f0bf9e70e635db2d',
   	repo: 'blog-comments',
-  	owner: 'tobiaslee',
-  	admin: ['tobiaslee'],
+  	owner: 'TobiasLee',
+  	admin: ['TobiasLee'],
   	id: '',
   	distractionFreeMode: 'true'
 })
@@ -721,8 +881,8 @@ if(true){
   	clientID: '287baa057ce9ec4607fc',
   	clientSecret: 'af27eca29f4fb81302ec92b0f0bf9e70e635db2d',
   	repo: 'blog-comments',
-  	owner: 'tobiaslee',
-  	admin: ['tobiaslee'],
+  	owner: 'TobiasLee',
+  	admin: ['TobiasLee'],
   	id: '',
   	distractionFreeMode: 'true'
 })
@@ -879,8 +1039,8 @@ if(true){
   	clientID: '287baa057ce9ec4607fc',
   	clientSecret: 'af27eca29f4fb81302ec92b0f0bf9e70e635db2d',
   	repo: 'blog-comments',
-  	owner: 'tobiaslee',
-  	admin: ['tobiaslee'],
+  	owner: 'TobiasLee',
+  	admin: ['TobiasLee'],
   	id: '',
   	distractionFreeMode: 'true'
 })
@@ -1020,8 +1180,8 @@ if(true){
   	clientID: '287baa057ce9ec4607fc',
   	clientSecret: 'af27eca29f4fb81302ec92b0f0bf9e70e635db2d',
   	repo: 'blog-comments',
-  	owner: 'tobiaslee',
-  	admin: ['tobiaslee'],
+  	owner: 'TobiasLee',
+  	admin: ['TobiasLee'],
   	id: '',
   	distractionFreeMode: 'true'
 })
@@ -1136,8 +1296,8 @@ if(true){
   	clientID: '287baa057ce9ec4607fc',
   	clientSecret: 'af27eca29f4fb81302ec92b0f0bf9e70e635db2d',
   	repo: 'blog-comments',
-  	owner: 'tobiaslee',
-  	admin: ['tobiaslee'],
+  	owner: 'TobiasLee',
+  	admin: ['TobiasLee'],
   	id: '',
   	distractionFreeMode: 'true'
 })
@@ -1254,8 +1414,8 @@ if(true){
   	clientID: '287baa057ce9ec4607fc',
   	clientSecret: 'af27eca29f4fb81302ec92b0f0bf9e70e635db2d',
   	repo: 'blog-comments',
-  	owner: 'tobiaslee',
-  	admin: ['tobiaslee'],
+  	owner: 'TobiasLee',
+  	admin: ['TobiasLee'],
   	id: '',
   	distractionFreeMode: 'true'
 })
@@ -1406,130 +1566,8 @@ if(true){
   	clientID: '287baa057ce9ec4607fc',
   	clientSecret: 'af27eca29f4fb81302ec92b0f0bf9e70e635db2d',
   	repo: 'blog-comments',
-  	owner: 'tobiaslee',
-  	admin: ['tobiaslee'],
-  	id: '',
-  	distractionFreeMode: 'true'
-})
-gitalk.render('gitalk-container') 
-}
-</script>
-
-  
-
-
-
-
-  
-    <article id="post-my-golden-years" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/12/31/my-golden-years/">我的黄金岁月——十年回首</a>
-    </h1>
-  
-
-        
-        <a href="/2019/12/31/my-golden-years/" class="archive-article-date">
-  	<time datetime="2019-12-31T15:44:29.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-31</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>明天就是 2020 年了，其实 11 月份的时候就想起笔把今年的总结写了，但可能时间没到，没有那种氛围，写了一点就丢到了回收站里。到了 12 月 31 日，在陆续看了网易云等软件以及关注的人们的诸多的年度总结之后，总算积攒够了情绪。人是需要仪式感的动物，所以，开始动笔写这篇，年度总结，亦是从千禧年开始，一些我觉得印象深刻的回顾。</p>
-<h2 id="记忆碎片"><a href="#记忆碎片" class="headerlink" title="记忆碎片"></a>记忆碎片</h2><p>我最遥远的记忆大约要从幼儿园开始。上幼儿园的第一天我哭了，这件事我印象深刻，没想到我接下来居然会这么多年的书，甚至可能要攻读一个象征着人类学历顶峰的 PhD 学位呢。所以，以后我若是有了小朋友（们），一定要告诉他（们），幼儿园只是你噩梦的开始哈哈哈。</p>
-<p>那时候，和邻居家的小妹妹，跟着她爷爷，走过大约两个红绿灯的距离，去上幼儿园；那条路上有一块巨大的铁皮广告牌，风吹过的时候会发出巨大的声响，经过的时候我总会不自觉的加快脚步。听妈妈说，那个女孩还说过非我不嫁这样的话，想来也是天真的可爱了。</p>
-<p>幼儿园上完我就去一个离家很远的地方读小学，公交车程得快 1 个小时，没想到我爸用一辆遥控赛车成功忽悠年少的我独自乘公交车上学、放学，心也是够大的。小学时候的我经常会在车上得到叔叔阿姨的让座，在下班高峰期的时候会蜷缩在两个座椅之中打盹，睡醒之后若是坐过站又会很着急，眼泪打着转地寻找回家的方向。<strong>那时候的我，身体虽然很小，但也很坚强啊</strong>。在车上我经常会睡觉，也会想一些事情，想来这似乎就是我们现在所谓的“暗时间”，神奇。小学的 6 年里，我觉得班主任并不太喜欢我，虽然我的成绩还可以；我大约在四年级的时候因为偷校门口小店的零食被严厉的批评，她甚至用了<strong>一辈子都没有出息</strong>这样的词来形容我的未来。我觉得批评是没问题的，但不要因此 judge 我的未来，因为<strong>谁能说得准呢</strong>。在一段时间被同学在背后指指点点之后，我意识到了做人一定要光明磊落，不然对不起我的名字。</p>
-<p>带着些许的自卑，我上初中了。初中或许是我自信心提升最大的一个阶段，我去到一个竞争并不那么激烈的中学，凭借着我的小聪明，在老师们的喜爱中度过了我愉快的三年。回过头来看，作为义务教育的最后阶段，我的初中或许在成绩上并不完美（相比民办初中），但它确确实实是提供了一个完整的平台，供我去探索一些可能性。我开始学习吉他，接触了足球，为之后的丰富生活打下了基础。</p>
-<p>初三的最后，我保送到了市里的重点中学，历史底蕴和文科是它的强项，初中老师认为很符合我的气质（我难道看着像当领导的料吗hh）。没想到最终的我还是选择了理科，甚至将要成为一名程序员。小学的时候，电脑老师对我们说：“云计算是未来”。或许，这句话为我的专业选择埋下了伏笔。高中里我虽然很努力学习，但数学总是考不太好，现在想来还是刷题不够，<strong>量变才能质变</strong>。最后高考也没有发挥好，但我觉得主要是均值不高，发挥不好最多也就是在一个 $\sigma$ 的范围之内。</p>
-<h2 id="何其幸运"><a href="#何其幸运" class="headerlink" title="何其幸运"></a>何其幸运</h2><p>回顾这些年，我觉得我是非常幸运的。一方面，健健康康地成长到了这个年纪，没有在放学路上被拐走，也没有被突如其来的杀手带走生命，我深知，世界上很多地方的孩子甚至连一口干净的水都是奢望，活到现在，很不容易；另一方面，也没有早早地中止学业，身边很多的同学已经走上了社会，我还能够在学校里残喘苟延一段时间，我在初中毕业的日志里写到：</p>
-<blockquote>
-<p>读书不是唯一的出路，但是在当今中国，当今社会背景之下最好的出路。</p>
-</blockquote>
-<p>我觉得曾经自己还是有点 Naive 了；事实上，在过去的十年里，读书不是最优的选择，那是一个波澜壮阔的时代，满地都是机会。若是在 10 年去杭州四季青做服装批发，赶上淘宝的热潮，再趁早上了杭州房子的车，现在已经不用奋斗了（逃。<strong>没有如果，这就是人生的趣味所在</strong>，10 年，12 岁的小屁孩，能做的就是乖乖读书，这是如我一样家里没有矿产的人普通人的唯一解，虽然读书给不了你王思聪一样的起跑线，但它能让你有一份较为体面的工作，不至于过不了日子的这样一个下界，上界，就得看历史的进程和个人的奋斗了。</p>
-<p>真的，得学会和时间做朋友，一时的困乏没什么。我有限的人生总得来说还是一路向上的，虽然有过一些现在看来只是小浪花的波折，但得充满信心地向前看，或许几年之后就要遭到社会的毒打了（逃。</p>
-<h2 id="下一个十年"><a href="#下一个十年" class="headerlink" title="下一个十年"></a>下一个十年</h2><p>或许再次回头，就已经是三十而立的年纪。下一个十年，应当是真的成就一番事业的时候了。过去的日子里，我们在 08 年经历了地震、奥运、雪灾、金融危机；12 年之后移动互联网兴起，支付宝给银行、金融行业带来的深刻变革，亦是早就了一批如今的巨头；16 年之后的人工智能，被鼓吹为下一个十年里的电力。我不知道下一个十年会发生什么，但作为一个渺小的个人，其实能做的不多：</p>
-<ul>
-<li>保持学习、阅读：接下来的日子里，不再有老师追着你让你写作业了，你得自己 push 自己，保持自律，去学习能够为自己带来长半衰期的知识。奶头乐的事物会越来越多，诱惑很大，但要学会啃硬骨头，坐得住冷板凳，人丑，就多看看书。</li>
-<li>多走走，多看看：读万卷书，行万里路。生命的长度有限，努力拓展厚度是我们能做的。除了读书以外，我觉得到世界各个地方体验不一样的生活是触及更大的世界的又一方式。总而言之，<strong>不要让自己后悔走这一遭</strong>。</li>
-<li>养成良好的理财观念：钱是我们无法回避的话题，掌握基本的理财知识，例如区分资产和负债，对于财富的积累有着重大的帮助。断断续续也在股市上已经交了不少的学费，有机会能够系统地梳理一遍，形成自己的投资框架，早日获得”睡后收入“。</li>
-</ul>
-<p>希望接下来的日子里，自己能够保持健康，抓住能够抓住的机会，见识更大的世界。感谢这一路以来遇到的所有人，祝大家新年快乐！</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">随笔</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-
-      
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/12/31/my-golden-years/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-
-
-
-  <div id="gitalk-container" style="padding: 0px 30px 0px 30px;"></div> 
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
-<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
-<script type="text/javascript">
-
-if(true){
-	var gitalk = new Gitalk({
-  	clientID: '287baa057ce9ec4607fc',
-  	clientSecret: 'af27eca29f4fb81302ec92b0f0bf9e70e635db2d',
-  	repo: 'blog-comments',
-  	owner: 'tobiaslee',
-  	admin: ['tobiaslee'],
+  	owner: 'TobiasLee',
+  	admin: ['TobiasLee'],
   	id: '',
   	distractionFreeMode: 'true'
 })
@@ -1545,7 +1583,7 @@ gitalk.render('gitalk-container')
   
   
     <nav id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
     </nav>
   
 
@@ -1702,7 +1740,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">NLP</a>
+                <a href="javascript:void(0)" class="js-tag color3">Android</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">自定义View</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1710,11 +1752,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Android</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">自定义View</a>
+                <a href="javascript:void(0)" class="js-tag color4">NLP</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1734,19 +1772,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">C</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
+                <a href="javascript:void(0)" class="js-tag color1">Neural Networks</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1759,6 +1797,14 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">ACM</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Distributed Training</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Large Language Models</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1782,6 +1828,10 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">PyTorch</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">LaTeX</a>
               </li>
              
@@ -1794,15 +1844,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">PyTorch</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Python</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">爬虫</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1810,19 +1852,23 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">ML</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">JVM</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">Retrofit</a>
+                <a href="javascript:void(0)" class="js-tag color3">爬虫</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">ML</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Paper Notes</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">Retrofit</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1834,7 +1880,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">LSTM</a>
+                <a href="javascript:void(0)" class="js-tag color4">C++</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1846,11 +1892,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">C++</a>
+                <a href="javascript:void(0)" class="js-tag color2">Graph Neural Networks</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Graph Neural Networks</a>
+                <a href="javascript:void(0)" class="js-tag color5">LSTM</a>
               </li>
              
               <li class="article-tag-list-item">
