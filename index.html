@@ -182,6 +182,129 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-ThreeYearsAtPKU" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2023/07/04/ThreeYearsAtPKU/">PKU 这三年</a>
+    </h1>
+  
+
+        
+        <a href="/2023/07/04/ThreeYearsAtPKU/" class="archive-article-date">
+  	<time datetime="2023-07-04T13:23:10.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2023-07-04</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>两个月之前，我在语言所的工位上坐着，有些无所事事，在博客的目录敲下</p>
+<p><code>hexo new &quot;ThreeYearsatPKU&quot;</code></p>
+<p>创建了这篇文章，以为还有很多时间让我来收拾情绪，写下很多点滴。一转眼，我已经收拾好了行李，和舍友们、同学们告别，离开了理科一号楼，<del>在家里</del>在香港住下来了。<strong>我真傻，哪有那么多的时间留给自己，三年不过弹指一挥间</strong>。反过来想想，是得写点什么，在旅途中设下几个锚点，给以后的回忆留一些线索。</p>
+<h2 id="My-Research"><a href="#My-Research" class="headerlink" title="My Research"></a>My Research</h2><p>如果要用一根线来串起我的研究生三年，我觉得也许我的毕业论文会是一个很好的roadmap，大体上，我的经历也都和论文中的内容相关。</p>
+<p>在入学之前，我加入了孙老师和微信的合作项目，并且在林老师和李老师的指导下学习如何做科研。前几次的讨论中，鹏导的高标准让我一下子感觉有点紧张，很担心自己是否能够完成好这个项目。</p>
+<p>我们花了大约三个月的时间来讨论方向，有几个方面是我到现在依旧在选择 topic 时觉得很重要的：(i) 和时代大潮流相关，当时是预训练模型 BERT 的时代，大家都在思考怎么更好地利用预训练模型做各种各样的任务，那么我们的研究方向必然是要以预训练语言模型为基础的，这样的工作才可能会有影响力。(ii) 这个方向的容量要足够大，足以支撑完成一篇 thesis，但又需要能够有机的串联在一起。大体来说，基本上 *CL 的 track 都可以认为是一个大的 node，然后往下走一层的节点基本上是能够满足容量足够大。当时我选择的 Efficient NLP 这个领域现在也被逐渐认可成为一个 track，这一 track 下像知识蒸馏和推理加速都是比较大的 area，并且有一定的实际应用意义。</p>
+<p>确定了大体的方向后便是文献调研和一些 idea 的尝试，以及每周固定的讨论。CascadeBERT 是我在 WeChat AI 做的第一个 idea，一开始 motivation 是希望能够利用类似 NAS 或者 RL 的方法在 BERT 内部进行一些 skip-layer 或者是在多个 BERT model 之间进行 switch。在激情 coding &amp; training 一个多月之后发现，发现怎么都训不出来，进一步分析 RL 训不出来的原因在于 reward 很稀疏，即很少的样本需要大规模的计算，因此没办法获得充足的监督信号。相反，一个简单的，两个模型级联的 baseline 效果很好，稳定地超过当时的所有 baseline。后续和两位老师讨论后决定，我们把 paper 做成一个分析导向的 paper，弱化级联这一方案的贡献。然而第一次 ACL submission，却因为方案比较简单，reviewer 抨击 novelty 而被拒稿；第二次 EMNLP，投稿了新开的 efficient track，review 意见依旧比较 negative，在 rebuttal 之后依旧是均分 &lt; 3 (3, 2.5, 2.5 ?)。但那次的 AC 非常给力，把这篇 paper 捞成了 Findings。</p>
+<p>相比之下，Dynamic KD 就顺利的多，在做完推理加速之后，我的兴趣转移到了如何让模型参数减少但是尽可能不降低性能。这一方面，知识蒸馏就是非常经典的框架。然而，当时有着 TinyBERT，纯蒸馏的性能的天花板基本就在那。于是考虑如何利用更少的数据完成同等效果的蒸馏，又发现有个同期的 MixKD 方法，利用 Mixup 数据做知识蒸馏，很难 beat 掉他们的效果。然后和 Andy 讨论之后发现，当时的工作都在聚焦如何设计更多的 supervision objective 来利用好 teacher model，但实际上，学生模型的能力不断变强，应该更有针对性地挑选教师模型、训练数据和训练目标来实现更加高效的知识蒸馏。因此我们设计了一个动态的框架，来挑选这三个方面，从而提升模型的效果和训练的效率。定完这个框架之后，距离 ddl 只有两个礼拜了，当时手上有的实验结果里，挑选数据部分是我们最早做过探究，有着比较丰富的实验的结果；教师模型选择和蒸馏目标选择则是紧赶慢赶，终于在距离截稿还有一周的时候完成了实验的部分。最后一周疯狂的 polish 论文，并且在这一阶段林老师帮忙 rewrite 了 introduciton，我再一次窥见了我写作方面的不足，并且尝试模仿这样一种写作思路：<strong>将所作的事情抽象成一个 research question，然后娓娓道来你是如何探究这些问题的。</strong>这篇文章的 review 很 positive，录用也变得顺理成章，还有幸入选了 oral。因为疫情缘故，开会是 online 的，也对消弭第一次 oral 的紧张有很大的帮助。现在，我已经不记得在 talk 里说了些什么，<strong>只记得等 runxin 的 talk 讲完之后，一起到东南门的雪地里滚了一大圈</strong>。</p>
+<p>在做完推理加速和知识蒸馏之后，我看到 CV 方向有不少对模型融合的探究，即将多个教师模型的能力（分割、分类）蒸馏到一个学生模型中，然而这一想法却鲜有 NLP 方面的探索。我理解这个是新的一种维度的高效化，即我们不再需要部署多个 task-specific 模型，而只需要一个 unified model 来完成这一切。不过当时可能过于看重眼前的 story，回过头来看，LLM 也是这样一个 Unified model，instruction tuning 中有足够的数据来教会他所有的事情。两篇 paper 以后，我已经对科研的套路相对熟悉，因此又是一阵设计、实验和分析，最后延续了 Dynamic KD 中的不确定度的思想，来挑选合适的教师模型进行学习。方法效果依旧是非常不错，beat 掉了 CV 那边几乎所有的方案。投稿的时候是第一次 ARR，还想着挺新鲜，review 意见也不错(4, 3.5, 3, ARR 的 3 分当时根据我的理解应该是 softconf 的 3.5），没成想 commit 之后录成了 Findings，感觉很不值当，于是修改之后再次 commit EMNLP，还是 Findings。想了想，算了，也许这就是命，出来混迟早要还的，低分 Findings 和相对高分 Findings，so take it。</p>
+<p>这段在 WeChat AI 的实习经历，除了论文的发表以外，对我科研之路的影响非常之大，令我从一个懵懵懂懂的大四毕业生变成一个对科研、发论文有一些概念的研究生。最重要的是，我也意识到，<strong>you own the project</strong>，所有的合作者都是你的助手，你可以向他们寻求各个层面的帮助，但是最终需要你来 make decision, and take responsiblity。感谢给予过我帮助的所有人。</p>
+<p>往后的故事，就是到上海 AI Lab 和晶晶师姐合作（顺便 tla (x，在多模态方面开始做一些尝试，并且我也突然发现，预训练模型的时代，以一个更快地速度过去，而等待着我们的，则是大语言模型的波澜壮阔。也许这一部分，等我 PhD 毕业再来回顾，会更有整体的视角，指不定那个时候又出什么幺蛾子了哈哈。</p>
+<h2 id="My-Friends-amp-Love"><a href="#My-Friends-amp-Love" class="headerlink" title="My Friends &amp; Love"></a>My Friends &amp; Love</h2><p>Research 的道路也因为朋友们的陪伴变得更加丰富多彩，还记得在 <a href="https://tobiaslee.top/2021/02/04/Goodbye-2020/">2020 年总结</a> 给 20 级的同学们都写了一句话，三年之后，大家的 paper 都挺多，鹤一烤肉也没少吃，也都有着光明的未来。师兄师姐师弟师妹们也都很给力，一起打狼人杀也一起做科研，德艺双馨。还有我的舍友们，毕业旅行一起去到了霓虹，每天早上出去觅食走走看看，晚上喝酒打牌畅谈人生理想的日子，会是很多年回想起来都感觉很珍贵的回忆，再往前，谁能想到一墙之隔的几个人会成为德扑局上根据 raise 尺度就能锁定范围的<em>知己</em>呢？</p>
+<p>感谢我的 nvpy 一直以来的陪伴，新冠时期的异地恋着实是煎熬，所有的一切都存在着巨大的不确定性。好在，我们彼此是笃定的，虽有波折，却也坚持了下来。相信，风雨过后的彩虹会更加绚烂，以及，会抓住一切机会创造更加美好的经历。</p>
+<h2 id="My-Future"><a href="#My-Future" class="headerlink" title="My Future"></a>My Future</h2><p>简单的展望一下未来的 PhD 生涯：</p>
+<ul>
+<li>做有影响力的研究：影响力是个很抽象的东西，但有一些基本的原则可循，<strong>有用的研究</strong>往往会产生更大的影响力，例如高质量的开源数据集、工具，开源 &gt;&gt; 闭源。此外，研究的 topic 粒度要粗，能够容纳更多的叶子节点的研究，但是落脚在确保可以泛化的情况下可以在具体的问题上开展，以小见大。</li>
+<li>保持身心的健康：BMI 或许会是一个主要的指标，多多健身并且希望能够跟梦觉老师学会自由泳。心理健康大抵比较好保持，有空的话多出去走走，找找好吃的！</li>
+<li>构建自己的知识体系：回顾这三年，学到的很多东西都是零散的分布在各式各样平台上（主要是我的脑子里），没有比较好的整理，进而对复用效率造成影响（脑子会变慢的）。在保持输入（广泛阅读）和输出（尝试提升写技术文章的频率）的同时，在个人知识库中沉淀感兴趣的模块的内容和工具。</li>
+</ul>
+<p>祝自己能够如愿，也祝愿 PKU 的大家都有美好的未来！</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">随笔</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+
+      
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2023/07/04/ThreeYearsAtPKU/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+
+
+
+  <div id="gitalk-container" style="padding: 0px 30px 0px 30px;"></div> 
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script type="text/javascript">
+
+if(true){
+	var gitalk = new Gitalk({
+  	clientID: '287baa057ce9ec4607fc',
+  	clientSecret: 'af27eca29f4fb81302ec92b0f0bf9e70e635db2d',
+  	repo: 'blog-comments',
+  	owner: 'TobiasLee',
+  	admin: ['TobiasLee'],
+  	id: '',
+  	distractionFreeMode: 'true'
+})
+gitalk.render('gitalk-container') 
+}
+</script>
+
+  
+
+
+
+
+  
     <article id="post-Deepspeed101-Pipeline-Parallelism" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1429,158 +1552,6 @@ gitalk.render('gitalk-container')
 
 
   
-    <article id="post-thoughts-under-covoid19" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/05/03/thoughts-under-covoid19/">三分之一，二零二零</a>
-    </h1>
-  
-
-        
-        <a href="/2020/05/03/thoughts-under-covoid19/" class="archive-article-date">
-  	<time datetime="2020-05-03T04:51:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-05-03</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <blockquote>
-<p>2020 年的开端，或许会成为我们十年后为数不多有着清晰记忆的四个月，光怪陆离到让人不敢相信它是真的，而每次口罩下的呼吸却又在真真切切地提醒着我们，发生了什么。</p>
-</blockquote>
-<p>新冠疫情、A 股熔断、美股熔断、原油暴跌，这是一个让巴菲特都感慨“我还是太年轻的”的一年，也是我在 XDU 的最后一年。在学校里，学期内的划分让我对时间的流逝明确的感受，一般半年也就该写篇博（fei）客（hua）来吹吹水了，在家，除了觉得日子过的很快，确实没什么想要写点东西的冲动，所以导致一直没有更新。但说实在话，很久不更新我也有一种愧疚感，博客于我而言，是记录，也是纪念。<strong>输出文字，是很重要的一种能力，也能敦促我反过来系统性地回顾、总结，写的是生活也好，科研也罢，或许这些日后看来非常稚嫩无知的文字，是这一路最忠实的见证者。</strong></p>
-<h2 id="Life"><a href="#Life" class="headerlink" title="Life"></a>Life</h2><p>我一直对于老家不是特别感冒，一直在杭州读书，逢年过节回老家赶场式地吃完饭拜年就收拾回杭州了，确实很难说有特殊的情感。今年这个特殊情况，在老家呆了很长一段时间。纠结了很久才买的“买前生产力，买后爱奇艺”的 ipad， 居然也派上了很大的用场，最后甚至惊奇地发现还涨价了，小巴菲特石锤。</p>
-<p>在老家的这段时间里，我在田间地头拔过葱（<del>因为想吃葱油拌面</del>），帮爷爷种土豆（<del>被大伯强制要求去的</del>），去鱼塘抓了一堆鱼（<del>我就是站边上看看</del>），也算是体验了一把乡村生活。看着一个一个安放小土豆的爷爷，我眼前又浮现出很多年前夏天他在收割水稻的身影，恍然间，爷爷已经耄耋之年，岁月流逝，陪他劳作的从儿子变成了孙子。<strong>从他身上，我能感受到那一代人与土地绵长不绝的关系，而我的身上流淌着他的血液，亦无法与脚下的土地分割。</strong>所以，即使未来有可能到国外读 PhD，我也会回来的，何处心安是吾乡，大洋彼岸的空气再甜，也填不满一个炎黄子孙的胃口与内心。另外，想到身边不少同学的爷爷奶奶已经去到了另一个美好的地方了，我感到一阵庆幸，希望所有的爷爷奶奶都能健康长寿，能让他们的孙子孙女陪他们钓钓鱼、种种菜。</p>
-<p>回到杭州之后，和初中、高中同学都聚了一聚。不少初中同学已经走上了工作岗位，逐渐在向社会人转变。隔阂到说不上，确实能聊的东西不多，毕竟学校和社会之间的鸿沟，慢慢在同学情谊上拉出缝隙，变成平行线，也许只是时间问题。高中同学还好，在继续求学的居多，所以还都有的聊，甚至还能联机打把游戏。</p>
-<p>再就是大学同学了，真的，谁能想到呢，想象中每天嗨到昏厥，彻夜把酒言欢的毕业季，就要这样结束了。希望能早日回到学校，毕竟，<strong>我所理解的生活，就是和喜欢的一切在一起</strong>。</p>
-<h2 id="Research"><a href="#Research" class="headerlink" title="Research"></a>Research</h2><p>最近正在 On-going 的一些 project 还是蛮有意思的，朝着我之前说的更具备 insight 的方向努力。对于做 solid 的研究，我觉得首先要问自己下面三个问题：</p>
-<ul>
-<li>文献调研足够了吗？用好搜索引擎，对于 NLP 来说，主要是 Google Scholar + ACL Anthology。当然不同会议的侧重也会有所不同，例如，Data Mining 的 paper 还是得去 KDD、ICDM 上找找 related paper。把这些 paper 写成一个 list，尝试提炼出其脉络和框架，然后把自己的想法放到一个尽可能高的位置，<strong>即，能把别人的工作放进你的框架里</strong>。即使是已经确保没有人做过了，也要关注一下 arxiv，因为现在是个百舸争流的时代，虽说同时期的工作可以不作为被拒稿的理由，但是从别人的paper，找到自己没有看到的 point，复盘学习，也是很有价值的。</li>
-<li>问题定义清楚了吗？A + B 式的研究逐渐成为过去式，并且，随着工具门槛的降低，算法工程师写代码这一侧的能力不再成为其核心竞争力，即，solution 的 toolkit 大家都有，那么，只有能够找到有价值的问题、定义出问题才是不可替代的。这方面我觉得我还是有所欠缺的，没想明白就开始动手，需要向 Senior 的同学老师学习。</li>
-<li>实验可复现吗？对于 baseline，一方面要选比较强大的模型，比如现在做 NLP，是骡子还是马我觉得起码得和 BERT 比一比；另外，对于 baseline 的性能，也要考虑周到，不是随便跑一组看的过去的就好了，因为 task 不太一样，可能原先的 setting 并不适合新的问题，对于常见的几个超参跑个 grid search 是必需的。此外，注重统计上的显著性，最简单的，多跑几 个seed ，看看 mean 和 std，确保提升是显著的。</li>
-</ul>
-<p>另外一点，也是看刘洋老师的<a href="https://www.bilibili.com/video/av94614779/" target="_blank" rel="noopener">研究生论文选题方法</a>以及和师兄交流得到的一个感悟，就是要<strong>尽可能做成体系的工作</strong>。对于一个博士生来说，他的 thesis 应该就是他发表的若干文章，应该落在一个三角形之内，在这个三角形之内的内容，就是他<strong>没有人比我更懂</strong>的领域。或许对于一个硕士生来说，在一个领域开坑的难度角度，但是也应该尽可能把工作 focus 到一个较大的坑里，聚沙成塔，再努力挖出自己的一些小坑。一来，这样在写论文的时候，能够更有体系的组织已经发表的工作；二来，很多问题并不是一篇文章就能够解决的，多篇文章从不同的视角，去解决一个 topic，能够更加全面和完善，也能够在以后的找工作的时候更好地阐述自己研究生期间究竟做了什么。</p>
-<p>最后，就上我看刘洋老师视频做的笔记，希望能常常翻看，不忘初心。</p>
-<blockquote>
-<p>问题应该是怎么样的？</p>
-<ul>
-<li>重要性：work on important problem, so you can do important work</li>
-<li>创新性：</li>
-<li>基础性：做树的根节点的工作，少做叶子节点；</li>
-<li>复杂性：多个问题的 子问题 </li>
-<li>系统性：子问题之间要有关联，e.g. 难表示 低资源 缺知识 不要做 xx 的若干问题研究 可以多向老师沟通 选一个适合自己的、感兴趣的题目</li>
-<li>可行性：该问题应该具备在短期内被解决的可能性 </li>
-<li>承接性：课题组的积累，利用组里的资源优势</li>
-<li>适合性：自己感兴趣 能让自己觉得非常 exciting 斗志昂扬的 能发挥自己的优势</li>
-</ul>
-<p>如何选题：</p>
-<p>战略性的思考，顶层设计</p>
-<ol>
-<li>调研：看 paper，和打仗中的侦查差不多；站在领域的前沿，时效和质量<ol>
-<li>经典著作 教材  PRML manning 的 intro， famous scholars 的 thesis</li>
-<li>Journal 、 Conference paper</li>
-<li>Social media, twitter</li>
-<li>Arxiv </li>
-</ol>
-</li>
-<li>思索</li>
-<li>判断</li>
-</ol>
-<p>怎么读论文：</p>
-<ul>
-<li>80% 只读标题</li>
-<li>14%的文章 只读标题和摘要</li>
-<li>5% 读标题 摘要 正文</li>
-<li>1% 搞懂全部细节</li>
-</ul>
-</blockquote>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">随笔</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-
-      
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/05/03/thoughts-under-covoid19/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-
-
-
-  <div id="gitalk-container" style="padding: 0px 30px 0px 30px;"></div> 
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
-<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
-<script type="text/javascript">
-
-if(true){
-	var gitalk = new Gitalk({
-  	clientID: '287baa057ce9ec4607fc',
-  	clientSecret: 'af27eca29f4fb81302ec92b0f0bf9e70e635db2d',
-  	repo: 'blog-comments',
-  	owner: 'TobiasLee',
-  	admin: ['TobiasLee'],
-  	id: '',
-  	distractionFreeMode: 'true'
-})
-gitalk.render('gitalk-container') 
-}
-</script>
-
-  
-
-
-
-
-  
   
     <nav id="page-nav">
       <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
@@ -1744,15 +1715,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Machine Learning</a>
+                <a href="javascript:void(0)" class="js-tag color3">Android</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
+                <a href="javascript:void(0)" class="js-tag color3">自定义View</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1760,11 +1727,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Android</a>
+                <a href="javascript:void(0)" class="js-tag color2">Machine Learning</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">自定义View</a>
+                <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1776,7 +1747,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">C</a>
+                <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1784,7 +1755,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
+                <a href="javascript:void(0)" class="js-tag color2">C</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1797,14 +1768,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">ACM</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Distributed Training</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Large Language Models</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1848,6 +1811,14 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Distributed Training</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Large Language Models</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">OS</a>
               </li>
              
@@ -1872,15 +1843,23 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Attention</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Seq2Seq</a>
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Attention</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">C++</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Compile Principle</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Course Notes</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1905,14 +1884,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Layer Normalization</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Compile Principle</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Course Notes</a>
               </li>
              
               <li class="article-tag-list-item">

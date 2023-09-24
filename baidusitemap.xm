@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://tobiaslee.top/2023/07/04/ThreeYearsAtPKU/</loc>
+    <lastmod>2023-09-18</lastmod>
+  </url>
+  <url>
     <loc>https://tobiaslee.top/2023/03/28/Deepspeed101-Pipeline-Parallelism/</loc>
     <lastmod>2023-03-28</lastmod>
   </url>
