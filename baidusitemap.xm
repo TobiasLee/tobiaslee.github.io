@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://tobiaslee.top/2025/01/02/bye2024-hi2025/</loc>
+    <lastmod>2025-01-02</lastmod>
+  </url>
+  <url>
     <loc>https://tobiaslee.top/2024/03/09/TheWayToGPT4V/</loc>
-    <lastmod>2024-03-10</lastmod>
+    <lastmod>2024-03-11</lastmod>
   </url>
   <url>
     <loc>https://tobiaslee.top/2024/01/23/GoodBye2023/</loc>

@@ -18,7 +18,7 @@
 <meta property="og:locale" content="default">
 <meta property="og:image" content="https://tobiaslee.top/img/mmmu-benchmark-2024-03-09.png">
 <meta property="og:image" content="https://tobiaslee.top/img/flamingo-arch.png">
-<meta property="og:updated_time" content="2024-03-10T12:36:37.035Z">
+<meta property="og:updated_time" content="2024-03-11T02:31:47.443Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="我们与 GPT-4V 的距离">
 <meta name="twitter:description" content="在 ChatGPT 引爆 AI 圈之后，很多人预言 2024 年将会是多模态的元年。的确，我们在 23 年的最后一季度见证了 GPT-4V 的发布，前不久Google 家的 Gemini 和 Anthropic 的 Claude 3 也同样支持多模态 （Multimodal to Text），并且 Gemini 1.5 中能够从两小时的视频中准确“捞针”出其中一帧包含的画面。国内这方面的工作以 Q">
@@ -213,7 +213,7 @@
 <li>视觉的基础模型众多 + 数据充足：CV 的自监督学习随着 BERT 开始就已经有一系列工作，CLIP、MAE 、DINO 等能够很好地编码图片，很好地起到了 visual tokenizer 的效果。此外，应对上下文的限制，QFormer、Perceiever 也已经被广泛地验证了其有效性。除了纯文本以外，图文对也是少数我们能够轻易获取到的大量的数据 （e.g，Laion5B）， image captioning 本质也是一种 next token prediction。</li>
 <li>应用场景广泛：这个也很直接，日常生活中大多数数据的呈现方式就是，图片 + 文本 -&gt; 文本的范式能够极大扩充模型处理任务的范围。另外，随着大语言模型发展催生出的一系列 Agent 研究，在浏览网页的时候会依赖 html 作为输入。如果能够直接让 Agent 看到屏幕，输出对应的操作坐标，更加简洁优雅。进一步地，Deepmind 的 <a href="https://arxiv.org/abs/2307.15818" target="_blank" rel="noopener">RT 2</a> 也验证了视觉语言模型能够很快地迁移到诸如 robotic 场景，在 embodied 环境中发挥重要的作用。</li>
 </ul>
-<p>这两个条件可谓是大视觉语言模型发展的天时和地利，我们也同样可以用这一条路径来进一步验<strong>压缩即智能法，看看这一框架是否能够在具备了更丰富模态信息后，背后世界模型的学习速率是否会进一步加快</strong>。关于这一点，之前我们的一个工作 <a href="https://aclanthology.org/2023.emnlp-main.726/" target="_blank" rel="noopener">VEC</a> 就发现即使基于纯文本 NTP 训练的 LLMs 也能够学习到视觉世界的一些基础概念，但更 embodied 的一些知识则很难（或者以相当低的速率）被学习到，需要借助视觉语言模型来辅助学习。</p>
+<p>这两个条件可谓是大视觉语言模型发展的天时和地利，我们也同样可以用这一条路径来进一步验<strong>压缩即智能这一想法，看看这一框架是否能够在具备了更丰富模态信息后，背后世界模型的学习速率是否会进一步加快</strong>。关于这一点，之前我们的一个工作 <a href="https://aclanthology.org/2023.emnlp-main.726/" target="_blank" rel="noopener">VEC</a> 就发现即使基于纯文本 NTP 训练的 LLMs 也能够学习到视觉世界的一些基础概念，但更 embodied 的一些知识则很难（或者以相当低的速率）被学习到，需要借助视觉语言模型来辅助学习。</p>
 <h2 id="模型架构"><a href="#模型架构" class="headerlink" title="模型架构"></a>模型架构</h2><p>目前主流的 LMM 架构基本上是以大语言模型 LLM 为核心骨架，然后将图片视觉信息整合到 LLM 的预测过程中，因而这个框架里一般有以下几个组件：</p>
 <ul>
 <li><p>基座语言模型：负责处理多模态的 embedding，并且执行预测推理的功能。一般选择能够获取到的最强、大小最合适的语言模型即可；</p>
@@ -367,6 +367,15 @@
   
 <nav id="article-nav">
   
+    <a href="/2025/01/02/bye2024-hi2025/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          Bye Bye 2024, Hi Hi 2025
+        
+      </div>
+    </a>
+  
   
     <a href="/2024/01/23/GoodBye2023/" id="article-nav-older" class="article-nav-link-wrap">
       <div class="article-nav-title">GoodBye 2023</div>
@@ -438,7 +447,7 @@ gitalk.render('gitalk-container')
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2024 TobiasLee
+    		&copy; 2025 TobiasLee
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
@@ -561,11 +570,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
+                <a href="javascript:void(0)" class="js-tag color5">设计模式</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -577,6 +586,14 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Android</a>
               </li>
              
@@ -585,19 +602,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">BPTT</a>
+                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">TensorFlow</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">C</a>
+                <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -605,11 +614,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">GAN</a>
+                <a href="javascript:void(0)" class="js-tag color5">BP算法</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Text Generation</a>
+                <a href="javascript:void(0)" class="js-tag color2">C</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -641,15 +650,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Distributed Training</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Large Language Models</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Java</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">RNN</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">论文笔记</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -661,6 +670,14 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">RNN</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">论文笔记</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Python</a>
               </li>
              
@@ -669,7 +686,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">ML</a>
+                <a href="javascript:void(0)" class="js-tag color4">JVM</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -677,15 +694,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">JVM</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Distributed Training</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Large Language Models</a>
+                <a href="javascript:void(0)" class="js-tag color3">ML</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -717,19 +726,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">GPT4V</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">LSTM</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">RL</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">DL</a>
+                <a href="javascript:void(0)" class="js-tag color1">GPT4V</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -742,6 +743,14 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Layer Normalization</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">RL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">DL</a>
               </li>
              
               <li class="article-tag-list-item">
