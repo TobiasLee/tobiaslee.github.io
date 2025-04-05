@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://tobiaslee.top/"/>
-  <updated>2025-01-02T09:44:31.789Z</updated>
+  <updated>2025-04-05T17:11:17.004Z</updated>
   <id>https://tobiaslee.top/</id>
   
   <author>
@@ -15,6 +15,31 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>2025 年 4 月随笔</title>
+    <link href="https://tobiaslee.top/2025/04/06/thoughts-2025-0406/"/>
+    <id>https://tobiaslee.top/2025/04/06/thoughts-2025-0406/</id>
+    <published>2025-04-05T17:08:00.000Z</published>
+    <updated>2025-04-05T17:11:17.004Z</updated>
+    
+    <content type="html"><![CDATA[<p>我发现各种没有特别安排的假期会是一个很好的自我反思、回顾的窗口，这个清明假期就是如此。</p><p>没有太过迫近正在 lead 的 paper/project deadline，也没有出游的计划，于是乎，想着写一下最近的一些想法，作为未来验证的坐标点。</p><h2 id="Reasoning-Models-的崛起"><a href="#Reasoning-Models-的崛起" class="headerlink" title="Reasoning Models 的崛起"></a>Reasoning Models 的崛起</h2><p><strong>25 年 1 月 2 号在 blog 里我写到:</strong></p><blockquote><p> 在有明确的 reward 定义（verifiable reward such as Code / Math)，MCTS rollout 向 better answer 逼近，RL 来提升 model 利用 token computation 的效率</p></blockquote><p>随后 R1 的发布印证了这一点，，说明 sense 还是没差太多，能跟上版本的节奏 （x</p><p>过去三个月，LLM领域依旧在紧锣密鼓地迭代。两个感知力比较强的突破是：Gemini 2.5 Pro的多模态理解能力达到了”wow moment”的水平（虽然因入口较深而限制了用户体验的广度）；另外一个就是 4o 的 image generation，被吉卜力刷屏的背后也是其效果达到破圈的 level。开源届的进展倒是比想象中慢，Qwen 和 LLaMa 4 估计在憋大招，但越憋期待越高，期待越高越容易 miss，所以很难找到一个好的发布的节奏；Mistral 应该也还有货，只是这家的风格神神叨叨的也不知道什么时候就掏出来个大宝贝 :) **</p><p>毫无意外地，各大模型都在收敛到 reasoning model这一范式。证据包括：大多数API模型默认开启thinking模式、GPT-4.5可能是最后一个非reasoning model、甚至我们Reka也推出了reka-flash-thinking供大家使用。学术界同样涌现出大量 GRPO/Reasoning 分析研究，我们也赶时髦搞了 R1-V。这种统一我认为有两个主要原因：</p><p><strong>（1）思维链对用户体验有显著增益。用户能够部分观察到模型的思考路径（虽不一定100%忠实），从而增强对输出结果的信任；</strong></p><p><strong>（2）推理/算力成本正持续下降（加上软件栈的优化还有进一步下降空间），水平扩展（增加token数量）是最便捷的计算扩展方式。</strong></p><p>因此，reasoning model是现在乃至未来的必然发展方向。</p><h2 id="推理模型的下一步演进"><a href="#推理模型的下一步演进" class="headerlink" title="推理模型的下一步演进"></a>推理模型的下一步演进</h2><p>那么，推理模型的下一阶段发展方向在哪里？我有两个思路：</p><h3 id="通用场景的Reward-as-a-Service-Reward-Service-Simulation"><a href="#通用场景的Reward-as-a-Service-Reward-Service-Simulation" class="headerlink" title="通用场景的Reward as a Service: Reward Service + Simulation"></a>通用场景的Reward as a Service: Reward Service + Simulation</h3><p>Code/Math领域有明确定义的验证器（尽管实现并不简单）以及很好的 interpreter。这两个领域确实是创造数据经济价值的高效路径，也能提供良好的泛化效果。但现实中存在大量长尾且无法通过规则验证的领域，这些领域虽然单独看价值有限，但总体经济价值远超Code+Math。因此，为这些细分领域设计有效的reward机制变得极为重要：</p><ul><li><strong>专家经验抽象为API</strong>：传统人工标注本质上是最耗费人力的reward service，但这不可持续。我们需要蒸馏人类专家经验并与现有LLM协作，然而这方面的工作流仍缺乏成熟框架。</li><li><strong>安全的RL探索环境</strong>：有了reward service API后，如何为LLM提供playground让模型在模拟场景中进行RL探索和调整？真实环境的成本过高——例如，web browsing agent以当前rollout数量可能构成对网站的DDoS攻击。一种方案是利用CC dump进行模拟HTML渲染，使模型能无负担地”浏览”大量网页并获得即时反馈。但模拟环境的保真度（如CC只包含静态内容）会对结果产生重大影响。</li></ul><h3 id="多模态推理模型"><a href="#多模态推理模型" class="headerlink" title="多模态推理模型"></a>多模态推理模型</h3><p>这实际上是前一类细分领域的模态增强版。我坚信，纯文本交互/RL能完成大多数任务，但缺乏视觉输入会使整个交互链路受到极大限制。例如，手机操作可以通过底层API调用实现，也可以通过GUI实现。前者可能在某些情况下效果更好，但需要大量接口适配和权限获取；而GUI方案虽然速度较慢，但遵循”人能做到的AI也应能做到”的原则，适用范围更广。</p><p>因此，如何让多模态模型具备推理和RL能力将是一个极具潜力的研究方向。当前的Vision-R1类工作主要集中在视觉数学题上，但这并非问题的本质。在我看来，<strong>视觉推理模型最关键的是跨模态信息的聚合与推理能力。如果视觉数学题可以被文本形式无损表达（如AlphaGeometry所做的），那么问题仍会退化为文本域的推理。</strong></p><p>我们需要更贴近实际应用的场景，如Visual Search或Video Temporal任务。当然，这一切的前提是需要更强大的基础模型，而Gemini-2.5-Pro似乎已达到实用水平。</p><p><strong>虽然我们尚未见到纯文本领域的天花板，但应该不远了。</strong></p><h2 id="Pre-training-终结了吗？Agent-还有前途吗？"><a href="#Pre-training-终结了吗？Agent-还有前途吗？" class="headerlink" title="Pre-training 终结了吗？Agent 还有前途吗？"></a>Pre-training 终结了吗？Agent 还有前途吗？</h2><p><strong>关于这两个方向，我有以下观点：</strong></p><ol><li><strong>预训练不仅没有结束，反而正在迎来新阶段</strong>。Ilya提到的”撞墙”确实与预训练数据耗尽有关，但我们还有合成数据这一选择，而且不仅限于从大模型中重写的数据。R1风格的方法可以利用可验证reward生成大量合成数据，我相信这将为Web-scale数据带来全新的信息增量，使基础模型能力在今年内有一次类似GPT-3.5到GPT-4级别的飞跃。这批新数据必然比原来更长，这也为模型架构创新提供了空间，linear/mixed attention可能是一个有前景的解决方案。</li><li><strong>现在所有基于 workflow 的 agents  都会被基模的成长吃掉，价值的窗口很短</strong>。这些脚手架本质上是在教LLM如何完成任务，类似十年前我们在深度学习中加入attention的做法，是一种人为归纳偏置，终将面临”苦涩教训”（The bitter lesson）。我唯一比较看好的是 RL-based Agents，即 DeepResearch 这样的东西，这是一种既定路线的扩展，但如我前面所说，还是需要有好的 infra + simulation + reward  协同发展，应该会是一个逐渐扩散的过程。</li></ol><h2 id="Miscs"><a href="#Miscs" class="headerlink" title="Miscs"></a>Miscs</h2><ul><li><strong>VL-RewardBench 和 Video-MME 都获得了 CVPR 25 Highlights (~ Top 3%)，恭喜自己！</strong></li><li><strong>坚持锻炼 +（尽可能）清淡饮食 1 个月，瘦了 3 KG，感觉非常好！继续坚持！</strong></li></ul>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;我发现各种没有特别安排的假期会是一个很好的自我反思、回顾的窗口，这个清明假期就是如此。&lt;/p&gt;
+&lt;p&gt;没有太过迫近正在 lead 的 paper/project deadline，也没有出游的计划，于是乎，想着写一下最近的一些想法，作为未来验证的坐标点。&lt;/p&gt;
+&lt;h2 i
+      
+    
+    </summary>
+    
+    
+      <category term="随笔" scheme="https://tobiaslee.top/tags/%E9%9A%8F%E7%AC%94/"/>
+    
+  </entry>
   
   <entry>
     <title>Bye Bye 2024, Hi Hi 2025</title>
